@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learn — DIRI Digital Rights</title>
+  <meta name="description" content="Explore interactive learning cards on digital rights, online privacy, data protection, cybersecurity, and internet governance.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+        <span>DIRI</span>
+      </a>
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="learn.html" class="active">Learn</a>
+        <a href="updates.html">Updates</a>
+        <a href="quiz.html">Weekly Quiz</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="chatbot.html">Mr. DIRI</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm mobile-only">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+        <div class="menu-toggle" role="button" aria-label="Toggle navigation menu" tabindex="0">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="mobile-overlay"></div>
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html" class="active">Learn</a>
+      <a href="updates.html">Updates</a>
+      <a href="quiz.html">Weekly Quiz</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="chatbot.html">Mr. DIRI</a>
+      <div class="mobile-actions">
+        <a href="login.html" class="btn btn-ghost btn-full">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-full">Get Started</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="container">
+      <div class="page-header-inner animate-in">
+        <span class="section-tag">Start Learning</span>
+        <h1 class="heading-lg">Master digital rights, one lesson at a time</h1>
+        <p class="body-lg">Short, practical learning cards designed to make internet governance and digital rights accessible to every young Ugandan.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTERS -->
+  <section class="page-content">
+    <div class="container">
+      <div class="animate-in">
+        <div class="search-bar">
+          <input type="text" placeholder="Search topics... (prototype)" aria-label="Search topics">
+          <button class="btn btn-primary">Search</button>
+        </div>
+        <div class="filter-tabs" data-filter-target="topics-grid">
+          <button class="filter-tab active">All</button>
+          <button class="filter-tab">Privacy</button>
+          <button class="filter-tab">Security</button>
+          <button class="filter-tab">Governance</button>
+          <button class="filter-tab">AI</button>
+          <button class="filter-tab">Rights</button>
+        </div>
+      </div>
+
+      <!-- TOPICS GRID -->
+      <div class="topics-grid stagger-children" id="topics-grid">
+        <article class="topic-card" data-category="privacy">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F512;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Privacy</span>
+            <h3>Online Privacy & Data Protection</h3>
+            <p>Learn how your personal data is collected, used, and protected online. Understand your privacy rights under Ugandan law.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 4 lessons</span>
+              <span>&#x23F1; 20 min</span>
+              <span style="margin-left:auto;color:var(--color-teal);">&#x2B50; Beginner</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="security">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F6E1;&#xFE0F;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Security</span>
+            <h3>Cybersecurity Fundamentals</h3>
+            <p>Understand common cyber threats, how to protect yourself from attacks, and best practices for staying safe online.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 6 lessons</span>
+              <span>&#x23F1; 30 min</span>
+              <span style="margin-left:auto;color:var(--color-navy);">&#x2B50; Intermediate</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="governance">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F30D;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Governance</span>
+            <h3>Internet Governance</h3>
+            <p>Explore how the internet is managed, who makes the rules, and how policy decisions affect your online experience.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 5 lessons</span>
+              <span>&#x23F1; 25 min</span>
+              <span style="margin-left:auto;color:var(--color-teal);">&#x2B50; Beginner</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="ai">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F916;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">AI Policy</span>
+            <h3>Artificial Intelligence & Policy</h3>
+            <p>Learn how AI systems work, the ethical concerns around them, and what regulations are being developed in East Africa.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 4 lessons</span>
+              <span>&#x23F1; 20 min</span>
+              <span style="margin-left:auto;color:var(--color-navy);">&#x2B50; Advanced</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="rights">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x2696;&#xFE0F;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Rights</span>
+            <h3>Digital Rights & Freedoms</h3>
+            <p>Understand your fundamental digital rights — freedom of expression, access to information, and assembly online.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 5 lessons</span>
+              <span>&#x23F1; 25 min</span>
+              <span style="margin-left:auto;color:var(--color-teal);">&#x2B50; Beginner</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="security">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F6A8;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Security</span>
+            <h3>Online Scams & Fraud Prevention</h3>
+            <p>Identify common online scams in Uganda, from phishing to SIM swap fraud, and learn how to protect yourself.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 4 lessons</span>
+              <span>&#x23F1; 20 min</span>
+              <span style="margin-left:auto;color:var(--color-teal);">&#x2B50; Beginner</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="rights">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F4BB;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Rights</span>
+            <h3>Digital Identity & Citizenship</h3>
+            <p>Explore what digital identity means, how national ID systems work online, and your rights around digital identity.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 3 lessons</span>
+              <span>&#x23F1; 15 min</span>
+              <span style="margin-left:auto;color:var(--color-navy);">&#x2B50; Intermediate</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="privacy">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F4F1;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Privacy</span>
+            <h3>Mobile Money & Financial Privacy</h3>
+            <p>Learn how to protect your mobile money transactions, understand financial data rights, and avoid common risks.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 3 lessons</span>
+              <span>&#x23F1; 15 min</span>
+              <span style="margin-left:auto;color:var(--color-teal);">&#x2B50; Beginner</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="topic-card" data-category="governance">
+          <div class="topic-image">
+            <div class="topic-pattern"></div>
+            &#x1F4FA;
+          </div>
+          <div class="topic-body">
+            <span class="topic-tag">Governance</span>
+            <h3>Misinformation & Media Literacy</h3>
+            <p>Understand how misinformation spreads, how to fact-check content, and your role in stopping false information.</p>
+            <div class="topic-meta">
+              <span>&#x1F4C4; 4 lessons</span>
+              <span>&#x23F1; 20 min</span>
+              <span style="margin-left:auto;color:var(--color-teal);">&#x2B50; Beginner</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- PAGINATION -->
+      <nav class="pagination" aria-label="Pagination">
+        <a href="#" aria-label="Previous">&laquo;</a>
+        <a href="#" class="active">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#" aria-label="Next">&raquo;</a>
+      </nav>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="assets/logo-white.png" alt="DIRI Logo">
+          <p>DIRI is a youth-focused digital rights and internet governance platform built by Team Netizens, Mbarara University of Science and Technology.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Twitter">&#x1D54F;</a>
+            <a href="#" aria-label="Instagram">&#x1F4F7;</a>
+            <a href="#" aria-label="LinkedIn">&#x1F4E1;</a>
+            <a href="#" aria-label="WhatsApp">&#x1F4AC;</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <a href="learn.html">Learn</a>
+          <a href="updates.html">Updates</a>
+          <a href="quiz.html">Weekly Quiz</a>
+          <a href="leaderboard.html">Leaderboard</a>
+          <a href="chatbot.html">Mr. DIRI</a>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">FAQ</a>
+          <a href="#">Local Languages</a>
+          <a href="#">Safety Guide</a>
+        </div>
+        <div class="footer-column">
+          <h4>Team Netizens</h4>
+          <a href="#">About Us</a>
+          <a href="#">Contact</a>
+          <a href="#">IGF Hackathon</a>
+          <a href="#">MUST</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 DIRI by Team Netizens. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
