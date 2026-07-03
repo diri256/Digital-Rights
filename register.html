@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — DIRI Digital Rights</title>
+  <meta name="description" content="Join DIRI for free and start learning about digital rights, privacy, cybersecurity, and internet governance.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- SIMPLIFIED HEADER -->
+  <header class="header" role="banner" style="border-bottom: none;">
+    <div class="header-inner" style="justify-content: center;">
+      <a href="index.html" class="header-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+        <span>DIRI</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- AUTH PAGE -->
+  <div class="auth-page">
+    <div class="auth-card animate-in">
+      <div class="auth-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+      </div>
+      <h1 class="heading-sm">Join DIRI</h1>
+      <p class="auth-subtitle">Create your free account and start learning</p>
+
+      <form class="auth-form">
+        <div class="form-group">
+          <label for="fullname">Full name</label>
+          <input type="text" id="fullname" class="form-input" placeholder="Your full name" required>
+          <div class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-email">Email address</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="you@example.com" required>
+          <div class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <input type="password" id="reg-password" class="form-input" placeholder="Create a strong password" required>
+          <div class="form-error"></div>
+          <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary); margin-top: var(--space-1);">At least 8 characters with a number and a letter</div>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm-password">Confirm password</label>
+          <input type="password" id="confirm-password" class="form-input" placeholder="Repeat your password" required data-match="reg-password">
+          <div class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-checkbox">
+            <input type="checkbox" required>
+            I agree to the <a href="#" style="color: var(--color-navy); text-decoration: underline;">Terms of Service</a> and <a href="#" style="color: var(--color-navy); text-decoration: underline;">Privacy Policy</a>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg">Create Account</button>
+      </form>
+
+      <div class="form-divider">or continue with</div>
+
+      <div style="display: flex; gap: var(--space-3);">
+        <button class="btn btn-outline" style="flex:1; justify-content:center; font-size: var(--font-size-sm);">Google</button>
+        <button class="btn btn-outline" style="flex:1; justify-content:center; font-size: var(--font-size-sm);">GitHub</button>
+      </div>
+
+      <p class="auth-footer-text">
+        Already have an account? <a href="login.html">Log in</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

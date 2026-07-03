@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In — DIRI Digital Rights</title>
+  <meta name="description" content="Log in to your DIRI account to access learning cards, quizzes, and the leaderboard.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- SIMPLIFIED HEADER (no nav, just logo) -->
+  <header class="header" role="banner" style="border-bottom: none;">
+    <div class="header-inner" style="justify-content: center;">
+      <a href="index.html" class="header-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+        <span>DIRI</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- AUTH PAGE -->
+  <div class="auth-page">
+    <div class="auth-card animate-in">
+      <div class="auth-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+      </div>
+      <h1 class="heading-sm">Welcome back</h1>
+      <p class="auth-subtitle">Log in to continue your learning journey</p>
+
+      <form class="auth-form">
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <input type="email" id="email" class="form-input" placeholder="you@example.com" required>
+          <div class="form-error"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div style="position: relative;">
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+          </div>
+          <div class="form-error"></div>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+
+        <div class="form-group">
+          <label class="form-checkbox">
+            <input type="checkbox" checked>
+            Remember me
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg">Log In</button>
+      </form>
+
+      <div class="form-divider">or continue with</div>
+
+      <div style="display: flex; gap: var(--space-3);">
+        <button class="btn btn-outline" style="flex:1; justify-content:center; font-size: var(--font-size-sm);">Google</button>
+        <button class="btn btn-outline" style="flex:1; justify-content:center; font-size: var(--font-size-sm);">GitHub</button>
+      </div>
+
+      <p class="auth-footer-text">
+        Don't have an account? <a href="register.html">Create one</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
