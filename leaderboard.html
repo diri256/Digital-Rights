@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard — DIRI Digital Rights</title>
+  <meta name="description" content="See the top performers in DIRI's weekly quiz challenges. Score and time ranked. Compete for the top spot.">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+        <span>DIRI</span>
+      </a>
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="learn.html">Learn</a>
+        <a href="updates.html">Updates</a>
+        <a href="quiz.html">Weekly Quiz</a>
+        <a href="leaderboard.html" class="active">Leaderboard</a>
+        <a href="chatbot.html">Mr. DIRI</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm mobile-only">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+        <div class="menu-toggle" role="button" aria-label="Toggle navigation menu" tabindex="0">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="mobile-overlay"></div>
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="updates.html">Updates</a>
+      <a href="quiz.html">Weekly Quiz</a>
+      <a href="leaderboard.html" class="active">Leaderboard</a>
+      <a href="chatbot.html">Mr. DIRI</a>
+      <div class="mobile-actions">
+        <a href="login.html" class="btn btn-ghost btn-full">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-full">Get Started</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="container">
+      <div class="page-header-inner animate-in">
+        <span class="section-tag">Compete</span>
+        <h1 class="heading-lg">Weekly Quiz Leaderboard</h1>
+        <p class="body-lg">See who topped this week's challenge. Rankings are based on score first, then time taken to complete.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEADERBOARD -->
+  <section class="page-content">
+    <div class="container-narrow">
+      <div class="animate-in">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-leaderboard-tab="weekly">This Week</button>
+          <button class="filter-tab" data-leaderboard-tab="monthly">This Month</button>
+          <button class="filter-tab" data-leaderboard-tab="all-time">All Time</button>
+        </div>
+      </div>
+
+      <!-- Top 3 Podium -->
+      <div class="animate-in animate-in-delay-1" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-8); align-items: end;">
+        <!-- Silver - 2nd -->
+        <div style="text-align: center;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background-color: var(--color-light); border: 2px solid #9CA3AF; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2); font-weight: var(--font-weight-bold); color: var(--color-navy);">SN</div>
+          <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-sm);">Sarah N.</div>
+          <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">950 pts &middot; 8:42</div>
+          <div style="margin-top: var(--space-2); height: 60px; background: linear-gradient(to top, #E5E7EB, #D1D5DB); border-radius: var(--radius-md) var(--radius-md) 0 0;">
+            <div style="padding-top: var(--space-2); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); color: #6B7280;">2nd</div>
+          </div>
+        </div>
+
+        <!-- Gold - 1st -->
+        <div style="text-align: center;">
+          <div style="width: 64px; height: 64px; border-radius: 50%; background-color: var(--color-light); border: 3px solid #F59E0B; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2); font-weight: var(--font-weight-bold); font-size: var(--font-size-lg); color: var(--color-navy);">MM</div>
+          <div style="font-weight: var(--font-weight-semibold);">Mark M.</div>
+          <div style="font-size: var(--font-size-sm); color: var(--color-dark-secondary);">1,000 pts &middot; 6:15</div>
+          <div style="margin-top: var(--space-2); height: 80px; background: linear-gradient(to top, #FDE68A, #FCD34D); border-radius: var(--radius-md) var(--radius-md) 0 0;">
+            <div style="padding-top: var(--space-3); font-size: var(--font-size-sm); font-weight: var(--font-weight-bold); color: #92400E;">1st</div>
+          </div>
+        </div>
+
+        <!-- Bronze - 3rd -->
+        <div style="text-align: center;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background-color: var(--color-light); border: 2px solid #D97706; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-2); font-weight: var(--font-weight-bold); color: var(--color-navy);">DK</div>
+          <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-sm);">David K.</div>
+          <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">920 pts &middot; 9:10</div>
+          <div style="margin-top: var(--space-2); height: 40px; background: linear-gradient(to top, #FDE68A, #D97706); border-radius: var(--radius-md) var(--radius-md) 0 0; opacity: 0.7;">
+            <div style="padding-top: var(--space-1); font-size: var(--font-size-xs); font-weight: var(--font-weight-bold); color: #fff;">3rd</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard Table -->
+      <div class="leaderboard-card animate-in animate-in-delay-2">
+        <div class="leaderboard-header">
+          <span>Rank</span>
+          <span>Player</span>
+          <span>Score</span>
+          <span>Time</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank gold">1</span>
+          <div class="player">
+            <div class="avatar">MM</div>
+            <div>
+              <div class="player-name">Mark Mutebi</div>
+              <div class="player-flag">Makerere University</div>
+            </div>
+          </div>
+          <span class="score">1,000</span>
+          <span class="time">6:15</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank silver">2</span>
+          <div class="player">
+            <div class="avatar">SN</div>
+            <div>
+              <div class="player-name">Sarah Nakato</div>
+              <div class="player-flag">MUST</div>
+            </div>
+          </div>
+          <span class="score">950</span>
+          <span class="time">8:42</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank bronze">3</span>
+          <div class="player">
+            <div class="avatar">DK</div>
+            <div>
+              <div class="player-name">David Kintu</div>
+              <div class="player-flag">Kyambogo University</div>
+            </div>
+          </div>
+          <span class="score">920</span>
+          <span class="time">9:10</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank">4</span>
+          <div class="player">
+            <div class="avatar">PN</div>
+            <div>
+              <div class="player-name">Patience Nansubuga</div>
+              <div class="player-flag">MUBS</div>
+            </div>
+          </div>
+          <span class="score">880</span>
+          <span class="time">10:05</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank">5</span>
+          <div class="player">
+            <div class="avatar">JA</div>
+            <div>
+              <div class="player-name">Joseph Agaba</div>
+              <div class="player-flag">MUST</div>
+            </div>
+          </div>
+          <span class="score">850</span>
+          <span class="time">11:30</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank">6</span>
+          <div class="player">
+            <div class="avatar">AK</div>
+            <div>
+              <div class="player-name">Aisha Kirabo</div>
+              <div class="player-flag">Uganda Christian University</div>
+            </div>
+          </div>
+          <span class="score">820</span>
+          <span class="time">12:00</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank">7</span>
+          <div class="player">
+            <div class="avatar">BW</div>
+            <div>
+              <div class="player-name">Brian Wasswa</div>
+              <div class="player-flag">Makerere University</div>
+            </div>
+          </div>
+          <span class="score">790</span>
+          <span class="time">13:22</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank">8</span>
+          <div class="player">
+            <div class="avatar">GN</div>
+            <div>
+              <div class="player-name">Grace Namugga</div>
+              <div class="player-flag">Ndejje University</div>
+            </div>
+          </div>
+          <span class="score">750</span>
+          <span class="time">14:05</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank">9</span>
+          <div class="player">
+            <div class="avatar">SM</div>
+            <div>
+              <div class="player-name">Samuel Mukasa</div>
+              <div class="player-flag">MUST</div>
+            </div>
+          </div>
+          <span class="score">720</span>
+          <span class="time">14:48</span>
+        </div>
+
+        <div class="leaderboard-row">
+          <span class="rank">10</span>
+          <div class="player">
+            <div class="avatar">LM</div>
+            <div>
+              <div class="player-name">Lydia Mirembe</div>
+              <div class="player-flag">Uganda Christian University</div>
+            </div>
+          </div>
+          <span class="score">680</span>
+          <span class="time">15:00</span>
+        </div>
+      </div>
+
+      <!-- Your rank -->
+      <div class="text-center" style="margin-top: var(--space-8);">
+        <p class="body-md" style="margin-bottom: var(--space-4);">Not on the board yet? Take this week's quiz to claim your spot.</p>
+        <a href="quiz.html" class="btn btn-primary">Take the Weekly Quiz</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="assets/logo-white.png" alt="DIRI Logo">
+          <p>DIRI is a youth-focused digital rights and internet governance platform built by Team Netizens, Mbarara University of Science and Technology.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Twitter">&#x1D54F;</a>
+            <a href="#" aria-label="Instagram">&#x1F4F7;</a>
+            <a href="#" aria-label="LinkedIn">&#x1F4E1;</a>
+            <a href="#" aria-label="WhatsApp">&#x1F4AC;</a>
+          </div>
+        </div>
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <a href="learn.html">Learn</a>
+          <a href="updates.html">Updates</a>
+          <a href="quiz.html">Weekly Quiz</a>
+          <a href="leaderboard.html">Leaderboard</a>
+          <a href="chatbot.html">Mr. DIRI</a>
+        </div>
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">FAQ</a>
+          <a href="#">Local Languages</a>
+          <a href="#">Safety Guide</a>
+        </div>
+        <div class="footer-column">
+          <h4>Team Netizens</h4>
+          <a href="#">About Us</a>
+          <a href="#">Contact</a>
+          <a href="#">IGF Hackathon</a>
+          <a href="#">MUST</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 DIRI by Team Netizens. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
