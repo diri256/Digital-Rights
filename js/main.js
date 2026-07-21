@@ -537,14 +537,112 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  const uiTranslations = {
+    en: {
+      Home: 'Home', Learn: 'Learn', Updates: 'Updates', 'Weekly Quiz': 'Weekly Quiz',
+      Leaderboard: 'Leaderboard', 'Get Started': 'Get Started', 'Log In': 'Log In',
+      'Log Out': 'Log Out', Profile: 'Profile', hi: 'Hi', language: 'Language',
+      'Welcome back': 'Welcome back', 'Join DIRI': 'Join DIRI', 'Continue with Google': 'Continue with Google',
+      'or continue with email': 'or continue with email', 'Email address': 'Email address', Password: 'Password',
+      'Forgot password?': 'Forgot password?', 'Create Account': 'Create Account', 'Full name': 'Full name',
+      'Confirm password': 'Confirm password', 'My Profile': 'My Profile', Username: 'Username',
+      'Change photo': 'Change photo', 'Save Profile': 'Save Profile', 'Your account': 'Your account'
+    },
+    lg: {
+      Home: 'Awaka', Learn: 'Yiga', Updates: 'Ebipya', 'Weekly Quiz': 'Ebibuuzo bya Wiiki',
+      Leaderboard: 'Abakulembedde', 'Get Started': 'Tandika', 'Log In': 'Yingira',
+      'Log Out': 'Fuluma', Profile: 'Ebikwata ku Ggwe', hi: 'Gyebale', language: 'Olulimi',
+      'Welcome back': 'Tukwanirizza nate', 'Join DIRI': 'Wegatte ku DIRI', 'Continue with Google': 'Weyongere ne Google',
+      'or continue with email': 'oba weyongere ne email', 'Email address': 'Endagiriro ya email', Password: 'Ekigambo kyama',
+      'Forgot password?': 'Weerabidde ekigambo kyama?', 'Create Account': 'Kola Akawunti', 'Full name': 'Amannya gonna',
+      'Confirm password': 'Kakasa ekigambo kyama', 'My Profile': 'Ebikwata ku Nze', Username: 'Erinnya ly\'okukozesa',
+      'Change photo': 'Kyusa ekifaananyi', 'Save Profile': 'Tereka Ebikwata ku Ggwe', 'Your account': 'Akawunti yo'
+    }
+  };
+
+  function defaultUsername(user) {
+    const metadata = user.user_metadata || {};
+    const candidate = metadata.full_name || metadata.name || (user.email || '').split('@')[0] || 'DIRI member';
+    return candidate.trim().slice(0, 40);
+  }
+
+  async function ensureProfile(user) {
+    const existing = await supabaseClient.from('profiles').select('username, avatar_url, language').eq('id', user.id).maybeSingle();
+    if (existing.error) throw existing.error;
+    if (existing.data) return existing.data;
+
+    const initial = { id: user.id, username: defaultUsername(user), language: 'en' };
+    const created = await supabaseClient.from('profiles').insert(initial).select('username, avatar_url, language').single();
+    if (created.error) throw created.error;
+    return created.data;
+  }
+
+  function applyLanguage(language) {
+    const selected = uiTranslations[language] ? language : 'en';
+    const dictionary = uiTranslations[selected];
+    document.documentElement.lang = selected;
+    localStorage.setItem('diri-language', selected);
+
+    const navLabels = {
+      'index.html': 'Home', 'learn.html': 'Learn', 'updates.html': 'Updates',
+      'quiz.html': 'Weekly Quiz', 'leaderboard.html': 'Leaderboard'
+    };
+    document.querySelectorAll('.header-nav a, .mobile-nav > a').forEach(function (link) {
+      const key = navLabels[link.getAttribute('href')];
+      if (key) link.textContent = dictionary[key];
+    });
+    document.querySelectorAll('h1, h2, h3, p, label, button, a, span').forEach(function (element) {
+      if (element.children.length > 0) return;
+      const original = element.dataset.i18nKey || element.textContent.trim();
+      if (!element.dataset.i18nKey && uiTranslations.en[original]) element.dataset.i18nKey = original;
+      const key = element.dataset.i18nKey;
+      if (key && dictionary[key]) element.textContent = dictionary[key];
+    });
+    document.querySelectorAll('[data-language-select]').forEach(function (select) { select.value = selected; });
+    window.dispatchEvent(new CustomEvent('diri-language-change', { detail: { language: selected } }));
+  }
+
+  function addLanguageSelector(container) {
+    if (!container || container.querySelector('[data-language-select]')) return;
+    const select = document.createElement('select');
+    select.className = 'language-select';
+    select.setAttribute('data-language-select', '');
+    select.setAttribute('aria-label', 'Language');
+    select.innerHTML = '<option value="en">English</option><option value="lg">Luganda</option>';
+    select.value = localStorage.getItem('diri-language') || 'en';
+    select.addEventListener('change', async function () {
+      applyLanguage(select.value);
+      if (supabaseClient) {
+        const sessionResult = await supabaseClient.auth.getSession();
+        const user = sessionResult.data.session && sessionResult.data.session.user;
+        if (user) await supabaseClient.from('profiles').update({ language: select.value, updated_at: new Date().toISOString() }).eq('id', user.id);
+      }
+    });
+    container.prepend(select);
+  }
+
+  addLanguageSelector(document.querySelector('.header-actions'));
+  addLanguageSelector(document.querySelector('.mobile-actions'));
+  applyLanguage(localStorage.getItem('diri-language') || 'en');
+
   async function updateAuthNavigation(session) {
     const loginLinks = document.querySelectorAll('.header-actions a[href="login.html"], .mobile-actions a[href="login.html"]');
     const registerLinks = document.querySelectorAll('.header-actions a[href="register.html"], .mobile-actions a[href="register.html"]');
 
     if (session && session.user) {
+      let profile;
+      try {
+        profile = await ensureProfile(session.user);
+      } catch (error) {
+        console.error('Unable to load the user profile.', error);
+        profile = { username: defaultUsername(session.user), language: localStorage.getItem('diri-language') || 'en' };
+      }
+      applyLanguage(profile.language || 'en');
+      const dictionary = uiTranslations[profile.language] || uiTranslations.en;
+
       registerLinks.forEach(function (link) { link.classList.add('hidden'); });
       loginLinks.forEach(function (link) {
-        link.textContent = 'Log Out';
+        link.textContent = dictionary['Log Out'];
         link.href = '#';
         link.title = 'Signed in as ' + (session.user.email || 'DIRI member');
         link.addEventListener('click', async function (e) {
@@ -553,6 +651,92 @@ document.addEventListener('DOMContentLoaded', function () {
           window.location.href = 'index.html';
         }, { once: true });
       });
+
+      document.querySelectorAll('.header-actions, .mobile-actions').forEach(function (container) {
+        if (!container.querySelector('.account-greeting')) {
+          const greeting = document.createElement('span');
+          greeting.className = 'account-greeting';
+          greeting.textContent = dictionary.hi + ', ' + profile.username;
+          container.prepend(greeting);
+        }
+        if (!container.querySelector('a[href="profile.html"]')) {
+          const profileLink = document.createElement('a');
+          profileLink.href = 'profile.html';
+          profileLink.className = 'btn btn-ghost btn-sm';
+          profileLink.textContent = dictionary.Profile;
+          const logoutLink = container.querySelector('a[href="#"]');
+          container.insertBefore(profileLink, logoutLink || null);
+        }
+      });
+
+      const profileForm = document.querySelector('[data-profile-form]');
+      if (profileForm && !profileForm.dataset.ready) {
+        profileForm.dataset.ready = 'true';
+        const usernameInput = document.getElementById('profile-username');
+        const languageInput = document.getElementById('profile-language');
+        const avatarInput = document.getElementById('avatar-input');
+        const avatar = document.querySelector('[data-profile-avatar]');
+        const email = document.querySelector('[data-profile-email]');
+        const message = document.querySelector('[data-profile-message]');
+        usernameInput.value = profile.username;
+        languageInput.value = profile.language || 'en';
+        if (profile.avatar_url) avatar.src = profile.avatar_url;
+        if (email) email.textContent = session.user.email || '';
+
+        avatarInput.addEventListener('change', async function () {
+          const file = avatarInput.files && avatarInput.files[0];
+          if (!file) return;
+          if (!file.type.startsWith('image/') || file.size > 5 * 1024 * 1024) {
+            message.textContent = 'Choose a JPG, PNG, WEBP or GIF image smaller than 5 MB.';
+            message.className = 'auth-message error';
+            return;
+          }
+          const extension = (file.name.split('.').pop() || 'jpg').toLowerCase();
+          const path = session.user.id + '/avatar.' + extension;
+          message.textContent = 'Uploading photo...';
+          message.className = 'auth-message info';
+          const upload = await supabaseClient.storage.from('avatars').upload(path, file, { upsert: true, contentType: file.type });
+          if (upload.error) {
+            message.textContent = upload.error.message;
+            message.className = 'auth-message error';
+            return;
+          }
+          const publicUrl = supabaseClient.storage.from('avatars').getPublicUrl(path).data.publicUrl + '?v=' + Date.now();
+          const saved = await supabaseClient.from('profiles').update({ avatar_url: publicUrl, updated_at: new Date().toISOString() }).eq('id', session.user.id);
+          if (saved.error) {
+            message.textContent = saved.error.message;
+            message.className = 'auth-message error';
+            return;
+          }
+          avatar.src = publicUrl;
+          message.textContent = 'Profile photo updated.';
+          message.className = 'auth-message success';
+        });
+
+        profileForm.addEventListener('submit', async function (event) {
+          event.preventDefault();
+          const username = usernameInput.value.trim();
+          if (username.length < 2) return;
+          const submit = profileForm.querySelector('button[type="submit"]');
+          submit.disabled = true;
+          const saved = await supabaseClient.from('profiles').update({
+            username: username,
+            language: languageInput.value,
+            updated_at: new Date().toISOString()
+          }).eq('id', session.user.id);
+          submit.disabled = false;
+          message.textContent = saved.error ? saved.error.message : 'Profile saved.';
+          message.className = 'auth-message ' + (saved.error ? 'error' : 'success');
+          if (!saved.error) {
+            applyLanguage(languageInput.value);
+            document.querySelectorAll('.account-greeting').forEach(function (greeting) {
+              greeting.textContent = (uiTranslations[languageInput.value] || uiTranslations.en).hi + ', ' + username;
+            });
+          }
+        });
+      }
+    } else if (document.querySelector('[data-profile-form]')) {
+      window.location.href = 'login.html';
     }
   }
 
