@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Manage your DIRI profile and language preferences.">
+  <title>My Profile | DIRI</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+        <span>DIRI</span>
+      </a>
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="learn.html">Learn</a>
+        <a href="updates.html">Updates</a>
+        <a href="quiz.html">Weekly Quiz</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="chatbot.html">Mr. DIRI</a>
+      </nav>
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm mobile-only">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+        <div class="menu-toggle" role="button" aria-label="Toggle navigation menu" tabindex="0">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="mobile-overlay"></div>
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="updates.html">Updates</a>
+      <a href="quiz.html">Weekly Quiz</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="chatbot.html">Mr. DIRI</a>
+      <div class="mobile-actions">
+        <a href="login.html" class="btn btn-ghost btn-full">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-full">Get Started</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="profile-page">
+    <section class="profile-card animate-in" aria-labelledby="profile-title">
+      <div class="profile-heading">
+        <div class="profile-avatar-wrap">
+          <img class="profile-avatar" data-profile-avatar src="assets/logo.png" alt="Your profile picture">
+          <label class="profile-photo-button" for="avatar-input">Change photo</label>
+          <input id="avatar-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+        </div>
+        <div>
+          <p class="section-tag">Your account</p>
+          <h1 id="profile-title" class="heading-md">My Profile</h1>
+          <p class="body-sm" data-profile-email></p>
+        </div>
+      </div>
+
+      <form class="profile-form" data-profile-form>
+        <div class="auth-message" data-profile-message role="status" aria-live="polite"></div>
+        <div class="form-group">
+          <label for="profile-username">Username</label>
+          <input id="profile-username" class="form-input" type="text" minlength="2" maxlength="40" required autocomplete="nickname">
+          <div class="form-error"></div>
+        </div>
+        <div class="form-group">
+          <label for="profile-language">Language</label>
+          <select id="profile-language" class="form-input">
+            <option value="en">English</option>
+            <option value="lg">Luganda</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg">Save Profile</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
