@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — DIRI Digital Rights</title>
+  <meta name="description" content="DIRI admin panel for managing quiz questions and weekly challenges.">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+        <span>DIRI</span>
+      </a>
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="admin.html" class="active">Admin</a>
+      </nav>
+      <div class="header-actions">
+        <button class="btn btn-ghost btn-sm" id="admin-logout-btn" style="display:none;">Log Out</button>
+        <div class="menu-toggle" role="button" aria-label="Toggle navigation menu" tabindex="0">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="mobile-overlay"></div>
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="admin.html" class="active">Admin</a>
+      <div class="mobile-actions">
+        <button class="btn btn-ghost btn-full" id="admin-logout-btn-mobile" style="display:none;">Log Out</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ADMIN LAYOUT -->
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar" role="navigation" aria-label="Admin navigation">
+      <div class="admin-sidebar-header">
+        <span class="admin-sidebar-label">Admin Panel</span>
+      </div>
+      <nav class="admin-tabs">
+        <button class="admin-tab active" data-tab="dashboard">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </button>
+        <button class="admin-tab" data-tab="questions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Questions
+        </button>
+        <button class="admin-tab" data-tab="weeks">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Weeks
+        </button>
+        <button class="admin-tab" data-tab="access" id="access-tab" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Access
+        </button>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <span class="admin-role-badge" id="admin-role-badge">Loading...</span>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="admin-main">
+
+      <!-- ========== DASHBOARD TAB ========== -->
+      <section class="admin-panel active" id="panel-dashboard">
+        <div class="admin-panel-header">
+          <h1>Dashboard</h1>
+          <p class="body-sm">Overview of your quiz content and platform activity.</p>
+        </div>
+        <div class="admin-stats-grid" id="dashboard-stats">
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-total-questions">0</div>
+            <div class="admin-stat-label">Total Questions</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-active-questions">0</div>
+            <div class="admin-stat-label">Active Questions</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-total-weeks">0</div>
+            <div class="admin-stat-label">Total Weeks</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-published-weeks">0</div>
+            <div class="admin-stat-label">Published Weeks</div>
+          </div>
+        </div>
+        <div style="margin-top: var(--space-8);">
+          <h2 class="heading-sm" style="margin-bottom: var(--space-4);">Quick actions</h2>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-3);">
+            <button class="btn btn-primary" data-tab-target="questions">+ New Question</button>
+            <button class="btn btn-secondary" data-tab-target="weeks">+ New Week</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== QUESTIONS TAB ========== -->
+      <section class="admin-panel" id="panel-questions">
+        <div class="admin-panel-header">
+          <h1>Question Bank</h1>
+          <p class="body-sm">Create, edit, and manage quiz questions for all weeks.</p>
+        </div>
+
+        <div class="admin-toolbar">
+          <div class="admin-search">
+            <input type="text" id="question-search" placeholder="Search questions..." class="form-input">
+          </div>
+          <div class="admin-filters">
+            <select id="question-category-filter" class="form-input" style="width:auto;">
+              <option value="all">All Categories</option>
+              <option value="lesson">Lesson</option>
+              <option value="current_issue">Current Issue</option>
+              <option value="scenario">Scenario</option>
+              <option value="hidden_check">Hidden Check</option>
+            </select>
+            <select id="question-status-filter" class="form-input" style="width:auto;">
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="btn-new-question">+ New Question</button>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table" id="questions-table">
+            <thead>
+              <tr>
+                <th style="width:40px;">#</th>
+                <th>Question</th>
+                <th style="width:120px;">Category</th>
+                <th style="width:100px;">Topic</th>
+                <th style="width:80px;">Status</th>
+                <th style="width:100px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="questions-tbody">
+              <tr><td colspan="6" class="text-center body-sm" style="padding: var(--space-10);">Loading questions...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== WEEKS TAB ========== -->
+      <section class="admin-panel" id="panel-weeks">
+        <div class="admin-panel-header">
+          <h1>Weekly Quizzes</h1>
+          <p class="body-sm">Assemble and schedule weekly quiz challenges from the question bank.</p>
+        </div>
+
+        <div class="admin-toolbar">
+          <button class="btn btn-primary" id="btn-new-week">+ New Week</button>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table" id="weeks-table">
+            <thead>
+              <tr>
+                <th style="width:40px;">#</th>
+                <th>Week</th>
+                <th>Title</th>
+                <th style="width:100px;">Questions</th>
+                <th style="width:100px;">Timer</th>
+                <th style="width:100px;">Status</th>
+                <th style="width:100px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="weeks-tbody">
+              <tr><td colspan="7" class="text-center body-sm" style="padding: var(--space-10);">Loading weeks...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== ACCESS TAB ========== -->
+      <section class="admin-panel" id="panel-access">
+        <div class="admin-panel-header">
+          <h1>Access Management</h1>
+          <p class="body-sm">Manage admin and policymaker roles for users on the platform.</p>
+        </div>
+
+        <div class="admin-toolbar">
+          <div class="admin-search">
+            <input type="text" id="access-search" placeholder="Search users by name or email..." class="form-input">
+          </div>
+        </div>
+
+        <div class="admin-table-container">
+          <table class="admin-table" id="access-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th style="width:120px;">Email</th>
+                <th style="width:140px;">Current Role</th>
+                <th style="width:180px;">Change Role</th>
+              </tr>
+            </thead>
+            <tbody id="access-tbody">
+              <tr><td colspan="4" class="text-center body-sm" style="padding: var(--space-10);">Loading users...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ========== QUESTION MODAL ========== -->
+  <div class="admin-modal-overlay" id="question-modal">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
+        <h2 id="question-modal-title">New Question</h2>
+        <button class="admin-modal-close" id="question-modal-close">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <input type="hidden" id="question-id" value="">
+
+        <div class="form-group">
+          <label for="question-text">Question</label>
+          <textarea id="question-text" class="form-input" rows="3" placeholder="Enter the quiz question..." required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Options</label>
+          <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span class="option-letter" style="background:var(--color-teal);color:white;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-weight:bold;flex-shrink:0;">A</span>
+              <input type="text" id="option-0" class="form-input" placeholder="Option A" required>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span class="option-letter" style="background:var(--color-teal);color:white;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-weight:bold;flex-shrink:0;">B</span>
+              <input type="text" id="option-1" class="form-input" placeholder="Option B" required>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span class="option-letter" style="background:var(--color-teal);color:white;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-weight:bold;flex-shrink:0;">C</span>
+              <input type="text" id="option-2" class="form-input" placeholder="Option C" required>
+            </div>
+            <div style="display: flex; align-items: center; gap: var(--space-3);">
+              <span class="option-letter" style="background:var(--color-teal);color:white;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);font-weight:bold;flex-shrink:0;">D</span>
+              <input type="text" id="option-3" class="form-input" placeholder="Option D" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="correct-answer">Correct Answer</label>
+          <select id="correct-answer" class="form-input" style="width:auto;">
+            <option value="0">A</option>
+            <option value="1">B</option>
+            <option value="2">C</option>
+            <option value="3">D</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+          <div class="form-group">
+            <label for="question-category">Category</label>
+            <select id="question-category" class="form-input">
+              <option value="lesson">Lesson</option>
+              <option value="current_issue">Current Issue</option>
+              <option value="scenario">Scenario</option>
+              <option value="hidden_check">Hidden Check</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="question-topic">Topic</label>
+            <input type="text" id="question-topic" class="form-input" placeholder="e.g. Data Protection">
+          </div>
+        </div>
+
+        <div class="admin-modal-message" id="question-modal-message"></div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn btn-ghost" id="question-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="question-modal-save">Save Question</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== WEEK MODAL ========== -->
+  <div class="admin-modal-overlay" id="week-modal">
+    <div class="admin-modal admin-modal-lg">
+      <div class="admin-modal-header">
+        <h2 id="week-modal-title">New Week</h2>
+        <button class="admin-modal-close" id="week-modal-close">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <input type="hidden" id="week-id" value="">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+          <div class="form-group">
+            <label for="week-number">Week Number</label>
+            <input type="number" id="week-number" class="form-input" min="1" placeholder="e.g. 13" required>
+          </div>
+          <div class="form-group">
+            <label for="week-timer">Time Limit (minutes)</label>
+            <input type="number" id="week-timer" class="form-input" value="15" min="1" max="60">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="week-title">Title</label>
+          <input type="text" id="week-title" class="form-input" placeholder="e.g. Week 13: Digital Rights & Safety" required>
+        </div>
+
+        <div class="form-group">
+          <label for="week-description">Description</label>
+          <textarea id="week-description" class="form-input" rows="2" placeholder="Brief description of this week's quiz..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="week-questions">Select Questions (pick 10)</label>
+          <div class="admin-week-questions" id="week-questions-container">
+            <p class="body-sm" style="color: var(--color-dark-secondary);">Loading available questions...</p>
+          </div>
+          <div class="body-sm" style="margin-top: var(--space-2); color: var(--color-dark-secondary);">
+            Selected: <span id="week-question-count">0</span> / 10 questions
+          </div>
+        </div>
+
+        <div class="admin-modal-message" id="week-modal-message"></div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn btn-ghost" id="week-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="week-modal-save">Save Week</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== DELETE CONFIRM MODAL ========== -->
+  <div class="admin-modal-overlay" id="confirm-modal">
+    <div class="admin-modal" style="max-width: 400px;">
+      <div class="admin-modal-header">
+        <h2>Confirm Delete</h2>
+        <button class="admin-modal-close" id="confirm-modal-close">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <p class="body-md" id="confirm-message">Are you sure you want to delete this item? This action cannot be undone.</p>
+        <div class="admin-modal-message" id="confirm-modal-message"></div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn btn-ghost" id="confirm-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" style="background-color: var(--color-error);" id="confirm-modal-confirm">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

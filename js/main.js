@@ -661,6 +661,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
+      // Add admin link for admins and policymakers
+      const navRole = profile.role || 'user';
+      if (navRole === 'admin' || navRole === 'policymaker') {
+        document.querySelectorAll('.header-nav, .mobile-nav').forEach(function (nav) {
+          const existingAdminLink = nav.querySelector('a[href="admin.html"]');
+          if (!existingAdminLink) {
+            const adminLink = document.createElement('a');
+            adminLink.href = 'admin.html';
+            adminLink.textContent = 'Admin';
+            // Insert before the last link or at end
+            const logoutLink = nav.querySelector('a[href="chatbot.html"]');
+            if (logoutLink && logoutLink.parentNode === nav) {
+              logoutLink.parentNode.insertBefore(adminLink, logoutLink.nextSibling);
+            } else {
+              nav.appendChild(adminLink);
+            }
+          }
+        });
+      } else {
+        document.querySelectorAll('.header-nav a[href="admin.html"], .mobile-nav a[href="admin.html"]').forEach(function (link) {
+          link.remove();
+        });
+      }
+
       const profileForm = document.querySelector('[data-profile-form]');
       if (profileForm && !profileForm.dataset.ready) {
         profileForm.dataset.ready = 'true';
