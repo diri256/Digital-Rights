@@ -1564,10 +1564,51 @@ h1, h2, h3, h4, h5, h6 {
   gap: var(--space-5);
 }
 
+.profile-logout {
+  border: 1px solid var(--color-border);
+  color: #b42318;
+}
+
 @media (max-width: 640px) {
   .profile-card { padding: var(--space-6); }
   .profile-heading { flex-direction: column; text-align: center; }
-  .account-greeting { display: none; }
+}
+
+@media (max-width: 767px) {
+  .header-inner {
+    padding-inline: var(--space-4);
+  }
+
+  .header-logo img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .header-actions {
+    flex-shrink: 0;
+    gap: var(--space-1);
+  }
+
+  .header-actions > a,
+  .header-actions > .language-select,
+  .header-actions > .account-greeting {
+    display: none;
+  }
+
+  .menu-toggle {
+    display: flex;
+    flex: 0 0 40px;
+  }
+
+  .mobile-actions .language-select {
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-actions .account-greeting {
+    display: block;
+    padding: var(--space-2) var(--space-1);
+  }
 }
 
 .form-checkbox {
@@ -2107,4 +2148,14 @@ h1, h2, h3, h4, h5, h6 {
 ::selection {
   background-color: rgba(11, 61, 145, 0.15);
   color: var(--color-navy);
+}
+
+/* Keep the compact menu on tablets where the full account header is too wide. */
+@media (min-width: 768px) and (max-width: 1100px) {
+  .header-nav { display: none; }
+  .menu-toggle { display: flex; flex: 0 0 40px; }
+  .header-actions > a,
+  .header-actions > .language-select,
+  .header-actions > .account-greeting { display: none; }
+  .mobile-actions .language-select { display: block; width: 100%; }
 }
