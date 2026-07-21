@@ -310,62 +310,163 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // =============================================
-  // 10. FORM VALIDATION (Auth Pages)
+  // 10. SUPABASE AUTHENTICATION
   // =============================================
+  const supabaseClient = window.diriSupabase;
+  const recoveryForm = document.querySelector('.auth-form');
+  const isPasswordRecovery = new URLSearchParams(window.location.search).get('reset') === '1';
+
+  if (recoveryForm && isPasswordRecovery && document.getElementById('email')) {
+    const heading = document.querySelector('.auth-card .heading-sm');
+    const subtitle = document.querySelector('.auth-card .auth-subtitle');
+    if (heading) heading.textContent = 'Choose a new password';
+    if (subtitle) subtitle.textContent = 'Enter a new password for your DIRI account';
+    recoveryForm.innerHTML =
+      '<div class="form-group">' +
+        '<label for="new-password">New password</label>' +
+        '<input type="password" id="new-password" class="form-input" placeholder="At least 8 characters" required>' +
+        '<div class="form-error"></div>' +
+      '</div>' +
+      '<div class="form-group">' +
+        '<label for="confirm-new-password">Confirm new password</label>' +
+        '<input type="password" id="confirm-new-password" class="form-input" placeholder="Repeat your new password" required data-match="new-password">' +
+        '<div class="form-error"></div>' +
+      '</div>' +
+      '<button type="submit" class="btn btn-primary btn-full btn-lg">Update Password</button>';
+  }
+
   const authForms = document.querySelectorAll('.auth-form');
 
-  authForms.forEach(function (form) {
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      let isValid = true;
+  function getAuthMessage(form) {
+    let message = form.querySelector('.auth-message');
+    if (!message) {
+      message = document.createElement('div');
+      message.className = 'auth-message';
+      message.setAttribute('role', 'status');
+      message.setAttribute('aria-live', 'polite');
+      form.prepend(message);
+    }
+    return message;
+  }
 
-      const requiredInputs = form.querySelectorAll('[required]');
-      requiredInputs.forEach(function (input) {
-        const errorEl = input.closest('.form-group').querySelector('.form-error');
-        if (!input.value.trim()) {
+  function showAuthMessage(form, text, type) {
+    const message = getAuthMessage(form);
+    message.textContent = text;
+    message.className = 'auth-message ' + (type || 'info');
+  }
+
+  function setAuthLoading(form, loading, text) {
+    const submitBtn = form.querySelector('button[type="submit"]');
+    if (!submitBtn) return;
+    if (!submitBtn.dataset.originalText) {
+      submitBtn.dataset.originalText = submitBtn.textContent;
+    }
+    submitBtn.textContent = loading ? (text || 'Processing...') : submitBtn.dataset.originalText;
+    submitBtn.disabled = loading;
+  }
+
+  function pageUrl(page) {
+    return new URL(page, window.location.href).href;
+  }
+
+  function validateAuthForm(form) {
+    let isValid = true;
+    const requiredInputs = form.querySelectorAll('[required]');
+
+    requiredInputs.forEach(function (input) {
+      const formGroup = input.closest('.form-group');
+      const errorEl = formGroup ? formGroup.querySelector('.form-error') : null;
+      const isEmpty = input.type === 'checkbox' ? !input.checked : !input.value.trim();
+
+      if (isEmpty) {
+        input.classList.add('error');
+        if (errorEl) errorEl.textContent = input.type === 'checkbox' ? 'Please accept the terms to continue' : 'This field is required';
+        isValid = false;
+      } else {
+        input.classList.remove('error');
+        if (errorEl) errorEl.textContent = '';
+      }
+
+      if (input.type === 'email' && input.value.trim()) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(input.value.trim())) {
           input.classList.add('error');
-          if (errorEl) errorEl.textContent = 'This field is required';
+          if (errorEl) errorEl.textContent = 'Please enter a valid email';
           isValid = false;
+        }
+      }
+
+      if ((input.id === 'reg-password' || input.id === 'new-password') && input.value &&
+          (input.value.length < 8 || !/[A-Za-z]/.test(input.value) || !/[0-9]/.test(input.value))) {
+        input.classList.add('error');
+        if (errorEl) errorEl.textContent = 'Use at least 8 characters with a number and a letter';
+        isValid = false;
+      }
+
+      if (input.getAttribute('data-match')) {
+        const matchInput = document.getElementById(input.getAttribute('data-match'));
+        if (matchInput && input.value !== matchInput.value) {
+          input.classList.add('error');
+          if (errorEl) errorEl.textContent = 'Passwords do not match';
+          isValid = false;
+        }
+      }
+    });
+
+    return isValid;
+  }
+
+  authForms.forEach(function (form) {
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!validateAuthForm(form)) return;
+      if (!supabaseClient) {
+        showAuthMessage(form, 'Authentication is temporarily unavailable. Please refresh and try again.', 'error');
+        return;
+      }
+
+      setAuthLoading(form, true);
+      showAuthMessage(form, '', 'info');
+
+      try {
+        if (document.getElementById('new-password')) {
+          const result = await supabaseClient.auth.updateUser({
+            password: document.getElementById('new-password').value
+          });
+          if (result.error) throw result.error;
+          showAuthMessage(form, 'Your password has been updated. Redirecting…', 'success');
+          setTimeout(function () { window.location.href = 'index.html'; }, 1000);
+        } else if (document.getElementById('reg-email')) {
+          const email = document.getElementById('reg-email').value.trim();
+          const password = document.getElementById('reg-password').value;
+          const fullName = document.getElementById('fullname').value.trim();
+          const result = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+              data: { full_name: fullName },
+              emailRedirectTo: pageUrl('index.html')
+            }
+          });
+
+          if (result.error) throw result.error;
+          if (result.data.session) {
+            window.location.href = 'index.html';
+          } else {
+            form.reset();
+            showAuthMessage(form, 'Account created. Check your email to confirm your address, then log in.', 'success');
+          }
         } else {
-          input.classList.remove('error');
-          if (errorEl) errorEl.textContent = '';
-        }
-
-        // Email validation
-        if (input.type === 'email' && input.value.trim()) {
-          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          if (!emailRegex.test(input.value.trim())) {
-            input.classList.add('error');
-            if (errorEl) errorEl.textContent = 'Please enter a valid email';
-            isValid = false;
-          }
-        }
-
-        // Password match
-        if (input.getAttribute('data-match')) {
-          const matchId = input.getAttribute('data-match');
-          const matchInput = document.getElementById(matchId);
-          if (matchInput && input.value !== matchInput.value) {
-            input.classList.add('error');
-            if (errorEl) errorEl.textContent = 'Passwords do not match';
-            isValid = false;
-          }
-        }
-      });
-
-      if (isValid) {
-        // Simulate submission
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Processing...';
-        submitBtn.disabled = true;
-
-        setTimeout(function () {
-          submitBtn.textContent = originalText;
-          submitBtn.disabled = false;
-          // Show success toast or redirect
+          const email = document.getElementById('email').value.trim();
+          const password = document.getElementById('password').value;
+          const result = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+          if (result.error) throw result.error;
           window.location.href = 'index.html';
-        }, 1500);
+        }
+      } catch (error) {
+        showAuthMessage(form, error.message || 'Authentication failed. Please try again.', 'error');
+      } finally {
+        setAuthLoading(form, false);
       }
     });
 
@@ -378,6 +479,91 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
+
+  document.querySelectorAll('.google-auth').forEach(function (button) {
+    button.addEventListener('click', async function () {
+      const card = button.closest('.auth-card');
+      const form = card ? card.querySelector('.auth-form') : null;
+      if (!form || !supabaseClient) {
+        if (form) showAuthMessage(form, 'Google sign-in is temporarily unavailable.', 'error');
+        return;
+      }
+
+      button.disabled = true;
+      try {
+        const result = await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: pageUrl('index.html'),
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'select_account'
+            }
+          }
+        });
+        if (result.error) throw result.error;
+      } catch (error) {
+        showAuthMessage(form, error.message || 'Google sign-in could not be started.', 'error');
+        button.disabled = false;
+      }
+    });
+  });
+
+  const forgotPasswordLink = document.querySelector('[data-forgot-password]');
+  if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', async function (e) {
+      e.preventDefault();
+      const form = forgotPasswordLink.closest('.auth-form');
+      const emailInput = document.getElementById('email');
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        emailInput.focus();
+        showAuthMessage(form, 'Enter your email address first.', 'error');
+        return;
+      }
+
+      if (!supabaseClient) {
+        showAuthMessage(form, 'Authentication is temporarily unavailable.', 'error');
+        return;
+      }
+
+      const result = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: pageUrl('login.html?reset=1')
+      });
+      showAuthMessage(form,
+        result.error ? result.error.message : 'Password reset email sent. Check your inbox.',
+        result.error ? 'error' : 'success');
+    });
+  }
+
+  async function updateAuthNavigation(session) {
+    const loginLinks = document.querySelectorAll('.header-actions a[href="login.html"], .mobile-actions a[href="login.html"]');
+    const registerLinks = document.querySelectorAll('.header-actions a[href="register.html"], .mobile-actions a[href="register.html"]');
+
+    if (session && session.user) {
+      registerLinks.forEach(function (link) { link.classList.add('hidden'); });
+      loginLinks.forEach(function (link) {
+        link.textContent = 'Log Out';
+        link.href = '#';
+        link.title = 'Signed in as ' + (session.user.email || 'DIRI member');
+        link.addEventListener('click', async function (e) {
+          e.preventDefault();
+          await supabaseClient.auth.signOut();
+          window.location.href = 'index.html';
+        }, { once: true });
+      });
+    }
+  }
+
+  if (supabaseClient) {
+    supabaseClient.auth.getSession().then(function (result) {
+      updateAuthNavigation(result.data.session);
+    });
+    supabaseClient.auth.onAuthStateChange(function (_event, session) {
+      updateAuthNavigation(session);
+    });
+  }
 
   // =============================================
   // 11. LEADERBOARD FILTER
