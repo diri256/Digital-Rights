@@ -642,14 +642,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       registerLinks.forEach(function (link) { link.classList.add('hidden'); });
       loginLinks.forEach(function (link) {
-        link.textContent = dictionary['Log Out'];
-        link.href = '#';
-        link.title = 'Signed in as ' + (session.user.email || 'DIRI member');
-        link.addEventListener('click', async function (e) {
-          e.preventDefault();
-          await supabaseClient.auth.signOut();
-          window.location.href = 'index.html';
-        }, { once: true });
+        link.classList.add('hidden');
       });
 
       document.querySelectorAll('.header-actions, .mobile-actions').forEach(function (container) {
@@ -664,8 +657,7 @@ document.addEventListener('DOMContentLoaded', function () {
           profileLink.href = 'profile.html';
           profileLink.className = 'btn btn-ghost btn-sm';
           profileLink.textContent = dictionary.Profile;
-          const logoutLink = container.querySelector('a[href="#"]');
-          container.insertBefore(profileLink, logoutLink || null);
+          container.appendChild(profileLink);
         }
       });
 
@@ -678,10 +670,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const avatar = document.querySelector('[data-profile-avatar]');
         const email = document.querySelector('[data-profile-email]');
         const message = document.querySelector('[data-profile-message]');
+        const logoutButton = document.querySelector('[data-profile-logout]');
         usernameInput.value = profile.username;
         languageInput.value = profile.language || 'en';
         if (profile.avatar_url) avatar.src = profile.avatar_url;
         if (email) email.textContent = session.user.email || '';
+
+        if (logoutButton) {
+          logoutButton.addEventListener('click', async function () {
+            logoutButton.disabled = true;
+            await supabaseClient.auth.signOut();
+            window.location.href = 'index.html';
+          });
+        }
 
         avatarInput.addEventListener('change', async function () {
           const file = avatarInput.files && avatarInput.files[0];
