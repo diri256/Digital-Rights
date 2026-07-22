@@ -195,7 +195,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const chatHistory = [];
 
-    function addLiveMessage(text, sender, extraClass) {
+    function cleanChatText(text) {
+      return String(text || '')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/^\s*[-*]\s+/gm, '• ');
+    }
+
+    function addLiveMessage(text, sender, extraClass, sources) {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'chat-message ' + sender + (extraClass ? ' ' + extraClass : '');
       const avatar = document.createElement('div');
@@ -204,7 +211,23 @@ document.addEventListener('DOMContentLoaded', function () {
       const bubbleWrapper = document.createElement('div');
       const bubble = document.createElement('div');
       bubble.className = 'msg-bubble';
-      bubble.textContent = text;
+      bubble.textContent = cleanChatText(text);
+      if (sender === 'bot' && Array.isArray(sources) && sources.length) {
+        const sourceList = document.createElement('div');
+        sourceList.className = 'msg-sources';
+        const label = document.createElement('span');
+        label.textContent = 'Sources: ';
+        sourceList.appendChild(label);
+        sources.forEach(function (source, index) {
+          const link = document.createElement('a');
+          link.href = source.url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = source.title || ('Source ' + (index + 1));
+          sourceList.appendChild(link);
+        });
+        bubble.appendChild(sourceList);
+      }
       const time = document.createElement('div');
       time.className = 'msg-time';
       const now = new Date();
@@ -239,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = await response.json().catch(function () { return {}; });
         if (!response.ok) throw new Error(data.error || 'Mr. DIRI could not answer right now.');
         typingMessage.remove();
-        addLiveMessage(data.reply, 'bot');
+        addLiveMessage(data.reply, 'bot', '', data.sources);
         chatHistory.push({ role: 'user', content: text }, { role: 'assistant', content: data.reply });
         if (chatHistory.length > 10) chatHistory.splice(0, chatHistory.length - 10);
       } catch (error) {
