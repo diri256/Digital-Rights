@@ -612,6 +612,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  animation: mr-diri-gentle-bounce 4s ease-in-out infinite;
 }
 
 .mr-diri-fab-label {
@@ -649,11 +650,29 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 10px 30px rgba(11, 61, 145, 0.38);
 }
 
+.mr-diri-fab:hover,
+.mr-diri-fab:focus-visible {
+  animation-play-state: paused;
+}
+
+@keyframes mr-diri-gentle-bounce {
+  0%, 12%, 24%, 100% { transform: translateY(0); }
+  6%, 18% { transform: translateY(-7px); }
+}
+
 @media (max-width: 640px) {
   .hero-actions .btn { width: 100%; }
   .mr-diri-fab { right: 16px; bottom: 16px; }
-  .mr-diri-fab-label { display: none; }
+  .mr-diri-fab-label {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--font-size-xs);
+  }
   .mr-diri-fab-icon { width: 58px; height: 58px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mr-diri-fab { animation: none; }
 }
 
 .hero-visual {
