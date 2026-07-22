@@ -1294,6 +1294,17 @@ h1, h2, h3, h4, h5, h6 {
   border-top-right-radius: 2px;
 }
 
+.chat-message.typing .msg-bubble {
+  color: var(--color-dark-secondary);
+  font-style: italic;
+}
+
+.chat-message.error .msg-bubble {
+  border-color: #f0a9a9;
+  background: #fff5f5;
+  color: #9f1d1d;
+}
+
 .chat-message .msg-time {
   font-size: var(--font-size-xs);
   color: var(--color-dark-secondary);
