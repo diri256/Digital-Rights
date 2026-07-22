@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }, delay);
     }
 
-    function handleChatSubmit(e) {
+    function handleDemoChatSubmit(e) {
       if (e) e.preventDefault();
       const text = chatInput.value.trim();
       if (!text) return;
@@ -193,11 +193,89 @@ document.addEventListener('DOMContentLoaded', function () {
       addMessage(randomReply, 'bot', 800 + Math.random() * 1000);
     }
 
-    chatForm.addEventListener('submit', handleChatSubmit);
+    const chatHistory = [];
 
-    if (chatSendBtn) {
-      chatSendBtn.addEventListener('click', handleChatSubmit);
+    function cleanChatText(text) {
+      return String(text || '')
+        .replace(/\*\*(.*?)\*\*/g, '$1')
+        .replace(/^#{1,6}\s+/gm, '')
+        .replace(/^\s*[-*]\s+/gm, '• ');
     }
+
+    function addLiveMessage(text, sender, extraClass, sources) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'chat-message ' + sender + (extraClass ? ' ' + extraClass : '');
+      const avatar = document.createElement('div');
+      avatar.className = 'msg-avatar';
+      avatar.textContent = sender === 'bot' ? 'D' : 'U';
+      const bubbleWrapper = document.createElement('div');
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.textContent = cleanChatText(text);
+      if (sender === 'bot' && Array.isArray(sources) && sources.length) {
+        const sourceList = document.createElement('div');
+        sourceList.className = 'msg-sources';
+        const label = document.createElement('span');
+        label.textContent = 'Sources: ';
+        sourceList.appendChild(label);
+        sources.forEach(function (source, index) {
+          const link = document.createElement('a');
+          link.href = source.url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = source.title || ('Source ' + (index + 1));
+          sourceList.appendChild(link);
+        });
+        bubble.appendChild(sourceList);
+      }
+      const time = document.createElement('div');
+      time.className = 'msg-time';
+      const now = new Date();
+      time.textContent = now.getHours().toString().padStart(2, '0') + ':' +
+                         now.getMinutes().toString().padStart(2, '0');
+      bubbleWrapper.appendChild(bubble);
+      bubbleWrapper.appendChild(time);
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(bubbleWrapper);
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return messageDiv;
+    }
+
+    async function handleChatSubmit(e) {
+      if (e) e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text || chatSendBtn.disabled) return;
+
+      addLiveMessage(text, 'user');
+      chatInput.value = '';
+      chatSendBtn.disabled = true;
+      chatInput.disabled = true;
+      const typingMessage = addLiveMessage('Mr. DIRI is thinking...', 'bot', 'typing');
+
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history: chatHistory.slice(-10) })
+        });
+        const data = await response.json().catch(function () { return {}; });
+        if (!response.ok) throw new Error(data.error || 'Mr. DIRI could not answer right now.');
+        typingMessage.remove();
+        addLiveMessage(data.reply, 'bot', '', data.sources);
+        chatHistory.push({ role: 'user', content: text }, { role: 'assistant', content: data.reply });
+        if (chatHistory.length > 10) chatHistory.splice(0, chatHistory.length - 10);
+      } catch (error) {
+        typingMessage.remove();
+        addLiveMessage(error.message || 'Mr. DIRI is temporarily unavailable. Please try again.', 'bot', 'error');
+      } finally {
+        chatSendBtn.disabled = false;
+        chatInput.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    chatForm.addEventListener('submit', handleChatSubmit);
 
     // Enable send on enter key
     if (chatInput) {
