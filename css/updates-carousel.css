@@ -88,8 +88,7 @@
 /* ---------- Featured carousel controls ---------- */
 .carousel-arrow {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  top: var(--space-5);
   z-index: 3;
   width: 44px;
   height: 44px;
@@ -119,8 +118,13 @@
   outline-offset: 2px;
 }
 
+/* Paired together in the top-right corner at every breakpoint.
+   The featured content is bottom-anchored, so keeping both
+   arrows up top (rather than one on each side, vertically
+   centered) means they never sit over the title/excerpt, no
+   matter how tall that text block gets or how wide the slide is. */
 .carousel-arrow--prev {
-  left: var(--space-5);
+  right: calc(44px + var(--space-2) + var(--space-5));
 }
 
 .carousel-arrow--next {
@@ -311,12 +315,13 @@
   }
 
   .carousel-arrow {
+    top: var(--space-4);
     width: 36px;
     height: 36px;
   }
 
   .carousel-arrow--prev {
-    left: var(--space-3);
+    right: calc(36px + var(--space-2) + var(--space-3));
   }
 
   .carousel-arrow--next {
@@ -349,6 +354,18 @@
 
   .featured-title {
     font-size: 2rem;
+  }
+
+  .carousel-arrow {
+    top: var(--space-6);
+  }
+
+  .carousel-arrow--prev {
+    right: calc(44px + var(--space-2) + var(--space-6));
+  }
+
+  .carousel-arrow--next {
+    right: var(--space-6);
   }
 
   .rail-card {
