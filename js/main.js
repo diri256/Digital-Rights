@@ -598,31 +598,8 @@ document.addEventListener('DOMContentLoaded', function () {
       const key = element.dataset.i18nKey;
       if (key && dictionary[key]) element.textContent = dictionary[key];
     });
-    document.querySelectorAll('[data-language-select]').forEach(function (select) { select.value = selected; });
     window.dispatchEvent(new CustomEvent('diri-language-change', { detail: { language: selected } }));
   }
-
-  function addLanguageSelector(container) {
-    if (!container || container.querySelector('[data-language-select]')) return;
-    const select = document.createElement('select');
-    select.className = 'language-select';
-    select.setAttribute('data-language-select', '');
-    select.setAttribute('aria-label', 'Language');
-    select.innerHTML = '<option value="en">English</option><option value="lg">Luganda</option>';
-    select.value = localStorage.getItem('diri-language') || 'en';
-    select.addEventListener('change', async function () {
-      applyLanguage(select.value);
-      if (supabaseClient) {
-        const sessionResult = await supabaseClient.auth.getSession();
-        const user = sessionResult.data.session && sessionResult.data.session.user;
-        if (user) await supabaseClient.from('profiles').update({ language: select.value, updated_at: new Date().toISOString() }).eq('id', user.id);
-      }
-    });
-    container.prepend(select);
-  }
-
-  addLanguageSelector(document.querySelector('.header-actions'));
-  addLanguageSelector(document.querySelector('.mobile-actions'));
   applyLanguage(localStorage.getItem('diri-language') || 'en');
 
   async function updateAuthNavigation(session) {
@@ -645,13 +622,13 @@ document.addEventListener('DOMContentLoaded', function () {
         link.classList.add('hidden');
       });
 
+      const homeGreeting = document.querySelector('[data-home-greeting]');
+      if (homeGreeting) {
+        homeGreeting.textContent = dictionary.hi + ', ' + profile.username;
+        homeGreeting.classList.remove('hidden');
+      }
+
       document.querySelectorAll('.header-actions, .mobile-actions').forEach(function (container) {
-        if (!container.querySelector('.account-greeting')) {
-          const greeting = document.createElement('span');
-          greeting.className = 'account-greeting';
-          greeting.textContent = dictionary.hi + ', ' + profile.username;
-          container.prepend(greeting);
-        }
         if (!container.querySelector('a[href="profile.html"]')) {
           const profileLink = document.createElement('a');
           profileLink.href = 'profile.html';
@@ -754,9 +731,8 @@ document.addEventListener('DOMContentLoaded', function () {
           message.className = 'auth-message ' + (saved.error ? 'error' : 'success');
           if (!saved.error) {
             applyLanguage(languageInput.value);
-            document.querySelectorAll('.account-greeting').forEach(function (greeting) {
-              greeting.textContent = (uiTranslations[languageInput.value] || uiTranslations.en).hi + ', ' + username;
-            });
+            const homeGreeting = document.querySelector('[data-home-greeting]');
+            if (homeGreeting) homeGreeting.textContent = (uiTranslations[languageInput.value] || uiTranslations.en).hi + ', ' + username;
           }
         });
       }
