@@ -26,6 +26,8 @@
 
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="css/style.css">
+  <!-- New: carousel-specific styles, layered on top of the shared stylesheet -->
+  <link rel="stylesheet" href="css/updates-carousel.css">
 </head>
 <body>
 
@@ -81,117 +83,158 @@
   <!-- CONTENT -->
   <section class="page-content">
     <div class="container">
-      <div class="animate-in">
-        <div class="filter-tabs">
-          <button class="filter-tab active">All</button>
-          <button class="filter-tab">Policy</button>
-          <button class="filter-tab">Safety</button>
-          <button class="filter-tab">AI & Tech</button>
-          <button class="filter-tab">Privacy</button>
-          <button class="filter-tab">Governance</button>
+
+      <!-- ======================= FEATURED CAROUSEL ======================= -->
+      <div class="featured-carousel" data-featured-carousel aria-roledescription="carousel" aria-label="Featured updates">
+        <div class="featured-track" data-featured-track>
+
+          <article class="featured-slide" data-category="policy" aria-hidden="false">
+            <img class="featured-media" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=1600&auto=format&fit=crop" alt="" loading="eager">
+            <div class="featured-scrim"></div>
+            <div class="featured-content">
+              <div class="update-meta featured-meta">
+                <span class="update-category navy">Policy</span>
+                <span>3 days ago</span>
+              </div>
+              <h2 class="featured-title">Uganda advances data protection framework with new enforcement guidelines</h2>
+              <p class="featured-excerpt">The Personal Data Protection Office has issued updated compliance guidelines for organizations handling personal data. Organizations now have 72 hours to report significant breaches.</p>
+              <a href="#" class="btn btn-primary btn-sm">Read full article &rarr;</a>
+            </div>
+          </article>
+
+          <article class="featured-slide" data-category="safety" aria-hidden="true">
+            <img class="featured-media" src="https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=1600&auto=format&fit=crop" alt="" loading="lazy">
+            <div class="featured-scrim"></div>
+            <div class="featured-content">
+              <div class="update-meta featured-meta">
+                <span class="update-category teal">Safety</span>
+                <span>5 days ago</span>
+              </div>
+              <h2 class="featured-title">Rising SIM swap scams target mobile money users nationwide</h2>
+              <p class="featured-excerpt">Uganda Communications Commission warns of a surge in SIM swap fraud targeting mobile money users. Learn how to spot and prevent these attacks.</p>
+              <a href="#" class="btn btn-primary btn-sm">Read full article &rarr;</a>
+            </div>
+          </article>
+
+          <article class="featured-slide" data-category="ai-tech" aria-hidden="true">
+            <img class="featured-media" src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1600&auto=format&fit=crop" alt="" loading="lazy">
+            <div class="featured-scrim"></div>
+            <div class="featured-content">
+              <div class="update-meta featured-meta">
+                <span class="update-category amber">AI &amp; Tech</span>
+                <span>1 week ago</span>
+              </div>
+              <h2 class="featured-title">East Africa discusses regional AI governance framework</h2>
+              <p class="featured-excerpt">Regional policymakers from Uganda, Kenya, Tanzania, Rwanda, and Ethiopia are exploring a unified approach to AI regulation, balancing innovation with citizen protection.</p>
+              <a href="#" class="btn btn-primary btn-sm">Read full article &rarr;</a>
+            </div>
+          </article>
+
+        </div>
+
+        <button class="carousel-arrow carousel-arrow--prev" data-featured-prev aria-label="Previous featured update" type="button">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 15 7 10l5.5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="carousel-arrow carousel-arrow--next" data-featured-next aria-label="Next featured update" type="button">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 15 13 10 7.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+
+        <div class="carousel-footer">
+          <div class="carousel-dots" data-featured-dots role="tablist" aria-label="Choose featured update"></div>
         </div>
       </div>
 
-      <div class="updates-grid stagger-children">
-        <article class="update-card">
-          <div class="update-meta">
-            <span class="update-category navy">Policy</span>
-            <span>3 days ago</span>
-          </div>
-          <h3>Uganda advances data protection framework with new enforcement guidelines</h3>
-          <p>The Personal Data Protection Office has issued updated compliance guidelines for organizations handling personal data. Key changes affect consent requirements, data breach notification timelines, and cross-border data transfer rules. Organizations now have 72 hours to report significant breaches.</p>
-          <a href="#" class="update-link">Read full article &rarr;</a>
-        </article>
+      <!-- ======================= FILTER TABS ======================= -->
+      <div class="animate-in">
+        <div class="filter-tabs" role="tablist" aria-label="Filter updates by category">
+          <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All</button>
+          <button class="filter-tab" data-filter="policy" role="tab" aria-selected="false">Policy</button>
+          <button class="filter-tab" data-filter="safety" role="tab" aria-selected="false">Safety</button>
+          <button class="filter-tab" data-filter="ai-tech" role="tab" aria-selected="false">AI &amp; Tech</button>
+          <button class="filter-tab" data-filter="privacy" role="tab" aria-selected="false">Privacy</button>
+          <button class="filter-tab" data-filter="governance" role="tab" aria-selected="false">Governance</button>
+        </div>
+      </div>
 
-        <article class="update-card">
-          <div class="update-meta">
-            <span class="update-category teal">Safety</span>
-            <span>5 days ago</span>
-          </div>
-          <h3>Rising SIM swap scams target mobile money users nationwide</h3>
-          <p>Uganda Communications Commission warns of a surge in SIM swap fraud targeting mobile money users. Scammers trick telecom providers into transferring a victim's number to a new SIM, then access mobile money accounts. Learn how to spot and prevent these attacks.</p>
-          <a href="#" class="update-link">Read full article &rarr;</a>
-        </article>
+      <!-- ======================= UPDATES RAIL ======================= -->
+      <div class="updates-rail-header">
+        <h2 class="heading-md">More updates</h2>
+        <div class="rail-controls">
+          <button class="rail-arrow rail-arrow--prev" data-rail-prev aria-label="Scroll updates left" type="button">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 15 7 10l5.5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="rail-arrow rail-arrow--next" data-rail-next aria-label="Scroll updates right" type="button">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 15 13 10 7.5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
 
-        <article class="update-card">
-          <div class="update-meta">
-            <span class="update-category amber">AI & Tech</span>
-            <span>1 week ago</span>
-          </div>
-          <h3>East Africa discusses regional AI governance framework</h3>
-          <p>Regional policymakers from Uganda, Kenya, Tanzania, Rwanda, and Ethiopia are exploring a unified approach to AI regulation. The framework aims to balance innovation with citizen protection, addressing concerns around bias, transparency, and accountability in AI systems.</p>
-          <a href="#" class="update-link">Read full article &rarr;</a>
-        </article>
+      <div class="updates-rail" data-rail tabindex="0" aria-label="More updates, scrollable">
 
-        <article class="update-card">
+        <article class="update-card rail-card" data-category="privacy">
           <div class="update-meta">
             <span class="update-category teal">Privacy</span>
             <span>2 weeks ago</span>
           </div>
           <h3>Social media platforms update data handling policies for African users</h3>
-          <p>Major social media platforms have begun rolling out region-specific data handling policies for African users, following increased regulatory scrutiny. The changes include clearer consent mechanisms and improved data access tools for users in Uganda and neighboring countries.</p>
+          <p>Major social media platforms have begun rolling out region-specific data handling policies for African users, following increased regulatory scrutiny.</p>
           <a href="#" class="update-link">Read full article &rarr;</a>
         </article>
 
-        <article class="update-card">
+        <article class="update-card rail-card" data-category="governance">
           <div class="update-meta">
-            <span class="update-category navy">Governance</span>
+            <span class="update-category governance">Governance</span>
             <span>2 weeks ago</span>
           </div>
           <h3>Uganda launches national digital transformation roadmap 2026-2030</h3>
-          <p>The government has unveiled its updated digital transformation strategy, focusing on expanding internet access, strengthening cybersecurity infrastructure, and promoting digital literacy among youth and women across the country.</p>
+          <p>The government has unveiled its updated digital transformation strategy, focusing on internet access, cybersecurity infrastructure, and digital literacy.</p>
           <a href="#" class="update-link">Read full article &rarr;</a>
         </article>
 
-        <article class="update-card">
+        <article class="update-card rail-card" data-category="ai-tech">
           <div class="update-meta">
-            <span class="update-category amber">AI & Tech</span>
+            <span class="update-category amber">AI &amp; Tech</span>
             <span>3 weeks ago</span>
           </div>
           <h3>Youth-led AI initiatives gaining momentum across Ugandan universities</h3>
-          <p>Student-led AI research groups are emerging at Makerere, MUST, and Kyambogo universities, focusing on locally relevant AI applications including agricultural advisory, health diagnostics, and digital rights monitoring tools.</p>
+          <p>Student-led AI research groups are emerging at Makerere, MUST, and Kyambogo, focusing on locally relevant AI applications.</p>
           <a href="#" class="update-link">Read full article &rarr;</a>
         </article>
 
-        <article class="update-card">
+        <article class="update-card rail-card" data-category="safety">
           <div class="update-meta">
             <span class="update-category teal">Safety</span>
             <span>1 month ago</span>
           </div>
           <h3>Cyberbullying report: 1 in 3 young Ugandans affected</h3>
-          <p>A new study reveals that approximately 35% of Ugandan youth have experienced some form of online harassment or cyberbullying. The report highlights the need for better digital safety education and support systems in schools and communities.</p>
+          <p>A new study reveals that approximately 35% of Ugandan youth have experienced some form of online harassment or cyberbullying.</p>
           <a href="#" class="update-link">Read full article &rarr;</a>
         </article>
 
-        <article class="update-card">
+        <article class="update-card rail-card" data-category="policy">
           <div class="update-meta">
             <span class="update-category navy">Policy</span>
             <span>1 month ago</span>
           </div>
           <h3>New data protection awareness campaign launched for young people</h3>
-          <p>The Office of the Personal Data Protection Office has partnered with youth organizations to launch a nationwide awareness campaign helping young Ugandans understand their data rights and how to exercise them under the Data Protection and Privacy Act.</p>
+          <p>The Personal Data Protection Office has partnered with youth organizations to launch a nationwide awareness campaign on data rights.</p>
           <a href="#" class="update-link">Read full article &rarr;</a>
         </article>
 
-        <article class="update-card">
+        <article class="update-card rail-card" data-category="governance">
           <div class="update-meta">
             <span class="update-category governance">Governance</span>
             <span>1 month ago</span>
           </div>
           <h3>Internet shutdowns cost East Africa billions — report warns</h3>
-          <p>A new report from the Internet Society shows that internet disruptions and shutdowns in East Africa have cost economies an estimated $500 million over the past three years, with Uganda among the most affected countries.</p>
+          <p>A new report from the Internet Society shows that internet disruptions in East Africa have cost economies an estimated $500 million over three years.</p>
           <a href="#" class="update-link">Read full article &rarr;</a>
         </article>
+
       </div>
 
-      <!-- PAGINATION -->
-      <nav class="pagination" aria-label="Pagination">
-        <a href="#" aria-label="Previous">&laquo;</a>
-        <a href="#" class="active">1</a>
-        <a href="#">2</a>
-        <a href="#">3</a>
-        <a href="#" aria-label="Next">&raquo;</a>
-      </nav>
+      <p class="rail-empty-state" data-rail-empty hidden>No updates in this category yet — check back soon.</p>
+
     </div>
   </section>
 
@@ -247,5 +290,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/main.js"></script>
+  <!-- New: powers the featured carousel, filter tabs, and the rail -->
+  <script src="js/updates-carousel.js"></script>
 </body>
 </html>

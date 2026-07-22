@@ -1,0 +1,373 @@
+/* ============================================================
+   DIRI — Updates page: featured carousel + horizontal rail
+   Load AFTER css/style.css. Reuses existing tokens/classes:
+   --color-*, --space-*, --radius-*, --shadow-*, .container,
+   .heading-*, .body-*, .section-tag, .update-card, .update-meta,
+   .update-category(.navy/.teal/.amber/.governance), .update-link,
+   .filter-tabs / .filter-tab, .btn*
+   Nothing above is redefined here — only new classes are added.
+============================================================= */
+
+/* ---------- Featured carousel shell ---------- */
+.featured-carousel {
+  position: relative;
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-10);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  background: var(--color-dark);
+}
+
+.featured-track {
+  display: flex;
+  width: 100%;
+  transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.featured-slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  min-height: 420px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.featured-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featured-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(11, 61, 145, 0.15) 0%,
+    rgba(8, 15, 28, 0.55) 55%,
+    rgba(6, 10, 20, 0.92) 100%
+  );
+}
+
+.featured-content {
+  position: relative;
+  z-index: 2;
+  padding: var(--space-10) var(--space-8) var(--space-10);
+  max-width: 640px;
+  color: var(--color-white);
+}
+
+.featured-meta {
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: var(--space-4);
+}
+
+.featured-meta span:last-child {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.featured-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--color-white);
+  margin: 0 0 var(--space-3);
+}
+
+.featured-excerpt {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 var(--space-6);
+}
+
+/* ---------- Featured carousel controls ---------- */
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.carousel-arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.carousel-arrow:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.carousel-arrow:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+.carousel-arrow--prev {
+  left: var(--space-5);
+}
+
+.carousel-arrow--next {
+  right: var(--space-5);
+}
+
+.carousel-footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--space-5);
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+}
+
+.carousel-dots {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.carousel-dot {
+  position: relative;
+  width: 32px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.35);
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+}
+
+.carousel-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform-origin: left center;
+  transform: scaleX(0);
+  background: var(--color-teal);
+  border-radius: var(--radius-full);
+}
+
+.carousel-dot.active::after {
+  animation: carousel-progress 6s linear forwards;
+}
+
+.carousel-dot.active {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes carousel-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Pause the fill animation while autoplay is paused (hover / focus / reduced-motion) */
+.featured-carousel[data-paused="true"] .carousel-dot.active::after {
+  animation-play-state: paused;
+}
+
+/* ---------- Rail header ---------- */
+.updates-rail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.rail-controls {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.rail-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-white);
+  color: var(--color-navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.rail-arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.rail-arrow:hover {
+  background: var(--color-navy);
+  color: var(--color-white);
+  border-color: var(--color-navy);
+}
+
+.rail-arrow:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+
+.rail-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---------- Updates rail (horizontal scroll-snap) ---------- */
+.updates-rail {
+  display: flex;
+  gap: var(--space-5);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.updates-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.updates-rail:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 4px;
+}
+
+.rail-card {
+  flex: 0 0 300px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.rail-card.is-hidden {
+  display: none;
+}
+
+.rail-card h3 {
+  flex-grow: 0;
+}
+
+.rail-card p {
+  flex-grow: 1;
+}
+
+.rail-empty-state {
+  display: none;
+  text-align: center;
+  color: var(--color-dark-secondary);
+  padding: var(--space-10) 0;
+}
+
+.rail-empty-state.is-visible {
+  display: block;
+}
+
+/* ============================================================
+   Responsive — matches site pattern: 768px tablet, 1024px desktop
+============================================================= */
+
+@media (max-width: 767px) {
+  .featured-slide {
+    min-height: 460px;
+  }
+
+  .featured-content {
+    padding: var(--space-6) var(--space-5) var(--space-8);
+    max-width: 100%;
+  }
+
+  .featured-title {
+    font-size: 1.375rem;
+  }
+
+  .featured-excerpt {
+    font-size: 0.9375rem;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .carousel-arrow {
+    width: 36px;
+    height: 36px;
+  }
+
+  .carousel-arrow--prev {
+    left: var(--space-3);
+  }
+
+  .carousel-arrow--next {
+    right: var(--space-3);
+  }
+
+  .rail-card {
+    flex-basis: 82vw;
+  }
+
+  .updates-rail-header {
+    align-items: flex-end;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .rail-card {
+    flex-basis: 340px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .featured-slide {
+    min-height: 480px;
+  }
+
+  .featured-content {
+    padding: var(--space-12) var(--space-10) var(--space-12);
+  }
+
+  .featured-title {
+    font-size: 2rem;
+  }
+
+  .rail-card {
+    flex-basis: 360px;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .featured-track {
+    transition: none;
+  }
+
+  .carousel-dot.active::after {
+    animation: none;
+    transform: scaleX(1);
+  }
+
+  .updates-rail {
+    scroll-behavior: auto;
+  }
+}
