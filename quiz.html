@@ -71,128 +71,77 @@
   <section class="quiz-hero">
     <div class="container">
       <span class="section-tag" style="color: var(--color-teal);">Weekly Challenge</span>
-      <h1 class="heading-lg">Week 12: Digital Rights & Safety</h1>
-      <p class="body-lg">10 questions from this week's lessons, current updates, and real-life scenarios. Beat the clock and climb the leaderboard!</p>
+      <h1 class="heading-lg" id="quiz-hero-title">Loading current week...</h1>
+      <p class="body-lg" id="quiz-hero-description">Fetching the latest weekly quiz from the platform...</p>
     </div>
   </section>
 
   <!-- QUIZ CONTENT -->
   <section class="page-content" style="padding-top: var(--space-4);">
-    <div class="container-narrow">
-      <div class="quiz-card animate-in">
-        <div class="quiz-header">
-          <div class="quiz-progress">Question <span>0/10</span></div>
-          <div class="quiz-timer">
-            <span>&#x23F1;</span>
-            <span class="timer-value">15:00</span>
-          </div>
-        </div>
+    <div class="container-narrow" id="quiz-view-container">
 
-        <!-- Question 1 -->
-        <div class="quiz-question">
-          <h3>Under Uganda's Data Protection and Privacy Act (2019), what must organizations do before collecting your personal data?</h3>
-          <div class="quiz-options">
-            <div class="quiz-option">
-              <span class="option-letter">A</span>
-              Inform you and get your consent
-            </div>
-            <div class="quiz-option">
-              <span class="option-letter">B</span>
-              Register with the telecom regulator
-            </div>
-            <div class="quiz-option">
-              <span class="option-letter">C</span>
-              Publish your data in a public register
-            </div>
-            <div class="quiz-option">
-              <span class="option-letter">D</span>
-              Nothing — they can collect freely
-            </div>
-          </div>
-        </div>
-
-        <div class="quiz-footer">
-          <button class="btn btn-outline btn-sm">&larr; Previous</button>
-          <button class="btn btn-primary btn-sm">Next &rarr;</button>
+      <!-- START VIEW -->
+      <div class="quiz-view" id="quiz-start" style="display:none;">
+        <div class="quiz-card" style="text-align:center;">
+          <span class="section-tag" style="color: var(--color-teal);">Weekly Challenge</span>
+          <h1 class="heading-lg" id="quiz-week-title">Loading...</h1>
+          <p class="body-md" id="quiz-week-desc" style="margin-bottom:var(--space-6);"></p>
+          <div id="quiz-week-meta" style="margin-bottom:var(--space-6);"></div>
+          <button class="btn btn-primary btn-lg" id="btn-start-quiz">Start Quiz</button>
         </div>
       </div>
 
-      <!-- Quiz Instructions -->
-      <div class="quiz-card animate-in animate-in-delay-1" style="margin-top: var(--space-6);">
-        <h3 class="heading-sm" style="margin-bottom: var(--space-4);">How the weekly quiz works</h3>
-        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-          <div style="display: flex; gap: var(--space-3); font-size: var(--font-size-sm);">
-            <span style="font-weight: var(--font-weight-bold); color: var(--color-teal); min-width: 24px;">1.</span>
-            <span>Questions come from lessons, current updates, and real-life online scenarios.</span>
+      <!-- ACTIVE QUIZ VIEW -->
+      <div class="quiz-view" id="quiz-active" style="display:none;">
+        <div class="quiz-card">
+          <div class="quiz-header">
+            <div class="quiz-progress">Question <span id="quiz-progress">0/0</span></div>
+            <div class="quiz-timer">&#x23F1; <span class="timer-value" id="quiz-timer">00:00</span></div>
           </div>
-          <div style="display: flex; gap: var(--space-3); font-size: var(--font-size-sm);">
-            <span style="font-weight: var(--font-weight-bold); color: var(--color-teal); min-width: 24px;">2.</span>
-            <span>Hidden lesson checks help reduce guessing — actually studying gives you an edge.</span>
+          <div class="quiz-content" id="quiz-question-area">
+            <div id="quiz-question-text" style="font-size:var(--font-size-xl);margin-bottom:var(--space-6);color:var(--color-dark);"></div>
+            <div class="quiz-options" id="quiz-options-container"></div>
+            <div id="quiz-question-loader" style="display:none;text-align:center;padding:var(--space-10);color:var(--color-dark-secondary);">
+              <div class="body-md">Loading question...</div>
+            </div>
           </div>
-          <div style="display: flex; gap: var(--space-3); font-size: var(--font-size-sm);">
-            <span style="font-weight: var(--font-weight-bold); color: var(--color-teal); min-width: 24px;">3.</span>
-            <span>Score is based on correct answers AND time taken — faster is better.</span>
+          <div class="quiz-footer">
+            <button class="btn btn-outline btn-sm" id="btn-prev">&larr; Previous</button>
+            <span class="body-sm" id="quiz-question-counter">0 of 0</span>
+            <button class="btn btn-primary btn-sm" id="btn-next">Next &rarr;</button>
           </div>
-          <div style="display: flex; gap: var(--space-3); font-size: var(--font-size-sm);">
-            <span style="font-weight: var(--font-weight-bold); color: var(--color-teal); min-width: 24px;">4.</span>
-            <span>Top performers each week get featured on the leaderboard and earn recognition.</span>
-          </div>
-          <div style="display: flex; gap: var(--space-3); font-size: var(--font-size-sm);">
-            <span style="font-weight: var(--font-weight-bold); color: var(--color-teal); min-width: 24px;">5.</span>
-            <span>A new quiz drops every Monday. You can't retake the same week — so make it count!</span>
-          </div>
-        </div>
-        <div style="margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-border); display: flex; gap: var(--space-3); flex-wrap: wrap;">
-          <span style="display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); background-color: var(--color-light); border-radius: var(--radius-full); font-size: var(--font-size-xs);">
-            &#x1F4DA; 4 lesson questions
-          </span>
-          <span style="display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); background-color: var(--color-light); border-radius: var(--radius-full); font-size: var(--font-size-xs);">
-            &#x1F4F0; 3 current issue questions
-          </span>
-          <span style="display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); background-color: var(--color-light); border-radius: var(--radius-full); font-size: var(--font-size-xs);">
-            &#x1F3AF; 2 scenario questions
-          </span>
-          <span style="display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3); background-color: var(--color-light); border-radius: var(--radius-full); font-size: var(--font-size-xs);">
-            &#x1F50D; 1 hidden lesson check
-          </span>
         </div>
       </div>
 
-      <!-- Past Quiz Results -->
-      <div style="margin-top: var(--space-10);">
-        <h2 class="heading-md text-center" style="margin-bottom: var(--space-8);">Your quiz history</h2>
-        <div style="display: flex; flex-direction: column; gap: var(--space-3);">
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); background-color: var(--color-light); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-            <div>
-              <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-sm);">Week 11: Online Privacy</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">Completed</div>
-            </div>
-            <div style="text-align: right;">
-              <div style="font-weight: var(--font-weight-bold); color: var(--color-teal);">8/10</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">Rank #4</div>
-            </div>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); background-color: var(--color-light); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-            <div>
-              <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-sm);">Week 10: Cybersecurity</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">Completed</div>
-            </div>
-            <div style="text-align: right;">
-              <div style="font-weight: var(--font-weight-bold); color: var(--color-teal);">6/10</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">Rank #12</div>
-            </div>
-          </div>
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); background-color: var(--color-light); border-radius: var(--radius-md); border: 1px solid var(--color-border);">
-            <div>
-              <div style="font-weight: var(--font-weight-semibold); font-size: var(--font-size-sm);">Week 9: Digital Identity</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">Completed</div>
-            </div>
-            <div style="text-align: right;">
-              <div style="font-weight: var(--font-weight-bold); color: var(--color-teal);">9/10</div>
-              <div style="font-size: var(--font-size-xs); color: var(--color-dark-secondary);">Rank #2</div>
-            </div>
+      <!-- RESULTS VIEW -->
+      <div class="quiz-view" id="quiz-results" style="display:none;">
+        <div class="quiz-card" style="text-align:center;">
+          <span class="section-tag" style="color:var(--color-teal);">Results</span>
+          <div id="quiz-score-display" style="margin:var(--space-6) 0;"></div>
+          <div id="quiz-stats" style="margin-bottom:var(--space-6);"></div>
+          <div id="quiz-answers-review" style="text-align:left;margin-bottom:var(--space-6);"></div>
+          <div style="display:flex;gap:var(--space-3);justify-content:center;">
+            <a href="leaderboard.html" class="btn btn-secondary">View Leaderboard</a>
+            <a href="learn.html" class="btn btn-outline">Keep Learning</a>
           </div>
         </div>
+      </div>
+
+      <!-- UNAVAILABLE VIEW -->
+      <div class="quiz-view" id="quiz-unavailable" style="display:none;">
+        <div class="quiz-card" style="text-align:center;">
+          <h2 id="unavailable-title">No quiz available</h2>
+          <p class="body-md" id="unavailable-message">Check back when a new weekly challenge drops.</p>
+          <div style="margin-top:var(--space-6);">
+            <a href="learn.html" class="btn btn-outline">Learn in the meantime</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUIZ HISTORY (past attempts for this user) -->
+      <div class="quiz-view" id="quiz-history" style="margin-top:var(--space-10);display:none;">
+        <h2 class="heading-md text-center" style="margin-bottom: var(--space-6);">Your quiz history</h2>
+        <div id="quiz-history-list"></div>
       </div>
     </div>
   </section>
@@ -249,5 +198,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/quiz-participate.js"></script>
 </body>
 </html>

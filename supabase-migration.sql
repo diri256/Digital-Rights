@@ -66,6 +66,10 @@ ALTER TABLE quiz_weeks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE quiz_attempts ENABLE ROW LEVEL SECURITY;
 
 -- 7. RLS Policies for quiz_questions
+DROP POLICY IF EXISTS "Anyone can read active questions" ON quiz_questions;
+DROP POLICY IF EXISTS "Admins and policymakers can insert questions" ON quiz_questions;
+DROP POLICY IF EXISTS "Admins and policymakers can update questions" ON quiz_questions;
+DROP POLICY IF EXISTS "Admins and policymakers can delete questions" ON quiz_questions;
 CREATE POLICY "Anyone can read active questions"
   ON quiz_questions FOR SELECT
   USING (is_active = true OR auth.uid() IN (
@@ -91,6 +95,10 @@ CREATE POLICY "Admins and policymakers can delete questions"
   ));
 
 -- 8. RLS Policies for quiz_weeks
+DROP POLICY IF EXISTS "Anyone can read published weeks" ON quiz_weeks;
+DROP POLICY IF EXISTS "Admins and policymakers can manage weeks" ON quiz_weeks;
+DROP POLICY IF EXISTS "Admins and policymakers can update weeks" ON quiz_weeks;
+DROP POLICY IF EXISTS "Admins and policymakers can delete weeks" ON quiz_weeks;
 CREATE POLICY "Anyone can read published weeks"
   ON quiz_weeks FOR SELECT
   USING (is_published = true OR auth.uid() IN (
@@ -116,6 +124,8 @@ CREATE POLICY "Admins and policymakers can delete weeks"
   ));
 
 -- 9. RLS Policies for quiz_attempts
+DROP POLICY IF EXISTS "Users can read their own attempts" ON quiz_attempts;
+DROP POLICY IF EXISTS "Users can insert their own attempts" ON quiz_attempts;
 CREATE POLICY "Users can read their own attempts"
   ON quiz_attempts FOR SELECT
   USING (auth.uid() = user_id);
@@ -133,6 +143,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Drop triggers if they already exist so migration is safe to re-run
+DROP TRIGGER IF EXISTS set_quiz_questions_updated_at ON quiz_questions;
+DROP TRIGGER IF EXISTS set_quiz_weeks_updated_at ON quiz_weeks;
+
 CREATE TRIGGER set_quiz_questions_updated_at
   BEFORE UPDATE ON quiz_questions
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -140,3 +154,133 @@ CREATE TRIGGER set_quiz_questions_updated_at
 CREATE TRIGGER set_quiz_weeks_updated_at
   BEFORE UPDATE ON quiz_weeks
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =============================================
+-- DIRI Phase 2 — Quiz System Additions
+-- =============================================
+
+-- 1. Add email column to profiles (for admin display)
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS email TEXT;
+
+-- 2. Trigger to auto-sync email from auth.users on signup
+CREATE OR REPLACE FUNCTION sync_profile_email()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE public.profiles SET email = NEW.email WHERE id = NEW.id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION sync_profile_email();
+
+-- Backfill existing users' emails
+UPDATE public.profiles SET email = au.email
+FROM auth.users au
+WHERE profiles.id = au.id AND profiles.email IS NULL;
+
+-- 3. Prevent non-admins from changing the role column
+CREATE OR REPLACE FUNCTION check_role_update()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.role IS DISTINCT FROM OLD.role AND NOT (
+    public.user_has_role('admin')
+  ) THEN
+    RAISE EXCEPTION 'Only admins can change the role column';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- 3b. Helper for role-based access checks (more reliable than direct subqueries)
+CREATE OR REPLACE FUNCTION public.user_has_role(target_role TEXT)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.profiles
+    WHERE id = auth.uid()
+      AND role = target_role
+  );
+$$;
+
+DROP TRIGGER IF EXISTS prevent_role_self_update ON profiles;
+CREATE TRIGGER prevent_role_self_update
+  BEFORE UPDATE ON profiles
+  FOR EACH ROW EXECUTE FUNCTION check_role_update();
+
+-- 4. Enable RLS on profiles (was missing!)
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies first to allow re-run
+DROP POLICY IF EXISTS "profiles_select" ON profiles;
+DROP POLICY IF EXISTS "profiles_insert" ON profiles;
+DROP POLICY IF EXISTS "profiles_update_own" ON profiles;
+
+CREATE POLICY "profiles_select" ON profiles FOR SELECT
+  USING (
+    auth.uid() = id
+    OR public.user_has_role('admin')
+    OR public.user_has_role('policymaker')
+  );
+
+CREATE POLICY "profiles_insert" ON profiles FOR INSERT
+  WITH CHECK (auth.uid() = id);
+
+CREATE POLICY "profiles_update_own" ON profiles FOR UPDATE
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+
+-- 5. Add columns to quiz_attempts for resume support
+ALTER TABLE quiz_attempts ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'completed'
+  CHECK (status IN ('in_progress', 'completed'));
+
+ALTER TABLE quiz_attempts ADD COLUMN IF NOT EXISTS current_index INT NOT NULL DEFAULT 0;
+
+ALTER TABLE quiz_attempts ADD COLUMN IF NOT EXISTS elapsed_seconds INT NOT NULL DEFAULT 0;
+
+ALTER TABLE quiz_attempts ADD COLUMN IF NOT EXISTS started_at TIMESTAMPTZ;
+
+-- 6. Add UPDATE policy for quiz_attempts (missing!)
+DROP POLICY IF EXISTS "Users can update their own attempts" ON quiz_attempts;
+CREATE POLICY "Users can update their own attempts"
+  ON quiz_attempts FOR UPDATE
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- 7. Create access_requests table
+CREATE TABLE IF NOT EXISTS access_requests (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE NOT NULL,
+  requested_role TEXT NOT NULL DEFAULT 'admin' CHECK (requested_role = 'admin'),
+  reason TEXT NOT NULL DEFAULT '',
+  status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  reviewed_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE access_requests ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "ar_insert" ON access_requests;
+DROP POLICY IF EXISTS "ar_select" ON access_requests;
+DROP POLICY IF EXISTS "ar_update" ON access_requests;
+
+CREATE POLICY "ar_insert" ON access_requests FOR INSERT
+  WITH CHECK (
+    auth.uid() = user_id
+    AND (public.user_has_role('admin') OR public.user_has_role('policymaker'))
+  );
+
+CREATE POLICY "ar_select" ON access_requests FOR SELECT
+  USING (
+    auth.uid() = user_id
+    OR public.user_has_role('admin')
+  );
+
+CREATE POLICY "ar_update" ON access_requests FOR UPDATE
+  USING (public.user_has_role('admin'));

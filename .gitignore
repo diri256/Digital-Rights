@@ -21,3 +21,5 @@ npm-debug.log*
 # Dependencies (for future framework upgrade)
 node_modules/
 vendor/
+# Bwat per-workspace permission allowlist
+.bwat/

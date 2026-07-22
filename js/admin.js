@@ -66,6 +66,15 @@
     // Show access tab only for admins
     if (role === 'admin') {
       document.getElementById('access-tab').style.display = '';
+      // Show pending requests section to admins
+      var reqSection = document.getElementById('access-requests-section');
+      if (reqSection) reqSection.style.display = '';
+    }
+
+    // Show the request access button to policymakers
+    if (role === 'policymaker') {
+      var btnReq = document.getElementById('btn-request-access');
+      if (btnReq) btnReq.style.display = '';
     }
 
     return true;
@@ -115,7 +124,10 @@
     if (name === 'dashboard') loadDashboard();
     else if (name === 'questions') loadQuestions();
     else if (name === 'weeks') loadWeeks();
-    else if (name === 'access') loadAccessList();
+    else if (name === 'access') {
+      loadAccessList();
+      if (currentUserRole === 'admin') loadAccessRequests();
+    }
   }
 
   /* -----------------------------------------
@@ -339,7 +351,7 @@
           '<td><div class="admin-question-text">' + escHtml(w.description || '-') + '</div></td>' +
           '<td>' + qCount + '/10</td>' +
           '<td>' + w.time_limit_minutes + ' min</td>' +
-          '<td><span class="admin-status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
+          '<td><button class="btn btn-sm btn-ghost toggle-publish" data-id="' + w.id + '" data-published="' + (w.is_published ? '1' : '0') + '">' + (w.is_published ? 'Unpublish' : 'Publish') + '</button></td>' +
           '<td>' +
           '<button class="btn btn-sm btn-ghost admin-action-btn" data-action="edit-week" data-id="' + w.id + '">Edit</button> ' +
           '<button class="btn btn-sm btn-ghost admin-action-btn" style="color:var(--color-error);" data-action="delete-week" data-id="' + w.id + '">Delete</button>' +
@@ -352,6 +364,21 @@
       });
       tbody.querySelectorAll('[data-action="delete-week"]').forEach(function (btn) {
         btn.addEventListener('click', function () { deleteWeek(this.getAttribute('data-id')); });
+      });
+      // Publish toggle
+      tbody.querySelectorAll('.toggle-publish').forEach(function (btn) {
+        btn.addEventListener('click', async function () {
+          const weekId = this.getAttribute('data-id');
+          const isPublished = this.getAttribute('data-published') === '1';
+          try {
+            const { error } = await sb.from('quiz_weeks').update({ is_published: !isPublished }).eq('id', weekId);
+            if (error) throw error;
+            showToast(isPublished ? 'Week unpublished.' : 'Week published.');
+            loadWeeks();
+          } catch (err) {
+            showToast(err.message || 'Unable to change publish state', 'error');
+          }
+        });
       });
     } catch (err) {
       tbody.innerHTML = '<tr><td colspan="7" class="text-center body-sm" style="padding: var(--space-10); color: var(--color-error);">Error: ' + escHtml(err.message) + '</td></tr>';
@@ -562,6 +589,107 @@
   }
 
   /* -----------------------------------------
+     REQUEST ACCESS UI (policymaker -> admin requests)
+     ----------------------------------------- */
+  function openRequestModal() {
+    var reason = document.getElementById('request-reason');
+    if (reason) reason.value = '';
+    var msg = document.getElementById('request-modal-message'); if (msg) { msg.textContent = ''; msg.className = 'admin-modal-message'; }
+    document.getElementById('request-modal').classList.add('open');
+  }
+
+  async function submitAccessRequest() {
+    var reason = document.getElementById('request-reason').value.trim();
+    var messageEl = document.getElementById('request-modal-message');
+    if (!reason) { if (messageEl) { messageEl.textContent = 'Please explain why you need admin access.'; messageEl.className = 'admin-modal-message error'; } return; }
+    try {
+      const payload = { user_id: currentUser.id, requested_role: 'admin', reason: reason };
+      const { error } = await sb.from('access_requests').insert(payload);
+      if (error) throw error;
+      if (messageEl) { messageEl.textContent = 'Request submitted. An admin will review it soon.'; messageEl.className = 'admin-modal-message success'; }
+      setTimeout(function () { document.getElementById('request-modal').classList.remove('open'); }, 900);
+    } catch (err) {
+      if (messageEl) { messageEl.textContent = err.message || 'Unable to submit request'; messageEl.className = 'admin-modal-message error'; }
+    }
+  }
+
+  /* -----------------------------------------
+     ADMIN: Pending Access Requests (approve/reject)
+     ----------------------------------------- */
+  async function loadAccessRequests() {
+    const tbody = document.getElementById('access-requests-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center body-sm" style="padding: var(--space-10);">Loading requests...</td></tr>';
+    try {
+      const { data, error } = await sb.from('access_requests').select('*').eq('status', 'pending').order('created_at', { ascending: true });
+      if (error) throw error;
+      const requests = data || [];
+      if (requests.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center body-sm" style="padding: var(--space-10);">No pending requests.</td></tr>';
+        return;
+      }
+      // Fetch profile info for each requester
+      const rows = await Promise.all(requests.map(async function (r) {
+        const pr = await sb.from('profiles').select('username, email').eq('id', r.user_id).maybeSingle();
+        const username = pr.data ? pr.data.username : 'Unknown';
+        const email = pr.data ? pr.data.email : '-';
+        return '<tr>' +
+          '<td><strong>' + escHtml(username) + '</strong></td>' +
+          '<td class="body-sm">' + escHtml(r.requested_role || 'admin') + '</td>' +
+          '<td class="body-sm">' + escHtml(r.reason || '') + '</td>' +
+          '<td class="body-sm">' + (new Date(r.created_at).toLocaleString()) + '</td>' +
+          '<td>' +
+            '<button class="btn btn-sm btn-primary" data-action="approve-request" data-id="' + r.id + '">Approve</button> ' +
+            '<button class="btn btn-sm btn-ghost" data-action="reject-request" data-id="' + r.id + '" style="color:var(--color-error);">Reject</button>' +
+          '</td>' +
+        '</tr>';
+      }));
+      tbody.innerHTML = rows.join('');
+
+      // Wire approve/reject
+      tbody.querySelectorAll('[data-action="approve-request"]').forEach(function (btn) {
+        btn.addEventListener('click', function () { approveAccessRequest(this.getAttribute('data-id')); });
+      });
+      tbody.querySelectorAll('[data-action="reject-request"]').forEach(function (btn) {
+        btn.addEventListener('click', function () { rejectAccessRequest(this.getAttribute('data-id')); });
+      });
+    } catch (err) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center body-sm" style="padding: var(--space-10); color: var(--color-error);">Error: ' + escHtml(err.message) + '</td></tr>';
+    }
+  }
+
+  async function approveAccessRequest(id) {
+    try {
+      const now = new Date().toISOString();
+      const { error: up1 } = await sb.from('access_requests').update({ status: 'approved', reviewed_by: currentUser.id, reviewed_at: now }).eq('id', id);
+      if (up1) throw up1;
+      // Promote user to admin
+      const req = await sb.from('access_requests').select('user_id').eq('id', id).maybeSingle();
+      if (req.error) throw req.error;
+      const userId = req.data.user_id;
+      const { error: up2 } = await sb.from('profiles').update({ role: 'admin' }).eq('id', userId);
+      if (up2) throw up2;
+      showToast('Request approved and user promoted to admin.');
+      loadAccessRequests();
+      loadAccessList();
+    } catch (err) {
+      showToast(err.message || 'Unable to approve request', 'error');
+    }
+  }
+
+  async function rejectAccessRequest(id) {
+    try {
+      const now = new Date().toISOString();
+      const { error } = await sb.from('access_requests').update({ status: 'rejected', reviewed_by: currentUser.id, reviewed_at: now }).eq('id', id);
+      if (error) throw error;
+      showToast('Request rejected.');
+      loadAccessRequests();
+    } catch (err) {
+      showToast(err.message || 'Unable to reject request', 'error');
+    }
+  }
+
+  /* -----------------------------------------
      MODAL HELPERS
      ----------------------------------------- */
   function closeModal(id) {
@@ -679,6 +807,14 @@
         window.location.href = 'index.html';
       });
     });
+
+    // Request Access (policymakers)
+    var btnReq = document.getElementById('btn-request-access');
+    if (btnReq) btnReq.addEventListener('click', openRequestModal);
+    var reqClose = document.getElementById('request-modal-close'); if (reqClose) reqClose.addEventListener('click', function () { closeModal('request-modal'); });
+    var reqCancel = document.getElementById('request-modal-cancel'); if (reqCancel) reqCancel.addEventListener('click', function () { closeModal('request-modal'); });
+    var reqSubmit = document.getElementById('request-modal-submit'); if (reqSubmit) reqSubmit.addEventListener('click', submitAccessRequest);
+    var reqModal = document.getElementById('request-modal'); if (reqModal) reqModal.addEventListener('click', function (e) { if (e.target === this) closeModal('request-modal'); });
   }
 
   function debounce(fn, delay) {
