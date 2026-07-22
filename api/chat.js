@@ -1,6 +1,6 @@
 'use strict';
 
-const MODEL = 'gemini-2.5-flash-lite';
+const MODELS = ['gemini-3.6-flash', 'gemini-3.5-flash'];
 const MAX_MESSAGE_LENGTH = 1000;
 const MAX_HISTORY_MESSAGES = 10;
 const RATE_WINDOW_MS = 60 * 1000;
@@ -59,18 +59,24 @@ module.exports = async function handler(request, response) {
   contents.push({ role: 'user', parts: [{ text: message }] });
 
   try {
-    const result = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents,
-        generationConfig: { temperature: 0.4, maxOutputTokens: 500 }
-      })
-    });
-    const data = await result.json();
+    let result;
+    let data;
+    for (const model of MODELS) {
+      result = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': process.env.GEMINI_API_KEY },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents,
+          generationConfig: { temperature: 0.4, maxOutputTokens: 500 }
+        })
+      });
+      data = await result.json();
+      if (result.ok) break;
+      console.error(`Gemini API error (${model}):`, result.status, data?.error?.message || 'Unknown error');
+      if (result.status !== 404) break;
+    }
     if (!result.ok) {
-      console.error('Gemini API error:', result.status, data?.error?.message || 'Unknown error');
       return sendJson(response, result.status === 429 ? 429 : 502, {
         error: result.status === 429 ? 'Mr. DIRI is busy. Please try again shortly.' : 'Mr. DIRI could not answer right now.'
       });
