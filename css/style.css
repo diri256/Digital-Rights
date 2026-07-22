@@ -590,6 +590,72 @@ h1, h2, h3, h4, h5, h6 {
   gap: var(--space-4);
 }
 
+.btn-whatsapp {
+  background: #25d366;
+  color: #0a321b;
+  border: 1px solid #1fbd5a;
+}
+
+.btn-whatsapp:hover,
+.btn-whatsapp:focus-visible {
+  background: #1fbd5a;
+  color: #071f11;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.mr-diri-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.mr-diri-fab-label {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-full);
+  background: var(--color-navy);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: var(--shadow-lg);
+}
+
+.mr-diri-fab-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  overflow: hidden;
+  border: 3px solid var(--color-white);
+  border-radius: 50%;
+  background: var(--color-teal);
+  box-shadow: 0 8px 26px rgba(11, 61, 145, 0.3);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.mr-diri-fab-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mr-diri-fab:hover .mr-diri-fab-icon,
+.mr-diri-fab:focus-visible .mr-diri-fab-icon {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 10px 30px rgba(11, 61, 145, 0.38);
+}
+
+@media (max-width: 640px) {
+  .hero-actions .btn { width: 100%; }
+  .mr-diri-fab { right: 16px; bottom: 16px; }
+  .mr-diri-fab-label { display: none; }
+  .mr-diri-fab-icon { width: 58px; height: 58px; }
+}
+
 .hero-visual {
   position: relative;
   z-index: 2;
