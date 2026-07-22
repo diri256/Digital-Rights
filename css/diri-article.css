@@ -1,0 +1,9 @@
+/* ============================================================
+   DIRI — Article / Lesson Page styles
+   Load AFTER your shared stylesheet. Reuses existing tokens:
+   --color-*, --space-*, --radius-*, --shadow-*, --header-height,
+   .container, .container-narrow, .btn*, .heading-*, .body-*,
+   .section-tag, .topic-card, .topic-image, .topic-tag
+   No colors, spacing, or radii are redefined here.
+============================================================= */
+

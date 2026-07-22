@@ -843,6 +843,8 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   transition: all var(--transition-base);
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .topic-card:hover {
@@ -850,8 +852,10 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-lg);
 }
 
+/* Thumbnail */
 .topic-card .topic-image {
   height: 160px;
+  width: 100%;
   background-color: var(--color-light);
   display: flex;
   align-items: center;
@@ -860,6 +864,19 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-navy);
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Real <img> thumbnail support */
+.topic-card .topic-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.topic-card:hover .topic-image img {
+  transform: scale(1.05);
 }
 
 .topic-image .topic-pattern {
@@ -877,6 +894,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .topic-card .topic-body {
   padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .topic-body .topic-tag {
@@ -888,6 +908,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: var(--font-weight-semibold);
   border-radius: var(--radius-sm);
   margin-bottom: var(--space-3);
+  align-self: flex-start;
 }
 
 .topic-body h3 {
@@ -900,6 +921,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-dark-secondary);
   line-height: var(--line-height-relaxed);
   margin-bottom: var(--space-4);
+  flex: 1;
 }
 
 .topic-body .topic-meta {
@@ -909,9 +931,40 @@ h1, h2, h3, h4, h5, h6 {
   font-size: var(--font-size-xs);
   color: var(--color-dark-secondary);
   padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
   border-top: 1px solid var(--color-border);
+  margin-bottom: 0;
 }
 
+/* View More action button */
+.topic-body .topic-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--color-navy);
+  color: var(--color-white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.topic-body .topic-action:hover {
+  background-color: var(--color-navy-dark);
+  gap: var(--space-3);
+}
+
+.topic-body .topic-action svg,
+.topic-body .topic-action .arrow {
+  transition: transform var(--transition-fast);
+}
+
+.topic-body .topic-action:hover .arrow {
+  transform: translateX(2px);
+}
 /* ----- Quiz Page ----- */
 .quiz-hero {
   padding: calc(var(--header-height) + var(--space-16)) 0 var(--space-12);
@@ -2674,5 +2727,461 @@ h1, h2, h3, h4, h5, h6 {
     right: var(--space-4);
     bottom: var(--space-4);
     text-align: center;
+  }
+}
+/* ---------- Page wrapper ---------- */
+.article-page {
+  padding-top: var(--header-height);
+}
+
+/* ---------- 1. Hero / header ---------- */
+.article-header {
+  background: var(--color-light);
+  padding: var(--space-12) 0 var(--space-10);
+  text-align: left;
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  font-size: 0.8125rem;
+  color: var(--color-dark-secondary);
+}
+
+.breadcrumb a {
+  color: var(--color-dark-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumb a:hover {
+  color: var(--color-navy);
+}
+
+.breadcrumb-sep {
+  color: var(--color-border);
+}
+
+.breadcrumb-current {
+  color: var(--color-dark);
+  font-weight: 600;
+}
+
+/* Topic tag pill variants — base .topic-tag assumed to exist */
+.topic-tag--privacy {
+  background: rgba(17, 184, 184, 0.12);
+  color: var(--color-teal-dark);
+}
+
+.topic-tag--online-safety {
+  background: rgba(11, 61, 145, 0.10);
+  color: var(--color-navy);
+}
+
+.topic-tag--rights {
+  background: rgba(245, 158, 11, 0.14);
+  color: #a86406;
+}
+
+.article-title {
+  margin-top: var(--space-5);
+  max-width: 780px;
+}
+
+.article-subtitle {
+  margin-top: var(--space-4);
+  max-width: 640px;
+  color: var(--color-dark-secondary);
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  color: var(--color-dark-secondary);
+  font-size: 0.875rem;
+}
+
+.meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.meta-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-teal-dark);
+  flex-shrink: 0;
+}
+
+.meta-divider {
+  color: var(--color-border);
+}
+
+/* ---------- 2. Featured banner ---------- */
+.article-banner {
+  margin: calc(-1 * var(--space-8)) 0 var(--space-10);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+.article-banner img {
+  display: block;
+  width: 100%;
+  height: 340px;
+  object-fit: cover;
+}
+
+/* ---------- 5. Lesson progress ---------- */
+.lesson-progress {
+  margin-bottom: var(--space-10);
+}
+
+.lesson-progress-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.lesson-progress-text {
+  color: var(--color-dark-secondary);
+  font-weight: 600;
+}
+
+.lesson-progress-percent {
+  color: var(--color-teal-dark);
+  font-weight: 700;
+}
+
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-teal), var(--color-navy));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+}
+
+/* ---------- 3. Article body typography ---------- */
+.article-body {
+  padding-bottom: var(--space-16);
+  color: var(--color-dark);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.article-body > p {
+  margin-bottom: var(--space-6);
+  color: var(--color-dark);
+}
+
+.article-body h2 {
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-4);
+}
+
+.article-body h3 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-3);
+}
+
+.article-body ul {
+  margin: 0 0 var(--space-6);
+  padding-left: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.article-body ul li {
+  padding-left: var(--space-1);
+}
+
+.article-body ul li::marker {
+  color: var(--color-teal-dark);
+}
+
+.article-body strong {
+  color: var(--color-dark);
+  font-weight: 700;
+}
+
+.article-body blockquote {
+  margin: var(--space-8) 0;
+  padding: var(--space-2) var(--space-6);
+  border-left: 3px solid var(--color-teal);
+  color: var(--color-dark-secondary);
+  font-style: italic;
+  font-size: 1.0625rem;
+}
+
+/* ---------- Embedded figures & captions ---------- */
+.article-figure {
+  margin: var(--space-8) 0;
+}
+
+.article-figure img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  display: block;
+}
+
+.article-figure figcaption {
+  margin-top: var(--space-3);
+  color: var(--color-dark-secondary);
+  text-align: center;
+}
+
+/* ---------- Callout boxes ---------- */
+.callout {
+  margin: var(--space-8) 0;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.callout-label {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.callout p:last-child,
+.callout ul:last-child {
+  margin-bottom: 0;
+}
+
+/* Key takeaway: navy-led */
+.callout-takeaway {
+  background: rgba(11, 61, 145, 0.05);
+  border-color: rgba(11, 61, 145, 0.18);
+  border-left: 4px solid var(--color-navy);
+}
+
+.callout-takeaway .callout-label {
+  color: var(--color-navy);
+}
+
+.callout-takeaway p {
+  color: var(--color-dark);
+  font-weight: 500;
+}
+
+/* Did you know / quick facts: teal-led */
+.callout-facts {
+  background: rgba(17, 184, 184, 0.06);
+  border-color: rgba(17, 184, 184, 0.22);
+  border-left: 4px solid var(--color-teal);
+}
+
+.callout-facts .callout-label {
+  color: var(--color-teal-dark);
+}
+
+.callout-facts-list {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.callout-facts-list li::marker {
+  color: var(--color-teal-dark);
+}
+
+/* ---------- Byline ---------- */
+.article-byline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.byline-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--color-navy);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.byline-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.byline-name {
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.byline-note {
+  font-size: 0.8125rem;
+  color: var(--color-dark-secondary);
+}
+
+/* ---------- 6. Related / continue learning ---------- */
+.related-section {
+  background: var(--color-light);
+  padding: var(--space-16) 0;
+}
+
+.related-heading {
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+/* Related cards reuse .topic-card; only body padding/meta layout added here
+   in case the base class doesn't already define inner structure. */
+.topic-card-body {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.topic-card-body .btn {
+  margin-top: var(--space-3);
+  align-self: flex-start;
+}
+
+.topic-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-dark-secondary);
+  font-size: 0.8125rem;
+  margin-bottom: var(--space-1);
+}
+
+.topic-meta-dot {
+  color: var(--color-border);
+}
+
+/* ---------- 7. Back to Learn ---------- */
+.back-to-learn-bar {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-4) 0;
+  z-index: 20;
+}
+
+.back-to-learn-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.back-to-learn-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.back-to-learn-hint {
+  color: var(--color-dark-secondary);
+  display: none;
+}
+
+/* ============================================================
+   Responsive breakpoints — matches site pattern: 768px, 1024px
+============================================================= */
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .back-to-learn-hint {
+    display: inline;
+  }
+
+  .article-banner img {
+    height: 400px;
+  }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+  .article-header {
+    padding: var(--space-16) 0 var(--space-12);
+  }
+
+  .article-banner img {
+    height: 460px;
+  }
+
+  .article-body {
+    font-size: 1.125rem;
+  }
+}
+
+/* Mobile (below tablet) — stack related cards, tighten spacing */
+@media (max-width: 767px) {
+  .article-header {
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .article-banner {
+    margin-top: calc(-1 * var(--space-4));
+  }
+
+  .article-banner img,
+  .article-figure img {
+    height: 220px;
+  }
+
+  .article-body {
+    font-size: 1rem;
+  }
+
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .callout {
+    padding: var(--space-5);
+  }
+
+  .article-byline {
+    flex-wrap: wrap;
   }
 }
