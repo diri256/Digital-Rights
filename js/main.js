@@ -16,6 +16,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileOverlay = document.querySelector('.mobile-overlay');
   const body = document.body;
 
+  // Keep the official contact address visible in every full site footer.
+  document.querySelectorAll('.footer-column').forEach(function (column) {
+    const heading = column.querySelector('h4');
+    if (!heading || heading.textContent.trim() !== 'Team Netizens') return;
+    if (column.querySelector('a[href=\"mailto:diriuganda@gmail.com\"]')) return;
+
+    const emailLink = document.createElement('a');
+    emailLink.href = 'mailto:diriuganda@gmail.com';
+    emailLink.textContent = 'diriuganda@gmail.com';
+    column.appendChild(emailLink);
+  });
   function toggleMenu(open) {
     const isOpen = open !== undefined ? open : !menuToggle.classList.contains('active');
     menuToggle.classList.toggle('active', isOpen);
