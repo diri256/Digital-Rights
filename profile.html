@@ -78,8 +78,35 @@
         <button type="submit" class="btn btn-primary btn-lg">Save Profile</button>
         <button type="button" class="btn btn-ghost btn-lg profile-logout" data-profile-logout>Log Out</button>
       </form>
+
+      <section class="profile-danger-zone" aria-labelledby="delete-account-title">
+        <div>
+          <p class="section-tag">Danger zone</p>
+          <h2 id="delete-account-title" class="heading-sm">Delete account</h2>
+          <p class="body-sm">Permanently remove your DIRI account, profile, photo and learning history. This cannot be undone.</p>
+        </div>
+        <button type="button" class="btn btn-danger" data-profile-delete-open>Delete My Account</button>
+      </section>
     </section>
   </main>
+
+  <dialog class="account-delete-dialog" data-account-delete-dialog aria-labelledby="delete-dialog-title">
+    <form method="dialog" class="account-delete-dialog-card" data-account-delete-form>
+      <button type="button" class="dialog-close" data-account-delete-cancel aria-label="Close account deletion dialog">&times;</button>
+      <p class="section-tag">Permanent action</p>
+      <h2 id="delete-dialog-title" class="heading-sm">Delete your DIRI account?</h2>
+      <p class="body-sm">Your profile, profile photo and learning history will be permanently deleted. Type <strong>DELETE</strong> to confirm.</p>
+      <div class="form-group">
+        <label for="delete-account-confirmation">Confirmation</label>
+        <input id="delete-account-confirmation" class="form-input" type="text" autocomplete="off" data-account-delete-confirmation>
+      </div>
+      <div class="auth-message" data-account-delete-message role="status" aria-live="polite"></div>
+      <div class="account-delete-actions">
+        <button type="button" class="btn btn-ghost" data-account-delete-cancel>Cancel</button>
+        <button type="submit" class="btn btn-danger" data-account-delete-submit disabled>Delete Account Permanently</button>
+      </div>
+    </form>
+  </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js"></script>

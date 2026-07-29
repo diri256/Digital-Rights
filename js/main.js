@@ -16,6 +16,17 @@ document.addEventListener('DOMContentLoaded', function () {
   const mobileOverlay = document.querySelector('.mobile-overlay');
   const body = document.body;
 
+  // Keep the official contact address visible in every full site footer.
+  document.querySelectorAll('.footer-column').forEach(function (column) {
+    const heading = column.querySelector('h4');
+    if (!heading || heading.textContent.trim() !== 'Team Netizens') return;
+    if (column.querySelector('a[href=\"mailto:diriuganda@gmail.com\"]')) return;
+
+    const emailLink = document.createElement('a');
+    emailLink.href = 'mailto:diriuganda@gmail.com';
+    emailLink.textContent = 'diriuganda@gmail.com';
+    column.appendChild(emailLink);
+  });
   function toggleMenu(open) {
     const isOpen = open !== undefined ? open : !menuToggle.classList.contains('active');
     menuToggle.classList.toggle('active', isOpen);
@@ -202,7 +213,38 @@ document.addEventListener('DOMContentLoaded', function () {
         .replace(/^\s*[-*]\s+/gm, '• ');
     }
 
-    function addLiveMessage(text, sender, extraClass, sources) {
+    async function reportAiResponse(question, responseText, button) {
+      const reason = window.prompt('What seems incorrect or unsafe about this answer?');
+      if (reason === null) return;
+      if (reason.trim().length < 3) {
+        window.alert('Please briefly explain what seems incorrect.');
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Sending report...';
+      const result = await window.diriSupabase.functions.invoke('report-ai-response', {
+        body: {
+          question: question,
+          response: responseText,
+          reason: reason.trim(),
+          pageUrl: window.location.href,
+          website: ''
+        }
+      });
+
+      if (result.error) {
+        button.disabled = false;
+        button.textContent = 'Report this answer';
+        window.alert('We could not send your report right now. Please try again.');
+        return;
+      }
+
+      button.textContent = 'Reported — thank you';
+      button.classList.add('reported');
+    }
+
+    function addLiveMessage(text, sender, extraClass, sources, reportQuestion) {
       const messageDiv = document.createElement('div');
       messageDiv.className = 'chat-message ' + sender + (extraClass ? ' ' + extraClass : '');
       const avatar = document.createElement('div');
@@ -235,6 +277,16 @@ document.addEventListener('DOMContentLoaded', function () {
                          now.getMinutes().toString().padStart(2, '0');
       bubbleWrapper.appendChild(bubble);
       bubbleWrapper.appendChild(time);
+      if (sender === 'bot' && reportQuestion && !extraClass) {
+        const reportButton = document.createElement('button');
+        reportButton.type = 'button';
+        reportButton.className = 'msg-report-button';
+        reportButton.textContent = 'Report this answer';
+        reportButton.addEventListener('click', function () {
+          reportAiResponse(reportQuestion, text, reportButton);
+        });
+        bubbleWrapper.appendChild(reportButton);
+      }
       messageDiv.appendChild(avatar);
       messageDiv.appendChild(bubbleWrapper);
       chatMessages.appendChild(messageDiv);
@@ -262,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = await response.json().catch(function () { return {}; });
         if (!response.ok) throw new Error(data.error || 'Mr. DIRI could not answer right now.');
         typingMessage.remove();
-        addLiveMessage(data.reply, 'bot', '', data.sources);
+        addLiveMessage(data.reply, 'bot', '', data.sources, text);
         chatHistory.push({ role: 'user', content: text }, { role: 'assistant', content: data.reply });
         if (chatHistory.length > 10) chatHistory.splice(0, chatHistory.length - 10);
       } catch (error) {
@@ -323,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function () {
       category: 'Governance',
       title: 'Internet Governance',
       videoTitle: 'Understanding internet governance',
-      video: 'https://www.youtube-nocookie.com/embed/g6Aip9MUZNo?rel=0',
+      video: 'https://www.youtube-nocookie.com/embed/eKHxgaTtMeA?rel=0',
       cards: [
         ['Internet governance', 'Internet governance covers the shared rules, standards, policies, and decisions that shape how the internet develops and is used.'],
         ['The people involved', 'No single person governs the internet. Governments, companies, civil society, technical bodies, researchers, and users all influence it.'],
@@ -746,6 +798,28 @@ document.addEventListener('DOMContentLoaded', function () {
   // 10. SUPABASE AUTHENTICATION
   // =============================================
   const supabaseClient = window.diriSupabase;
+
+  async function loadHomepagePlatformStats() {
+    if (!supabaseClient || !document.querySelector('[data-platform-stat]')) return;
+    try {
+      const result = await supabaseClient.rpc('get_public_platform_stats').single();
+      if (result.error) throw result.error;
+      const stats = result.data || {};
+      const learnerCount = document.querySelector('[data-platform-stat="active-learners"]');
+      const challengeCount = document.querySelector('[data-platform-stat="quiz-challenges"]');
+      if (learnerCount) {
+        learnerCount.textContent = Number(stats.active_learners || 0).toLocaleString() + '+';
+      }
+      if (challengeCount) {
+        challengeCount.textContent = Number(stats.quiz_challenges || 0).toLocaleString();
+      }
+    } catch (error) {
+      console.warn('Platform statistics are temporarily unavailable:', error.message || error);
+    }
+  }
+
+  loadHomepagePlatformStats();
+
   const recoveryForm = document.querySelector('.auth-form');
   const isPasswordRecovery = new URLSearchParams(window.location.search).get('reset') === '1';
 
@@ -799,7 +873,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   function pageUrl(page) {
-    return new URL(page, window.location.href).href;
+    const hostname = window.location.hostname.toLowerCase();
+    const baseUrl = hostname === 'diri.online' || hostname === 'www.diri.online'
+      ? 'https://diri.online/'
+      : window.location.href;
+
+    return new URL(page, baseUrl).href;
   }
 
   function validateAuthForm(form) {
@@ -1038,6 +1117,11 @@ document.addEventListener('DOMContentLoaded', function () {
   async function updateAuthNavigation(session) {
     const loginLinks = document.querySelectorAll('.header-actions a[href="login.html"], .mobile-actions a[href="login.html"]');
     const registerLinks = document.querySelectorAll('.header-actions a[href="register.html"], .mobile-actions a[href="register.html"]');
+    const guestOnlyElements = document.querySelectorAll('[data-auth-guest]');
+
+    guestOnlyElements.forEach(function (element) {
+      element.classList.toggle('hidden', Boolean(session && session.user));
+    });
 
     if (session && session.user) {
       let profile;
@@ -1105,6 +1189,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const email = document.querySelector('[data-profile-email]');
         const message = document.querySelector('[data-profile-message]');
         const logoutButton = document.querySelector('[data-profile-logout]');
+        const deleteOpenButton = document.querySelector('[data-profile-delete-open]');
+        const deleteDialog = document.querySelector('[data-account-delete-dialog]');
+        const deleteForm = document.querySelector('[data-account-delete-form]');
+        const deleteConfirmation = document.querySelector('[data-account-delete-confirmation]');
+        const deleteSubmit = document.querySelector('[data-account-delete-submit]');
+        const deleteMessage = document.querySelector('[data-account-delete-message]');
         usernameInput.value = profile.username;
         languageInput.value = profile.language || 'en';
         if (profile.avatar_url) avatar.src = profile.avatar_url;
@@ -1118,6 +1208,62 @@ document.addEventListener('DOMContentLoaded', function () {
           });
         }
 
+        if (deleteOpenButton && deleteDialog && deleteForm && deleteConfirmation && deleteSubmit) {
+          deleteOpenButton.addEventListener('click', function () {
+            deleteConfirmation.value = '';
+            deleteSubmit.disabled = true;
+            deleteSubmit.dataset.loading = 'false';
+            deleteSubmit.textContent = 'Delete Account Permanently';
+            if (deleteMessage) {
+              deleteMessage.textContent = '';
+              deleteMessage.className = 'auth-message';
+            }
+            deleteDialog.showModal();
+            deleteConfirmation.focus();
+          });
+
+          document.querySelectorAll('[data-account-delete-cancel]').forEach(function (button) {
+            button.addEventListener('click', function () {
+              if (deleteSubmit.dataset.loading === 'true') return;
+              deleteDialog.close();
+            });
+          });
+
+          deleteConfirmation.addEventListener('input', function () {
+            deleteSubmit.disabled = deleteConfirmation.value.trim() !== 'DELETE';
+          });
+
+          deleteForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            if (deleteConfirmation.value.trim() !== 'DELETE') return;
+
+            deleteSubmit.disabled = true;
+            deleteSubmit.dataset.loading = 'true';
+            deleteSubmit.textContent = 'Deleting account...';
+            if (deleteMessage) {
+              deleteMessage.textContent = 'Please wait while we securely delete your account.';
+              deleteMessage.className = 'auth-message info';
+            }
+
+            const result = await supabaseClient.functions.invoke('delete-account', {
+              body: { confirmation: 'DELETE' }
+            });
+
+            if (result.error) {
+              deleteSubmit.dataset.loading = 'false';
+              deleteSubmit.textContent = 'Delete Account Permanently';
+              deleteSubmit.disabled = false;
+              if (deleteMessage) {
+                deleteMessage.textContent = result.error.message || 'We could not delete your account. Please try again.';
+                deleteMessage.className = 'auth-message error';
+              }
+              return;
+            }
+
+            await supabaseClient.auth.signOut({ scope: 'local' });
+            window.location.href = 'index.html?account=deleted';
+          });
+        }
         avatarInput.addEventListener('change', async function () {
           const file = avatarInput.files && avatarInput.files[0];
           if (!file) return;

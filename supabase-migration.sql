@@ -284,3 +284,26 @@ CREATE POLICY "ar_select" ON access_requests FOR SELECT
 
 CREATE POLICY "ar_update" ON access_requests FOR UPDATE
   USING (public.user_has_role('admin'));
+
+-- 8. Public aggregate homepage statistics
+-- Exposes totals only; no profile or quiz records are returned.
+CREATE OR REPLACE FUNCTION public.get_public_platform_stats()
+RETURNS TABLE (
+  active_learners BIGINT,
+  quiz_challenges BIGINT
+)
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+  SELECT
+    (SELECT count(*) FROM public.profiles)::BIGINT AS active_learners,
+    (SELECT count(*) FROM public.quiz_weeks WHERE is_published = true)::BIGINT AS quiz_challenges;
+$$;
+
+REVOKE ALL ON FUNCTION public.get_public_platform_stats() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.get_public_platform_stats() TO anon, authenticated;
+
+COMMENT ON FUNCTION public.get_public_platform_stats()
+  IS 'Returns aggregate public platform totals without exposing user records.';
