@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USSD Simulator &mdash; DIRI Digital Rights</title>
+  <meta name="description" content="Try the DIRI USSD Simulator. Dial *456# to explore your digital rights, report violations, find legal aid, and more.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DIRI &mdash; Digital Rights">
+  <meta property="og:title" content="USSD Simulator &mdash; DIRI Digital Rights">
+  <meta property="og:description" content="Try the DIRI USSD Simulator. Dial *456# to explore your digital rights, report violations, find legal aid, and more.">
+  <meta property="og:image" content="assets/og-image.png">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="900">
+  <meta property="og:locale" content="en_UG">
+
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* ===== USSD Simulator ===== */
+    .ussd-wrapper { width: 100%; display: flex; justify-content: center; }
+    .ussd-phone {
+      position: relative; width: 240px; border-radius: 2rem; padding: 0.9rem 0.85rem 1.1rem;
+      background: linear-gradient(155deg,#4a4a43 0%,#2e2e29 45%,#232320 100%);
+      box-shadow: 0 30px 60px -20px rgba(0,0,0,0.6), 0 2px 0 rgba(255,255,255,0.04) inset, 0 0 0 1px #17171533;
+    }
+    .ussd-side-btn { position: absolute; width: 2px; background: #1a1a17; border-radius: 2px; }
+    .ussd-side-btn-top { right: -2px; top: 74px; height: 28px; }
+    .ussd-side-btn-bottom { right: -2px; top: 108px; height: 28px; }
+    .ussd-side-btn-left { left: -2px; top: 90px; height: 36px; }
+    .ussd-earpiece { display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-bottom: 0.5rem; }
+    .ussd-camera { width: 3px; height: 3px; border-radius: 99px; background: #111; }
+    .ussd-speaker { width: 36px; height: 5px; border-radius: 99px; background: #141412; box-shadow: inset 0 1px 1px rgba(255,255,255,0.05); }
+
+    .ussd-screen {
+      position: relative; overflow: hidden; border-radius: 5px; margin-bottom: 0.75rem;
+      background: #9fb083;
+      box-shadow: inset 0 0 0 2.5px #3d4830, inset 0 3px 10px rgba(0,0,0,0.45), 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .ussd-glass {
+      pointer-events: none; position: absolute; inset: 0;
+      background: linear-gradient(115deg, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 30%);
+    }
+    .ussd-statusbar {
+      display: flex; align-items: center; justify-content: space-between; padding: 0.2rem 0.4rem;
+      border-bottom: 1px solid #71824f; color: #1b2412;
+      font-family: 'Courier New', ui-monospace, monospace; font-size: 9px;
+    }
+    .ussd-signal { display: flex; align-items: flex-end; gap: 1.5px; }
+    .ussd-bar { width: 2px; background: #1b2412; border-radius: 1px; }
+    .ussd-operator { font-weight: 700; letter-spacing: 0.8px; }
+    .ussd-battery { display: flex; align-items: center; gap: 0.2rem; }
+    .ussd-time { font-size: 9px; }
+
+    .ussd-screen-content {
+      position: relative; padding: 0.45rem 0.6rem; min-height: 150px;
+      color: #1b2412; font-family: 'Courier New', ui-monospace, monospace; font-size: 11px; line-height: 1.5;
+      display: flex; flex-direction: column;
+    }
+    .ussd-screen-body { flex: 1; }
+    .ussd-screen-body .ussd-idle { opacity: 0.7; margin-top: 0.2rem; }
+    .ussd-header { font-weight: 700; margin-bottom: 0.2rem; display: flex; align-items: center; gap: 0.2rem; }
+    .ussd-dot { width: 4px; height: 4px; border-radius: 50%; background: #2f6e28; display: inline-block; flex-shrink: 0; }
+    .ussd-body > div { min-height: 1.5em; }
+    .ussd-flash { font-weight: 700; color: #7a2e22; display: none; margin-bottom: 0.2rem; font-size: 11px; }
+
+    .ussd-input-line {
+      margin-top: 0.2rem; padding-top: 0.3rem; display: flex; align-items: center; gap: 0.2rem;
+      border-top: 1px solid #71824f;
+    }
+    .ussd-prompt { font-weight: 700; }
+    .ussd-input {
+      background: transparent; border: none; outline: none; flex: 1; min-width: 0;
+      color: #1b2412; font-family: inherit; font-size: 11px; caret-color: #1b2412; padding: 0;
+    }
+
+    .ussd-softkeys { display: flex; justify-content: space-between; padding: 0 0.4rem; margin-bottom: 0.35rem; font-family: ui-monospace, monospace; }
+    .ussd-softkey { background: none; border: none; font-size: 10px; font-weight: 600; letter-spacing: 0.5px; color: #cfd2c4; cursor: pointer; padding: 2px 4px; }
+    .ussd-softkey:active { opacity: 0.7; }
+
+    .ussd-nav { display: flex; align-items: center; justify-content: center; gap: 0.8rem; margin-bottom: 0.55rem; }
+    .ussd-nav-btn {
+      display: flex; align-items: center; justify-content: center; border-radius: 50%;
+      border: none; cursor: pointer; transition: transform 0.1s;
+    }
+    .ussd-nav-btn:active { transform: scale(0.95); }
+    .ussd-nav-call {
+      width: 34px; height: 34px;
+      background: linear-gradient(180deg,#4f9a48,#3a7a34);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      color: #eafbe6;
+    }
+    .ussd-nav-ok {
+      width: 34px; height: 34px; font-size: 10px; font-weight: 700;
+      background: linear-gradient(180deg,#55564d,#3d3e37);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      color: #eceae0;
+    }
+    .ussd-nav-end {
+      width: 34px; height: 34px;
+      background: linear-gradient(180deg,#c24e3d,#9c3a2c);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      color: #fdece8;
+    }
+
+    .ussd-keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 0.35rem; }
+    .ussd-key {
+      position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 34px; border-radius: 8px; border: 1px solid #1b1b18; cursor: pointer; user-select: none;
+      background: linear-gradient(180deg,#434339,#34342f);
+      box-shadow: 0 1px 0 #4d4d44, 0 2px 2px rgba(0,0,0,0.4);
+      transition: transform 0.05s;
+    }
+    .ussd-key-pressed {
+      background: #2c2c28;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+      transform: translateY(1px);
+    }
+    .ussd-key-digit { color: #f0eee4; font-size: 14px; font-weight: 600; line-height: 1; }
+    .ussd-key-letters { color: #a9a89c; font-size: 6px; letter-spacing: 1.2px; margin-top: 1px; }
+
+    /* Long-press character popup */
+    .ussd-char-popup {
+      position: fixed; z-index: 9999;
+      display: flex; gap: 2px;
+      padding: 4px 5px;
+      background: #2a2a26;
+      border: 1px solid #1b1b18;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      pointer-events: auto;
+    }
+    .ussd-char-popup button {
+      display: flex; align-items: center; justify-content: center;
+      width: 26px; height: 28px;
+      background: #3d3d36;
+      border: 1px solid #55554a;
+      border-radius: 4px;
+      color: #f0eee4;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: background 0.1s;
+    }
+    .ussd-char-popup button:hover {
+      background: #55554a;
+    }
+    .ussd-char-popup button:active {
+      background: #6b6b5c;
+    }
+    .ussd-char-popup-backdrop {
+      position: fixed; inset: 0; z-index: 49;
+      background: transparent;
+    }
+
+    .ussd-clear-row { display: flex; justify-content: center; }
+    .ussd-clear-btn {
+      display: flex; align-items: center; gap: 0.2rem; padding: 0.2rem 0.6rem;
+      border-radius: 6px; font-size: 9px; font-weight: 600; color: #cfd2c4;
+      background: #33332e; border: 1px solid #1b1b18; cursor: pointer;
+    }
+    .ussd-clear-btn:active { opacity: 0.7; }
+
+    @media (max-width: 480px) {
+      .ussd-phone { width: 100%; max-width: 240px; }
+    }
+
+    /* ===== Page-specific ===== */
+    .ussd-page-section {
+      padding: var(--space-10) 0;
+    }
+    .ussd-page-section .container {
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .ussd-intro {
+      text-align: center;
+      margin-bottom: var(--space-8);
+    }
+    .ussd-intro h1 {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-dark);
+      margin-bottom: var(--space-3);
+    }
+    .ussd-intro p {
+      font-size: var(--font-size-lg);
+      color: var(--color-dark-secondary);
+      line-height: var(--line-height-relaxed);
+    }
+    .ussd-whatsapp-link {
+      margin-top: var(--space-8);
+      text-align: center;
+      padding: var(--space-6);
+      background-color: rgba(17, 184, 184, 0.05);
+      border: 1px solid var(--color-teal);
+      border-radius: var(--radius-lg);
+      width: 100%;
+    }
+    .ussd-whatsapp-link p {
+      font-size: var(--font-size-sm);
+      color: var(--color-dark-secondary);
+      margin-bottom: var(--space-3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo">
+        <img src="assets/logo.png" alt="DIRI Logo">
+        <span>DIRI</span>
+      </a>
+
+      <nav class="header-nav" role="navigation" aria-label="Main navigation">
+        <a href="index.html">Home</a>
+        <a href="learn.html">Learn</a>
+        <a href="updates.html">Updates</a>
+        <a href="quiz.html">Weekly Quiz</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="chatbot.html">Mr. DIRI</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="login.html" class="btn btn-ghost btn-sm mobile-only">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+        <div class="menu-toggle" role="button" aria-label="Toggle navigation menu" tabindex="0">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mobile-overlay"></div>
+    <nav class="mobile-nav" role="navigation" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="learn.html">Learn</a>
+      <a href="updates.html">Updates</a>
+      <a href="quiz.html">Weekly Quiz</a>
+      <a href="leaderboard.html">Leaderboard</a>
+      <a href="chatbot.html">Mr. DIRI</a>
+      <div class="mobile-actions">
+        <a href="login.html" class="btn btn-ghost btn-full">Log In</a>
+        <a href="register.html" class="btn btn-primary btn-full">Get Started</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- USSD PAGE -->
+  <section class="ussd-page-section">
+    <div class="container">
+      <div class="ussd-intro animate-in">
+        <span class="section-tag">USSD Simulator</span>
+        <h1>DIRI USSD &mdash; Know Your Rights on USSD</h1>
+        <p>Explore your digital rights, report violations, find legal aid, ask questions, and check report status &mdash; all through the DIRI USSD service. Use the simulator below or dial <strong>*456#</strong> from your phone.</p>
+      </div>
+
+      <div class="animate-in animate-in-delay-1" id="ussd-simulator"></div>
+
+      <div class="ussd-whatsapp-link animate-in animate-in-delay-2">
+        <p>Prefer a conversation? Chat with Mr. DIRI on WhatsApp for personalised guidance on digital rights and online safety.</p>
+        <a class="btn btn-secondary" href="https://wa.me/14155238886?text=join%20nothing-yesterday" target="_blank" rel="noopener noreferrer">Chat on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="assets/logo-white.png" alt="DIRI Logo">
+          <p>DIRI is a youth-focused digital rights and internet governance platform built by Team Netizens, Mbarara University of Science and Technology.</p>
+          <div class="footer-social">
+            <a href="#" aria-label="Twitter"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+            <a href="#" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+            <a href="#" aria-label="LinkedIn"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+            <a href="https://wa.me/14155238886?text=join%20nothing-yesterday" target="_blank" rel="noopener noreferrer" aria-label="Use DIRI on WhatsApp"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg></a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Platform</h4>
+          <a href="learn.html">Learn</a>
+          <a href="updates.html">Updates</a>
+          <a href="quiz.html">Weekly Quiz</a>
+          <a href="leaderboard.html">Leaderboard</a>
+          <a href="chatbot.html">Mr. DIRI</a>
+        </div>
+
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <a href="privacy-policy.html">Privacy Policy</a>
+          <a href="terms.html">Terms of Use</a>
+          <a href="faq.html">FAQ</a>
+          <a href="languages.html">Local Languages</a>
+          <a href="safety-guide.html">Safety Guide</a>
+        </div>
+
+        <div class="footer-column">
+          <h4>Team Netizens</h4>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2026 DIRI by Team Netizens. All rights reserved.</p>
+        <div class="footer-bottom-links">
+          <a href="privacy-policy.html">Privacy</a>
+          <a href="terms.html">Terms</a>
+          <a href="accessibility.html">Accessibility</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a href="chatbot.html" class="mr-diri-fab" aria-label="Chat with Mr. DIRI">
+    <span class="mr-diri-fab-label">Mr. DIRI</span>
+    <span class="mr-diri-fab-icon"><img src="assets/icon.png" alt=""></span>
+  </a>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/accessibility-reader.js"></script>
+  <script src="js/ussd-simulator.js"></script>
+</body>
+</html>
