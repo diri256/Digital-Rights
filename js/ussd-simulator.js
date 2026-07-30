@@ -15,8 +15,34 @@ const USSD_CODE = '*456#';
 const SIM_MENU_TREE = {
 	root: {
 	    header: 'DIRI USSD',
-    body: ['1. Know Your Rights', '2. Report a Violation', '3. Find Legal Aid', '4. Ask a Question', '5. Check Report Status'],
-    options: { 1: 'rights', 2: 'report_category', 3: 'legal_region', 4: 'faq_prompt', 5: 'status_prompt' },
+    body: ['1. Know Your Rights', '2. Report a Violation', '3. Find Legal Aid', '4. Ask a Question', '5. Check Report Status', '6. Quick Lessons'],
+    options: { 1: 'rights', 2: 'report_category', 3: 'legal_region', 4: 'faq_prompt', 5: 'status_prompt', 6: 'quick_lessons' },
+  },
+
+  quick_lessons: {
+    header: 'Quick Lessons',
+    body: ['1. Protect Your Privacy', '2. Share Safely', '3. Spot Scams', '4. Report Harm'],
+    options: { 1: 'lesson_privacy', 2: 'lesson_sharing', 3: 'lesson_scams', 4: 'lesson_reporting', 0: 'root' },
+  },
+  lesson_privacy: {
+    header: 'Protect Your Privacy',
+    body: ['Use strong, unique passwords and keep codes private.', 'Only share personal data when you trust the reason.', '0. Back  00. Main Menu'],
+    options: { 0: 'quick_lessons', '00': 'root' },
+  },
+  lesson_sharing: {
+    header: 'Share Safely',
+    body: ['Pause before posting: online content can spread fast.', 'Ask consent before sharing another person\'s photo or details.', '0. Back  00. Main Menu'],
+    options: { 0: 'quick_lessons', '00': 'root' },
+  },
+  lesson_scams: {
+    header: 'Spot Scams',
+    body: ['Urgent messages asking for money or codes may be scams.', 'Verify through an official contact before you act.', '0. Back  00. Main Menu'],
+    options: { 0: 'quick_lessons', '00': 'root' },
+  },
+  lesson_reporting: {
+    header: 'Report Harm',
+    body: ['Save screenshots, dates and links as evidence.', 'Report abuse to the platform or seek trusted support.', '0. Back  00. Main Menu'],
+    options: { 0: 'quick_lessons', '00': 'root' },
   },
 
   rights: {
