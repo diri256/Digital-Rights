@@ -24,6 +24,7 @@ const USSD_LANGUAGES = {
 const USSD_COPY = {
   en: {
     chooseLanguage: 'Choose Language', changeLanguage: '7. Change Language',
+    quickLessons: 'Quick Lessons',
     main: ['1. Know Your Rights', '2. Report a Violation', '3. Find Legal Aid', '4. Ask a Question', '5. Check Report Status', '6. Quick Lessons'],
     lessons: ['1. Protect Your Privacy', '2. Share Safely', '3. Spot Scams', '4. Report Harm'],
     lessonContent: [
@@ -32,9 +33,45 @@ const USSD_COPY = {
       ['Spot Scams', 'Urgent messages asking for money or codes may be scams.', 'Verify through an official contact before you act.'],
       ['Report Harm', 'Save screenshots, dates and links as evidence.', 'Report abuse to the platform or seek trusted support.'],
     ],
+    rightsHeader: 'Know Your Rights',
+    rightsOptions: ['1. Freedom of Expression', '2. Right to Assembly', '3. Privacy & Data', '4. Arrest & Detention'],
+    expressionHeader: 'Expression',
+    expressionBody: ['You may speak, publish and post online without prior state approval.', 'Limits exist only for incitement, defamation or true security threats.'],
+    assemblyHeader: 'Assembly',
+    assemblyBody: ['Peaceful gatherings do not legally require police permission.', 'Police must show a specific public-safety reason to disperse.'],
+    privacyHeader: 'Privacy & Data',
+    privacyBody: ['Your calls, messages and location data are protected.', 'Access by any party usually requires a court order.'],
+    arrestHeader: 'Arrest & Detention',
+    arrestBody: ['Ask the officer\'s name, badge no. and the reason for arrest.', 'You must be brought before a court within the legal time limit.'],
+    reportHeader: 'Report a Violation',
+    reportBody: ['Select category:', '1. Unlawful Arrest', '2. Assembly / Protest', '3. Online Censorship', '4. Other'],
+    reportDetailsHeader: 'Describe briefly',
+    reportDetailsBody: ['Type a short description below, then press Send.', '(location, date, what happened)'],
+    reportDoneHeader: 'Report Received',
+    reportDoneBody: ['Save this code to check status later.', 'This is a local demo.'],
+    legalHeader: 'Find Legal Aid',
+    legalBody: ['Choose your region:', '1. Central', '2. Northern', '3. Eastern', '4. Western'],
+    legalNoListings: 'No listings for this region.',
+    legalFreeCall: 'All calls to 0800 numbers are free.',
+    faqHeader: 'Ask a Question',
+    faqBody: ['Type your question in a few words, then press Send.', 'e.g. "arrested no warrant"'],
+    faqAnswerHeader: 'Answer',
+    faqAskAnother: '1. Ask another  0. Main Menu',
+    faqAskAnotherLegal: '1. Ask another  2. Legal Aid  0. Main Menu',
+    statusHeader: 'Check Report Status',
+    statusBody: ['Enter your reference code (e.g. HL-1234), then press Send.'],
+    statusResultHeader: 'Status',
+    statusUnderReview: 'Status: Under Review',
+    statusNotFound: 'No report found for that code.',
+    statusSessionOnly: 'Reports only persist for this session.',
+    back: '0. Back',
+    backMain: '0. Back  00. Main Menu',
+    mainMenu: '00. Main Menu',
+    noFaqMatch: 'No matching answer on file. Try different words, or use option 2 below to reach Legal Aid directly.',
   },
   nyn: {
     chooseLanguage: 'Komamu Orurimi', changeLanguage: '7. Hindura Orurimi',
+    quickLessons: 'Eby\'Okwega by\'Obufunze',
     main: ["1. Manya Obugabe Bwawe", "2. Roorera Okutwarizibwa Kubi", "3. Noonya Obuyambi bw'Amateeka", "4. Buuza Ekibuuzo", "5. Kebera Alipoota Yawe", "6. Eby'Okwega by'Obufunze"],
     lessons: ["1. Kinga Ebyama Byawe", "2. Gabana n'Obwegendereza", "3. Manya Obushuma", "4. Roorera Obulabe"],
     lessonContent: [
@@ -43,9 +80,45 @@ const USSD_COPY = {
       ["Manya Obushuma", "Obutumwa oburikusaba sente nari koodi omu bwangu nibubaasa kuba bushuma.", "Banza okakasize aha rurimi rw'omutongore otaakozire."],
       ["Roorera Obulabe", "Hoza ebishushani, ebiro n'obukwate nk'obujurizi.", "Roorera obutwarizibwa kubi aha mutimbagano nari noona obuyambi."],
     ],
+    rightsHeader: 'Manya Obugabe Bwawe',
+    rightsOptions: ['1. Obugabe bw\'Okugambaho', '2. Obugabe bw\'Okukora emitwarize', '3. Ebyama n\'Obukuumi bw\'Obubaka', '4. Okukwatwa n\'Okuhandikwa'],
+    expressionHeader: 'Obugabe bw\'Okugambaho',
+    expressionBody: ['Noyinza kugamba, kutangaaza n\'okuteeka aha mutimbagano otari kutandikwa.', 'Enkomo ziriho aha bintu ebirikujutsa obwotsi, okubuganya oba obulabe obw\'amazima.'],
+    assemblyHeader: 'Obugabe bw\'Okukora emitwarize',
+    assemblyBody: ['Okukora emitwarize omu mirembe tikwetaaga lukusa lwa poliisi.', 'Poliisi egamba ekigendererwa ky\'obukuumi bw\'omuntu nari obw\'ensi okusaasaanya ekibiina.'],
+    privacyHeader: 'Ebyama n\'Obukuumi bw\'Obubaka',
+    privacyBody: ['Ebiririsa byawe, obubaka n\'ebirikukwataho ebirikukukwatako birikukuumwa.', 'Kufuna ebirikukukwatako omuntu owaandi n\'ekyetaaga okukkirizibwa kooti.'],
+    arrestHeader: 'Okukwatwa n\'Okuhandikwa',
+    arrestBody: ['Buuzayo poliisi erinnya lyawe, namba ya bbeji n\'ensonga lwaki okwatiddwa.', 'Olina kuleetebwa omu kooti omu bbanga erikiri mu mateeka.'],
+    reportHeader: 'Roorera Okutwarizibwa Kubi',
+    reportBody: ['Komamu ekitongole:', '1. Okukwatwa Okw\'Enkyamu', '2. Okukora emitwarize / Okulaga Obwotsi', '3. Okukendeeza aha Mikutu', '4. Ebindi'],
+    reportDetailsHeader: 'Soboorora omu Bufunze',
+    reportDetailsBody: ['Handiika ebigambo ebitono ahaansi, ogatuma Send.', '(ekifo, ebiro, ekyabaho)'],
+    reportDoneHeader: 'Alipoota Eshubirwe',
+    reportDoneBody: ['Orengyera koodi enu okukebera alipoota yawe enyima.', 'Eki nikyo kyakulabirako ky\'omwanya.'],
+    legalHeader: 'Noonya Obuyambi bw\'Amateeka',
+    legalBody: ['Komamu akarere kawe:', '1. Ekkati', '2. Obukiikakkati', '3. Obuvanjuba', '4. Obugwanjuba'],
+    legalNoListings: 'Tihariho buyambi busangibwe omu karere kano.',
+    legalFreeCall: 'Ebiririsa byona aha namba 0800 ni bwereere.',
+    faqHeader: 'Buuza Ekibuuzo',
+    faqBody: ['Handiika ekibuuzo kyawe omu bigambo ebike, ogatuma Send.', 'eky\'okulabirako: "bakwatwa batari waranti"'],
+    faqAnswerHeader: 'Eky\'okugarukamu',
+    faqAskAnother: '1. Buuza ekindi  0. Olupapura Olukuru',
+    faqAskAnotherLegal: '1. Buuza ekindi  2. Obuyambi bw\'Amateeka  0. Olupapura Olukuru',
+    statusHeader: 'Kebera Alipoota Yawe',
+    statusBody: ['Yingiza koodi yawe ey\'okukebera (eky\'okulabirako HL-1234), ogatuma Send.'],
+    statusResultHeader: 'Embeera',
+    statusUnderReview: 'Embeera: Eri kukeberwa',
+    statusNotFound: 'Tihariho alipoota erikushangwa aha koodi eye.',
+    statusSessionOnly: 'Alipoota zirema omu mwanya ogu zokka.',
+    back: '0. Emabega',
+    backMain: '0. Emabega  00. Olupapura Olukuru',
+    mainMenu: '00. Olupapura Olukuru',
+    noFaqMatch: 'Tihariho kugarukamu kushangwa. Gerageza ebigambo ebindi, nari koresa akasara 2 wansi okutuuka aha Buyambi bw\'Amateeka.',
   },
   lug: {
     chooseLanguage: 'Londa Olulimi', changeLanguage: '7. Kyusa Olulimi',
+    quickLessons: 'Eby\'Okuyiga mu Bufunze',
     main: ["1. Manya Eddembe Lyo", "2. Loopa Okutulugunyizibwa", "3. Noonya Obuyambi bw'Amateeka", "4. Buuza Ekibuuzo", "5. Kebera Alipoota Yo", "6. Eby'Okuyiga mu Bufunze"],
     lessons: ["1. Kuuma Ebyama Byo", "2. Gabana n'Obwegendereza", "3. Manya Obukumpanya", "4. Loopa Obulabe"],
     lessonContent: [
@@ -54,9 +127,45 @@ const USSD_COPY = {
       ["Manya Obukumpanya", "Obubaka obwangu obusaba ssente oba koodi buyinza kuba bukumpanya.", "Kakasa n'omukutu omutongole nga tonnakola."],
       ["Loopa Obulabe", "Tereka ebifaananyi, ennaku n'enkolagana ng'obujulizi.", "Loopa okutulugunyizibwa ku mukutu oba nooza obuyambi."],
     ],
+    rightsHeader: 'Manya Eddembe Lyo',
+    rightsOptions: ['1. Eddembe ly\'Okwogera', '2. Eddembe ly\'Okukuŋŋaana', '3. Ebyama n\'Obukuumi bw\'Obubaka', '4. Okukwatibwa n\'Okusibibwa'],
+    expressionHeader: 'Eddembe ly\'Okwogera',
+    expressionBody: ['Oyinza okwogera, okusasula n\'okuteeka ku mutimbagano awatali kukkirizibwa gavumenti.', 'Enkomo ziriwo ku bikwata ku kutusa obuvuyo, okwogera ebikobi oba obulabe obw\'amazima.'],
+    assemblyHeader: 'Eddembe ly\'Okukuŋŋaana',
+    assemblyBody: ['Okukuŋŋaana mu mirembe tekwetaaga lukusa lwa poliisi mu mateeka.', 'Poliisi ettaaga okulaga ensonga y\'obukuumi bw\'obuntu nga esaanula ekibiina.'],
+    privacyHeader: 'Ebyama n\'Obukuumi bw\'Obubaka',
+    privacyBody: ['Ebiririsa byo, obubaka n\'endagiriro zo biriko ekikungubaga.', 'Okufuna obubaka bw\'omuntu owaandi yetaaga olukusa lwa kkooti.'],
+    arrestHeader: 'Okukwatibwa n\'Okusibibwa',
+    arrestBody: ['Buuzira poliisi erinnya lyawe, namba ya bbeji n\'ensonga lwaki okwatiddwa.', 'Olina okuleetebwa mu kkooti mu bbanga erikkirizibwa mu mateeka.'],
+    reportHeader: 'Loopa Okutulugunyizibwa',
+    reportBody: ['Londa ettaba:', '1. Okukwatibwa Okw\'Enkyamu', '2. Okukuŋŋaana / Okulaga Obusungu', '3. Okukendeeza ku Mikutu', '4. Ebirala'],
+    reportDetailsHeader: 'Nyonyola mu Bufunze',
+    reportDetailsBody: ['Wandiika ebigambo ebitono wammanga, oluvannyuma nyiga Send.', '(ekifo, ennaku, ekyabaawo)'],
+    reportDoneHeader: 'Lipoota Efuuliddwa',
+    reportDoneBody: ['Kuuma koodi eno okukebera lipoota yo oluvannyuma.', 'Kino kyakulabirako mu bwengula.'],
+    legalHeader: 'Noonya Obuyambi bw\'Amateeka',
+    legalBody: ['Londa essaza lyo:', '1. Ekkati', '2. Obukiikakkati', '3. Obuvanjuba', '4. Obugwanjuba'],
+    legalNoListings: 'Tewali buyambi busangibwa mu kitundu kino.',
+    legalFreeCall: 'Ebiririsa byonna ku namba 0800 bwereere.',
+    faqHeader: 'Buuza Ekibuuzo',
+    faqBody: ['Wandiika ekibuuzo kyo mu bigambo ebitono, oluvannyuma nyiga Send.', 'eky\'okulabirako: "bakwatiddwa awatali waranti"'],
+    faqAnswerHeader: 'Eky\'okuddamu',
+    faqAskAnother: '1. Buuza ekirala  0. Olukalala Olukulu',
+    faqAskAnotherLegal: '1. Buuza ekirala  2. Obuyambi bw\'Amateeka  0. Olukalala Olukulu',
+    statusHeader: 'Kebera Alipoota Yo',
+    statusBody:['Yingiza koodi yo ey\'okukebera (eky\'okulabirako HL-1234), oluvannyuma nyiga Send.'],
+    statusResultHeader: 'Embeera',
+    statusUnderReview: 'Embeera: Ekiraba',
+    statusNotFound: 'Tewali lipoota yasangibwa ku koodi eyo.',
+    statusSessionOnly: 'Lipoota zisigala mu sessaano zokka.',
+    back: '0. Emabega',
+    backMain: '0. Emabega  00. Olukalala Olukulu',
+    mainMenu: '00. Olukalala Olukulu',
+    noFaqMatch: 'Tewali kuddamu kusangibwa. Gezaako ebigambo ebirala, oba kozesa akasala 2 wammanga okutuuka ku Buyambi bw\'Amateeka.',
   },
   ach: {
     chooseLanguage: 'Yer Leb', changeLanguage: '7. Lok Leb',
+    quickLessons: 'Pwony Macok',
     main: ["1. Ng'eyo Twero Mii", "2. Ripo Gengo", "3. Yeny Kony me Cik", "4. Penjo", "5. Rot Kit Ripo", "6. Pwony Macok"],
     lessons: ["1. Gwok Wele Mii", "2. Poko Kwek", "3. Ng'eyo Rwod", "4. Ripo Gengo"],
     lessonContent: [
@@ -65,6 +174,41 @@ const USSD_COPY = {
       ['Ng\'eyo Rwod', 'Kwena ma cito nywako cente onyo code twero bedo rwod.', 'Mok kwena ki kabedo ma kite tye atir ka i pok otimo.'],
       ['Ripo Gengo', 'Gwok cal, nino kede link calo caden.', 'Ripo gengo i platform onyo yeny kony ma igeno.'],
     ],
+    rightsHeader: 'Ng\'eyo Twero Mii',
+    rightsOptions: ['1. Twero me Lokking', '2. Twero me Cokke Cok', '3. Mung ngec me Kwec', '4. Makki ki Cwanny'],
+    expressionHeader: 'Twero me Lokking',
+    expressionBody: ['I twero lok, keto lok i intanet kun pe mito yee pa gwok.', 'Gen-nu tye keken me cako lweny, jami marac onyo cwiny me gwoko.'],
+    assemblyHeader: 'Twero me Cokke Cok',
+    assemblyBody: ['Cokke cok i kuc pe mito yee pa polisi i cik.', 'Polisi myero nyut lokke me gwoko kwo pa dano me keyo cokke cok.'],
+    privacyHeader: 'Mung ngec me Kwec',
+    privacyBody: ['Ngec me kwena mii, ngec mii kede kabedo mii gun gwoke.', 'Ngat moo mito ngec mii myero yee cik pa kwan.'],
+    arrestHeader: 'Makki ki Cwanny',
+    arrestBody: ['Penjo nying polisi, namba kad kede gimomiyo i makki.', 'I myero kel i kom kwan i nino ma cik yero.'],
+    reportHeader: 'Ripo Gengo',
+    reportBody: ['Yer kit:', '1. Makki ma Cik pe', '2. Cokke cok / Nyut Cwiny', '3. Juk intanet', '4. Mukene'],
+    reportDetailsHeader: 'Nyut i Cek Cek',
+    reportDetailsBody: ['Coa lok keken i kun, ci diyo Send.', '(kabedo, nino, gin ma timme)'],
+    reportDoneHeader: 'Ripo Oromo',
+    reportDoneBody: ['Gwok code man me rote kit ripo mii i anyim.', 'Man obedo demo i kabedo man.'],
+    legalHeader: 'Yeny Kony me Cik',
+    legalBody: ['Yer kabedo mii:', '1. Central', '2. Northern', '3. Eastern', '4. Western'],
+    legalNoListings: 'Pe tye kony anyira i kabedo man.',
+    legalFreeCall: 'Kwena weng i namba 0800 pe gicwalo.',
+    faqHeader: 'Penjo',
+    faqBody: ['Coa penjo mii i lok keken, ci diyo Send.', 'kit: "gi make pe ki waranti"'],
+    faqAnswerHeader: 'Dwoko',
+    faqAskAnother: '1. Penjo mukene  0. Mapok',
+    faqAskAnotherLegal: '1. Penjo mukene  2. Kony me Cik  0. Mapok',
+    statusHeader: 'Rot Kit Ripo',
+    statusBody: ['Ket code mii me rote kit ripo (kit HL-1234), ci diyo Send.'],
+    statusResultHeader: 'Nger',
+    statusUnderReview: 'Nger: I neno',
+    statusNotFound: 'Pe tye ripo moo yudo i code meno.',
+    statusSessionOnly: 'Ripo weng tye i sesun man keken.',
+    back: '0. Dok Cing',
+    backMain: '0. Dok Cing  00. Mapok',
+    mainMenu: '00. Mapok',
+    noFaqMatch: 'Pe tye dwoko yudo. Tem lok mukene, onyo tii ki 2 i kun me nongo Kony me Cik.',
   },
 };
 
@@ -90,7 +234,7 @@ const SIM_MENU_TREE = {
   },
 
   quick_lessons: {
-    header: 'Quick Lessons',
+    header: function (ctx) { return languageCopy(ctx).quickLessons; },
     body: function (ctx) { return languageCopy(ctx).lessons; },
     options: { 1: 'lesson_privacy', 2: 'lesson_sharing', 3: 'lesson_scams', 4: 'lesson_reporting', 0: 'main_menu' },
   },
@@ -116,50 +260,34 @@ const SIM_MENU_TREE = {
   },
 
   rights: {
-    header: 'Know Your Rights',
-    body: ['1. Freedom of Expression', '2. Right to Assembly', '3. Privacy & Data', '4. Arrest & Detention'],
+    header: function (ctx) { return languageCopy(ctx).rightsHeader; },
+    body: function (ctx) { return languageCopy(ctx).rightsOptions; },
     options: { 1: 'rights_expression', 2: 'rights_assembly', 3: 'rights_privacy', 4: 'rights_arrest', 0: 'main_menu' },
   },
   rights_expression: {
-    header: 'Expression',
-    body: [
-      'You may speak, publish and post online without prior state approval.',
-      'Limits exist only for incitement, defamation or true security threats.',
-      '0. Back  00. Main Menu',
-    ],
+    header: function (ctx) { return languageCopy(ctx).expressionHeader; },
+    body: function (ctx) { return languageCopy(ctx).expressionBody.concat([languageCopy(ctx).backMain]); },
     options: { 0: 'rights', '00': 'main_menu' },
   },
   rights_assembly: {
-    header: 'Assembly',
-    body: [
-      'Peaceful gatherings do not legally require police permission.',
-      'Police must show a specific public-safety reason to disperse.',
-      '0. Back  00. Main Menu',
-    ],
+    header: function (ctx) { return languageCopy(ctx).assemblyHeader; },
+    body: function (ctx) { return languageCopy(ctx).assemblyBody.concat([languageCopy(ctx).backMain]); },
     options: { 0: 'rights', '00': 'main_menu' },
   },
   rights_privacy: {
-    header: 'Privacy & Data',
-    body: [
-      'Your calls, messages and location data are protected.',
-      'Access by any party usually requires a court order.',
-      '0. Back  00. Main Menu',
-    ],
+    header: function (ctx) { return languageCopy(ctx).privacyHeader; },
+    body: function (ctx) { return languageCopy(ctx).privacyBody.concat([languageCopy(ctx).backMain]); },
     options: { 0: 'rights', '00': 'main_menu' },
   },
   rights_arrest: {
-    header: 'Arrest & Detention',
-    body: [
-      'Ask the officer\'s name, badge no. and the reason for arrest.',
-      'You must be brought before a court within the legal time limit.',
-      '0. Back  00. Main Menu',
-    ],
+    header: function (ctx) { return languageCopy(ctx).arrestHeader; },
+    body: function (ctx) { return languageCopy(ctx).arrestBody.concat([languageCopy(ctx).backMain]); },
     options: { 0: 'rights', '00': 'main_menu' },
   },
 
   report_category: {
-    header: 'Report a Violation',
-    body: ['Select category:', '1. Unlawful Arrest', '2. Assembly / Protest', '3. Online Censorship', '4. Other'],
+    header: function (ctx) { return languageCopy(ctx).reportHeader; },
+    body: function (ctx) { return languageCopy(ctx).reportBody; },
     options: { 1: 'report_details', 2: 'report_details', 3: 'report_details', 4: 'report_details', 0: 'main_menu' },
     onEnter: function (ctx, key) {
       var cats = { 1: 'Unlawful Arrest', 2: 'Assembly / Protest', 3: 'Online Censorship', 4: 'Other' };
@@ -168,8 +296,8 @@ const SIM_MENU_TREE = {
     },
   },
   report_details: {
-    header: 'Describe briefly',
-    body: function (ctx) { return ['Category: ' + ctx.category, 'Type a short description below, then press Send.', '(location, date, what happened)']; },
+    header: function (ctx) { return languageCopy(ctx).reportDetailsHeader; },
+    body: function (ctx) { return ['Category: ' + ctx.category].concat(languageCopy(ctx).reportDetailsBody); },
     input: 'text',
     onSubmit: function (ctx, text) {
       var ref = 'HL-' + Math.floor(1000 + Math.random() * 9000);
@@ -179,14 +307,14 @@ const SIM_MENU_TREE = {
     },
   },
   report_done: {
-    header: 'Report Received',
-    body: function (ctx) { return ['Reference code: ' + ctx.lastRef, 'Save this code to check status later.', 'This is a local demo.', '00. Main Menu']; },
+    header: function (ctx) { return languageCopy(ctx).reportDoneHeader; },
+    body: function (ctx) { return ['Reference code: ' + ctx.lastRef].concat(languageCopy(ctx).reportDoneBody).concat([languageCopy(ctx).mainMenu]); },
     options: { '00': 'main_menu' },
   },
 
   legal_region: {
-    header: 'Find Legal Aid',
-    body: ['Choose your region:', '1. Central', '2. Northern', '3. Eastern', '4. Western'],
+    header: function (ctx) { return languageCopy(ctx).legalHeader; },
+    body: function (ctx) { return languageCopy(ctx).legalBody; },
     options: { 1: 'legal_list', 2: 'legal_list', 3: 'legal_list', 4: 'legal_list', 0: 'main_menu' },
     onEnter: function (ctx, key) {
       var regions = { 1: 'Central', 2: 'Northern', 3: 'Eastern', 4: 'Western' };
@@ -195,7 +323,7 @@ const SIM_MENU_TREE = {
     },
   },
   legal_list: {
-    header: function (ctx) { return 'Legal Aid \u2014 ' + ctx.region; },
+    header: function (ctx) { return languageCopy(ctx).legalHeader + ' \u2014 ' + ctx.region; },
     body: function (ctx) {
       var dirs = {
         Central: ['Rights Clinic Kampala \u2014 0800 100 200', 'Bar Assoc. Legal Aid \u2014 0800 100 210'],
@@ -203,27 +331,27 @@ const SIM_MENU_TREE = {
         Eastern: ['Mbale Justice Centre \u2014 0800 100 230'],
         Western: ['Mbarara Aid Bureau \u2014 0800 100 240'],
       };
-      return (dirs[ctx.region] || ['No listings for this region.']).concat(['All calls to 0800 numbers are free.', '0. Back  00. Main Menu']);
+      return (dirs[ctx.region] || [languageCopy(ctx).legalNoListings]).concat([languageCopy(ctx).legalFreeCall, languageCopy(ctx).backMain]);
     },
     options: { 0: 'legal_region', '00': 'main_menu' },
   },
 
   faq_prompt: {
-    header: 'Ask a Question',
-    body: ['Type your question in a few words, then press Send.', 'e.g. "arrested no warrant"'],
+    header: function (ctx) { return languageCopy(ctx).faqHeader; },
+    body: function (ctx) { return languageCopy(ctx).faqBody; },
     input: 'text',
     onSubmit: function (ctx, text) {
-      var answer = answerFaq(text);
+      var answer = answerFaq(text, ctx);
       ctx.lastQuery = text;
       ctx.lastAnswer = answer;
       return { next: 'faq_answer', ctx: ctx };
     },
   },
   faq_answer: {
-    header: 'Answer',
+    header: function (ctx) { return languageCopy(ctx).faqAnswerHeader; },
     body: function (ctx) {
       var lines = [ctx.lastAnswer.text, ''];
-      lines.push(ctx.lastAnswer.matched ? '1. Ask another  0. Main Menu' : '1. Ask another  2. Legal Aid  0. Main Menu');
+      lines.push(ctx.lastAnswer.matched ? languageCopy(ctx).faqAskAnother : languageCopy(ctx).faqAskAnotherLegal);
       return lines;
     },
     options: function (ctx) {
@@ -232,8 +360,8 @@ const SIM_MENU_TREE = {
   },
 
   status_prompt: {
-    header: 'Check Report Status',
-    body: ['Enter your reference code (e.g. HL-1234), then press Send.'],
+    header: function (ctx) { return languageCopy(ctx).statusHeader; },
+    body: function (ctx) { return languageCopy(ctx).statusBody; },
     input: 'text',
     onSubmit: function (ctx, text) {
       var reports = ctx.reports || [];
@@ -243,11 +371,11 @@ const SIM_MENU_TREE = {
     },
   },
   status_result: {
-    header: 'Status',
+    header: function (ctx) { return languageCopy(ctx).statusResultHeader; },
     body: function (ctx) {
       return ctx.statusResult
-        ? [ctx.statusResult.ref + ' \u2014 ' + ctx.statusResult.category, 'Status: Under Review', '00. Main Menu']
-        : ['No report found for that code.', 'Reports only persist for this session.', '00. Main Menu'];
+        ? [ctx.statusResult.ref + ' \u2014 ' + ctx.statusResult.category, languageCopy(ctx).statusUnderReview, languageCopy(ctx).mainMenu]
+        : [languageCopy(ctx).statusNotFound, languageCopy(ctx).statusSessionOnly, languageCopy(ctx).mainMenu];
     },
     options: { '00': 'main_menu' },
   },
@@ -262,7 +390,7 @@ var SIM_FAQS = [
   { keywords: ['bail', 'court', 'days', 'held'], text: 'You must be brought before a court within the legal time limit after arrest \u2014 this varies by jurisdiction, ask your legal aid contact for the exact figure.' },
 ];
 
-function answerFaq(query) {
+function answerFaq(query, ctx) {
   var words = query.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
   var best = null;
   var bestScore = 0;
@@ -279,7 +407,7 @@ function answerFaq(query) {
     }
   }
   if (best && bestScore > 0) return { matched: true, text: best.text };
-  return { matched: false, text: 'No matching answer on file. Try different words, or use option 2 below to reach Legal Aid directly.' };
+  return { matched: false, text: languageCopy(ctx).noFaqMatch };
 }
 
 /* ------------------------------------------------------------------ */
