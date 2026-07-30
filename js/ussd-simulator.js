@@ -12,43 +12,113 @@
 
 const USSD_CODE = '*456#';
 
+const USSD_LANGUAGES = {
+  1: { code: 'en', name: 'English' },
+  2: { code: 'nyn', name: 'Runyankole' },
+  3: { code: 'lug', name: 'Luganda' },
+  4: { code: 'ach', name: 'Acholi' },
+};
+
+/* Short USSD wording, reviewed easily in one place. A local-language reviewer
+   can refine any phrase without changing the menu logic. */
+const USSD_COPY = {
+  en: {
+    chooseLanguage: 'Choose Language', changeLanguage: '7. Change Language',
+    main: ['1. Know Your Rights', '2. Report a Violation', '3. Find Legal Aid', '4. Ask a Question', '5. Check Report Status', '6. Quick Lessons'],
+    lessons: ['1. Protect Your Privacy', '2. Share Safely', '3. Spot Scams', '4. Report Harm'],
+    lessonContent: [
+      ['Protect Your Privacy', 'Use strong, unique passwords and keep codes private.', 'Only share personal data when you trust the reason.'],
+      ['Share Safely', 'Pause before posting: online content can spread fast.', "Ask consent before sharing another person's photo or details."],
+      ['Spot Scams', 'Urgent messages asking for money or codes may be scams.', 'Verify through an official contact before you act.'],
+      ['Report Harm', 'Save screenshots, dates and links as evidence.', 'Report abuse to the platform or seek trusted support.'],
+    ],
+  },
+  nyn: {
+    chooseLanguage: 'Komamu Orurimi', changeLanguage: '7. Hindura Orurimi',
+    main: ["1. Manya Obugabe Bwawe", "2. Roorera Okutwarizibwa Kubi", "3. Noonya Obuyambi bw'Amateeka", "4. Buuza Ekibuuzo", "5. Kebera Alipoota Yawe", "6. Eby'Okwega by'Obufunze"],
+    lessons: ["1. Kinga Ebyama Byawe", "2. Gabana n'Obwegendereza", "3. Manya Obushuma", "4. Roorera Obulabe"],
+    lessonContent: [
+      ["Kinga Ebyama Byawe", "Koresa ekigambo ky'okukingisa ekihamire kandi otagamba koodi zawe.", "Tanga amakuru gawe agarikukukwataho ahu orikumanya ensonga."],
+      ["Gabana n'Obwegendereza", "Banza oteekateeke otaikireho aha mutimbagano.", "Shaba oruhusa otaikireho ekishushani ky'omuntu ondi."],
+      ["Manya Obushuma", "Obutumwa oburikusaba sente nari koodi omu bwangu nibubaasa kuba bushuma.", "Banza okakasize aha rurimi rw'omutongore otaakozire."],
+      ["Roorera Obulabe", "Hoza ebishushani, ebiro n'obukwate nk'obujurizi.", "Roorera obutwarizibwa kubi aha mutimbagano nari noona obuyambi."],
+    ],
+  },
+  lug: {
+    chooseLanguage: 'Londa Olulimi', changeLanguage: '7. Kyusa Olulimi',
+    main: ["1. Manya Eddembe Lyo", "2. Loopa Okutulugunyizibwa", "3. Noonya Obuyambi bw'Amateeka", "4. Buuza Ekibuuzo", "5. Kebera Alipoota Yo", "6. Eby'Okuyiga mu Bufunze"],
+    lessons: ["1. Kuuma Ebyama Byo", "2. Gabana n'Obwegendereza", "3. Manya Obukumpanya", "4. Loopa Obulabe"],
+    lessonContent: [
+      ["Kuuma Ebyama Byo", "Kozesa ekigambo eky'ekyama ekizibu era tokoowola koodi zo.", "Gabana ebikukwatako nga weetegedde ensonga yokka."],
+      ["Gabana n'Obwegendereza", "Sooka olowooze nga tonnateeka ku mutimbagano.", "Saba olukusa nga tonnateeka kifaananyi oba bikwata ku muntu omulala."],
+      ["Manya Obukumpanya", "Obubaka obwangu obusaba ssente oba koodi buyinza kuba bukumpanya.", "Kakasa n'omukutu omutongole nga tonnakola."],
+      ["Loopa Obulabe", "Tereka ebifaananyi, ennaku n'enkolagana ng'obujulizi.", "Loopa okutulugunyizibwa ku mukutu oba nooza obuyambi."],
+    ],
+  },
+  ach: {
+    chooseLanguage: 'Yer Leb', changeLanguage: '7. Lok Leb',
+    main: ["1. Ng'eyo Twero Mii", "2. Ripo Gengo", "3. Yeny Kony me Cik", "4. Penjo", "5. Rot Kit Ripo", "6. Pwony Macok"],
+    lessons: ["1. Gwok Wele Mii", "2. Poko Kwek", "3. Ng'eyo Rwod", "4. Ripo Gengo"],
+    lessonContent: [
+      ['Gwok Wele Mii', 'Tiit ki passwod matek kede i miiy code ni ngat mo.', 'Poko ngec mii keken ka ingeyo gimomiyo.'],
+      ['Poko Kwek', 'Pii tam amia i keto gin i intanet.', 'Peny yee ka i mito keto cal pa dano mukene.'],
+      ['Ng\'eyo Rwod', 'Kwena ma cito nywako cente onyo code twero bedo rwod.', 'Mok kwena ki kabedo ma kite tye atir ka i pok otimo.'],
+      ['Ripo Gengo', 'Gwok cal, nino kede link calo caden.', 'Ripo gengo i platform onyo yeny kony ma igeno.'],
+    ],
+  },
+};
+
+function languageCopy(ctx) {
+  return USSD_COPY[(ctx && ctx.language) || 'en'];
+}
+
 const SIM_MENU_TREE = {
-	root: {
-	    header: 'DIRI USSD',
-    body: ['1. Know Your Rights', '2. Report a Violation', '3. Find Legal Aid', '4. Ask a Question', '5. Check Report Status', '6. Quick Lessons'],
-    options: { 1: 'rights', 2: 'report_category', 3: 'legal_region', 4: 'faq_prompt', 5: 'status_prompt', 6: 'quick_lessons' },
+  root: {
+    header: function (ctx) { return languageCopy(ctx).chooseLanguage; },
+    body: ['1. English', '2. Runyankole', '3. Luganda', '4. Acholi'],
+    options: { 1: 'main_menu', 2: 'main_menu', 3: 'main_menu', 4: 'main_menu' },
+    onEnter: function (ctx, key) {
+      ctx.language = USSD_LANGUAGES[key].code;
+      return ctx;
+    },
+  },
+
+  main_menu: {
+    header: 'DIRI USSD',
+    body: function (ctx) { return languageCopy(ctx).main.concat([languageCopy(ctx).changeLanguage]); },
+    options: { 1: 'rights', 2: 'report_category', 3: 'legal_region', 4: 'faq_prompt', 5: 'status_prompt', 6: 'quick_lessons', 7: 'root' },
   },
 
   quick_lessons: {
     header: 'Quick Lessons',
-    body: ['1. Protect Your Privacy', '2. Share Safely', '3. Spot Scams', '4. Report Harm'],
-    options: { 1: 'lesson_privacy', 2: 'lesson_sharing', 3: 'lesson_scams', 4: 'lesson_reporting', 0: 'root' },
+    body: function (ctx) { return languageCopy(ctx).lessons; },
+    options: { 1: 'lesson_privacy', 2: 'lesson_sharing', 3: 'lesson_scams', 4: 'lesson_reporting', 0: 'main_menu' },
   },
   lesson_privacy: {
-    header: 'Protect Your Privacy',
-    body: ['Use strong, unique passwords and keep codes private.', 'Only share personal data when you trust the reason.', '0. Back  00. Main Menu'],
-    options: { 0: 'quick_lessons', '00': 'root' },
+    header: function (ctx) { return languageCopy(ctx).lessonContent[0][0]; },
+    body: function (ctx) { return languageCopy(ctx).lessonContent[0].slice(1).concat(['0. Back  00. Main Menu']); },
+    options: { 0: 'quick_lessons', '00': 'main_menu' },
   },
   lesson_sharing: {
-    header: 'Share Safely',
-    body: ['Pause before posting: online content can spread fast.', 'Ask consent before sharing another person\'s photo or details.', '0. Back  00. Main Menu'],
-    options: { 0: 'quick_lessons', '00': 'root' },
+    header: function (ctx) { return languageCopy(ctx).lessonContent[1][0]; },
+    body: function (ctx) { return languageCopy(ctx).lessonContent[1].slice(1).concat(['0. Back  00. Main Menu']); },
+    options: { 0: 'quick_lessons', '00': 'main_menu' },
   },
   lesson_scams: {
-    header: 'Spot Scams',
-    body: ['Urgent messages asking for money or codes may be scams.', 'Verify through an official contact before you act.', '0. Back  00. Main Menu'],
-    options: { 0: 'quick_lessons', '00': 'root' },
+    header: function (ctx) { return languageCopy(ctx).lessonContent[2][0]; },
+    body: function (ctx) { return languageCopy(ctx).lessonContent[2].slice(1).concat(['0. Back  00. Main Menu']); },
+    options: { 0: 'quick_lessons', '00': 'main_menu' },
   },
   lesson_reporting: {
-    header: 'Report Harm',
-    body: ['Save screenshots, dates and links as evidence.', 'Report abuse to the platform or seek trusted support.', '0. Back  00. Main Menu'],
-    options: { 0: 'quick_lessons', '00': 'root' },
+    header: function (ctx) { return languageCopy(ctx).lessonContent[3][0]; },
+    body: function (ctx) { return languageCopy(ctx).lessonContent[3].slice(1).concat(['0. Back  00. Main Menu']); },
+    options: { 0: 'quick_lessons', '00': 'main_menu' },
   },
 
   rights: {
     header: 'Know Your Rights',
     body: ['1. Freedom of Expression', '2. Right to Assembly', '3. Privacy & Data', '4. Arrest & Detention'],
-    options: { 1: 'rights_expression', 2: 'rights_assembly', 3: 'rights_privacy', 4: 'rights_arrest', 0: 'root' },
+    options: { 1: 'rights_expression', 2: 'rights_assembly', 3: 'rights_privacy', 4: 'rights_arrest', 0: 'main_menu' },
   },
   rights_expression: {
     header: 'Expression',
@@ -57,7 +127,7 @@ const SIM_MENU_TREE = {
       'Limits exist only for incitement, defamation or true security threats.',
       '0. Back  00. Main Menu',
     ],
-    options: { 0: 'rights', '00': 'root' },
+    options: { 0: 'rights', '00': 'main_menu' },
   },
   rights_assembly: {
     header: 'Assembly',
@@ -66,7 +136,7 @@ const SIM_MENU_TREE = {
       'Police must show a specific public-safety reason to disperse.',
       '0. Back  00. Main Menu',
     ],
-    options: { 0: 'rights', '00': 'root' },
+    options: { 0: 'rights', '00': 'main_menu' },
   },
   rights_privacy: {
     header: 'Privacy & Data',
@@ -75,7 +145,7 @@ const SIM_MENU_TREE = {
       'Access by any party usually requires a court order.',
       '0. Back  00. Main Menu',
     ],
-    options: { 0: 'rights', '00': 'root' },
+    options: { 0: 'rights', '00': 'main_menu' },
   },
   rights_arrest: {
     header: 'Arrest & Detention',
@@ -84,13 +154,13 @@ const SIM_MENU_TREE = {
       'You must be brought before a court within the legal time limit.',
       '0. Back  00. Main Menu',
     ],
-    options: { 0: 'rights', '00': 'root' },
+    options: { 0: 'rights', '00': 'main_menu' },
   },
 
   report_category: {
     header: 'Report a Violation',
     body: ['Select category:', '1. Unlawful Arrest', '2. Assembly / Protest', '3. Online Censorship', '4. Other'],
-    options: { 1: 'report_details', 2: 'report_details', 3: 'report_details', 4: 'report_details', 0: 'root' },
+    options: { 1: 'report_details', 2: 'report_details', 3: 'report_details', 4: 'report_details', 0: 'main_menu' },
     onEnter: function (ctx, key) {
       var cats = { 1: 'Unlawful Arrest', 2: 'Assembly / Protest', 3: 'Online Censorship', 4: 'Other' };
       ctx.category = cats[key];
@@ -111,13 +181,13 @@ const SIM_MENU_TREE = {
   report_done: {
     header: 'Report Received',
     body: function (ctx) { return ['Reference code: ' + ctx.lastRef, 'Save this code to check status later.', 'This is a local demo.', '00. Main Menu']; },
-    options: { '00': 'root' },
+    options: { '00': 'main_menu' },
   },
 
   legal_region: {
     header: 'Find Legal Aid',
     body: ['Choose your region:', '1. Central', '2. Northern', '3. Eastern', '4. Western'],
-    options: { 1: 'legal_list', 2: 'legal_list', 3: 'legal_list', 4: 'legal_list', 0: 'root' },
+    options: { 1: 'legal_list', 2: 'legal_list', 3: 'legal_list', 4: 'legal_list', 0: 'main_menu' },
     onEnter: function (ctx, key) {
       var regions = { 1: 'Central', 2: 'Northern', 3: 'Eastern', 4: 'Western' };
       ctx.region = regions[key];
@@ -135,7 +205,7 @@ const SIM_MENU_TREE = {
       };
       return (dirs[ctx.region] || ['No listings for this region.']).concat(['All calls to 0800 numbers are free.', '0. Back  00. Main Menu']);
     },
-    options: { 0: 'legal_region', '00': 'root' },
+    options: { 0: 'legal_region', '00': 'main_menu' },
   },
 
   faq_prompt: {
@@ -157,7 +227,7 @@ const SIM_MENU_TREE = {
       return lines;
     },
     options: function (ctx) {
-      return ctx.lastAnswer.matched ? { 1: 'faq_prompt', 0: 'root' } : { 1: 'faq_prompt', 2: 'legal_region', 0: 'root' };
+      return ctx.lastAnswer.matched ? { 1: 'faq_prompt', 0: 'main_menu' } : { 1: 'faq_prompt', 2: 'legal_region', 0: 'main_menu' };
     },
   },
 
@@ -179,7 +249,7 @@ const SIM_MENU_TREE = {
         ? [ctx.statusResult.ref + ' \u2014 ' + ctx.statusResult.category, 'Status: Under Review', '00. Main Menu']
         : ['No report found for that code.', 'Reports only persist for this session.', '00. Main Menu'];
     },
-    options: { '00': 'root' },
+    options: { '00': 'main_menu' },
   },
 };
 
