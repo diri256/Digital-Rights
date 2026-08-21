@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Verify a DIRI Digital Safety Certificate using its certificate ID.">
+  <title>Verify a DIRI Certificate</title><link rel="icon" href="favicon.ico"><link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header" role="banner"><div class="header-inner"><a href="index.html" class="header-logo"><img src="assets/logo.png" alt="DIRI Logo"><span>DIRI</span></a><nav class="header-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="learn.html">Learn</a><a href="training.html">Training</a><a href="verify.html" class="active">Verify</a><a href="chatbot.html">Mr. DIRI</a></nav><div class="header-actions"><a href="login.html" class="btn btn-ghost btn-sm">Log In</a><a href="register.html" class="btn btn-primary btn-sm">Get Started</a><div class="menu-toggle" role="button" aria-label="Toggle navigation menu" tabindex="0"><span></span><span></span><span></span></div></div></div><div class="mobile-overlay"></div><nav class="mobile-nav" aria-label="Mobile navigation"><a href="index.html">Home</a><a href="learn.html">Learn</a><a href="training.html">Training</a><a href="verify.html" class="active">Verify</a><a href="chatbot.html">Mr. DIRI</a><div class="mobile-actions"><a href="login.html" class="btn btn-ghost btn-full">Log In</a></div></nav></header>
+  <main class="verification-page">
+    <section class="page-header"><div class="container page-header-inner"><p class="section-tag">DIRI certificate verification</p><h1 class="heading-xl">Check a certificate</h1><p class="body-lg">Enter the certificate number exactly as it appears on a DIRI certificate, or scan its QR code.</p></div></section>
+    <section class="section"><div class="container verification-container">
+      <form class="verification-form" data-verification-form><label for="certificate-id">Certificate ID</label><div><input id="certificate-id" class="form-input" name="certificate_id" type="text" placeholder="DIRI-XXXXXXXX" autocomplete="off" required><button class="btn btn-primary" type="submit">Verify Certificate</button></div></form>
+      <div data-verification-result><div class="verification-state neutral"><h2>Ready to verify</h2><p>No certificate is assumed to be valid until it is found in DIRI's certificate system.</p></div></div>
+      <aside class="verification-note"><strong>About DIRI certification</strong><p>DIRI certificates confirm completion and approval within DIRI's digital-safety programme. They are not described as government accreditation.</p></aside>
+    </div></section>
+  </main>
+  <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2026 DIRI by Team Netizens.</p><div class="footer-bottom-links"><a href="mailto:diriuganda@gmail.com">diriuganda@gmail.com</a><a href="privacy-policy.html">Privacy</a></div></div></div></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script><script src="js/supabase.js"></script><script src="js/main.js"></script><script src="js/commercialization.js"></script><script src="js/accessibility-reader.js"></script>
+</body>
+</html>

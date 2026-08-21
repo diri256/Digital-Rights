@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Manage your DIRI profile and language preferences.">
-  <title>My Profile | DIRI</title>
+  <meta name="description" content="Your unified DIRI learning, training, assessment and certificate dashboard.">
+  <title>My DIRI Dashboard</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -46,7 +46,38 @@
     </nav>
   </header>
 
-  <main class="profile-page">
+  <main class="profile-page learner-dashboard" data-learner-dashboard>
+    <section class="dashboard-welcome animate-in" aria-labelledby="dashboard-title">
+      <div><p class="section-tag">One account, one learning record</p><h1 id="dashboard-title" class="heading-lg">My DIRI Dashboard</h1><p>Continue online learning, review assessments, see physical training participation and access certificates issued to this account.</p></div>
+      <a href="learn.html" class="btn btn-primary">Continue Learning</a>
+    </section>
+
+    <section class="dashboard-summary">
+      <article><strong>9</strong><span>Learning modules available</span></article>
+      <article><strong data-dashboard-stat="assessments">0</strong><span>Assessments completed</span></article>
+      <article><strong data-dashboard-stat="best-score">—</strong><span>Best quiz score</span></article>
+      <article><strong>Learn → Certify</strong><span>Your unified DIRI pathway</span></article>
+    </section>
+
+    <div class="dashboard-grid">
+      <section class="dashboard-panel" aria-labelledby="learning-progress-title">
+        <div class="dashboard-panel-heading"><div><p class="section-tag">Learn and assess</p><h2 id="learning-progress-title" class="heading-sm">Learning progress</h2></div><a href="learn.html">View lessons →</a></div>
+        <p>Your lesson cards, videos and quiz activity all belong to this account. Learning recommendations will become more personalised as progress tracking expands.</p>
+        <div class="pathway-strip" aria-label="DIRI pathway"><span>Learn</span><span>Train</span><span>Assess</span><span>Certify</span><span>Verify</span></div>
+      </section>
+
+      <section class="dashboard-panel" aria-labelledby="training-participation-title">
+        <div class="dashboard-panel-heading"><div><p class="section-tag">Online or physical</p><h2 id="training-participation-title" class="heading-sm">Training participation</h2></div><a href="training.html">Request training →</a></div>
+        <div data-training-participation><div class="dashboard-empty">Loading training participation...</div></div>
+      </section>
+    </div>
+
+    <section class="dashboard-panel certificate-panel" aria-labelledby="certificate-title">
+      <div class="dashboard-panel-heading"><div><p class="section-tag">DIRI Digital Safety Certificate</p><h2 id="certificate-title" class="heading-sm">My certificates</h2></div><div class="dashboard-panel-actions"><a href="verify.html">Verify a certificate</a><button class="btn btn-outline btn-sm" type="button" data-print-certificates hidden>Download / Print</button></div></div>
+      <p class="certificate-fee-note">Where certification applies, the current proposed certificate fee is <strong data-certificate-fee>UGX 20,000</strong>. Learning access and certificate eligibility are separate; payment does not guarantee certification.</p>
+      <div class="certificate-list" data-certificate-list><div class="dashboard-empty">Loading certificates...</div></div>
+    </section>
+
     <section class="profile-card animate-in" aria-labelledby="profile-title">
       <div class="profile-heading">
         <div class="profile-avatar-wrap">
@@ -56,7 +87,7 @@
         </div>
         <div>
           <p class="section-tag">Your account</p>
-          <h1 id="profile-title" class="heading-md">My Profile</h1>
+          <h2 id="profile-title" class="heading-md">Profile &amp; preferences</h2>
           <p class="body-sm" data-profile-email></p>
         </div>
       </div>
@@ -109,8 +140,10 @@
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/commercialization.js"></script>
   <script src="js/accessibility-reader.js"></script>
 </body>
 </html>

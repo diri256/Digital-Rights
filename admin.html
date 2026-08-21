@@ -69,6 +69,18 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
           Updates
         </button>
+        <button type="button" class="admin-tab" data-tab="training" id="training-tab" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M5 7v13h14V7M8 3h8v4H8z"/></svg>
+          Training Requests
+        </button>
+        <button type="button" class="admin-tab" data-tab="cohorts" id="cohorts-tab" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2"/><path d="M3 20c0-4 2-7 6-7s6 3 6 7M15 14c4 0 6 2 6 6"/></svg>
+          Cohorts
+        </button>
+        <button type="button" class="admin-tab" data-tab="certificates" id="certificates-tab" style="display:none;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="5"/><path d="M8 13v8l4-2 4 2v-8"/></svg>
+          Certificates
+        </button>
         <button class="admin-tab" data-tab="access" id="access-tab" style="display:none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Access
@@ -113,6 +125,14 @@
             <div class="admin-stat-value" id="stat-published-news">0</div>
             <div class="admin-stat-label">Published Updates</div>
           </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-training-requests">0</div>
+            <div class="admin-stat-label">New Training Requests</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-value" id="stat-valid-certificates">0</div>
+            <div class="admin-stat-label">Valid Certificates</div>
+          </div>
         </div>
         <div style="margin-top: var(--space-8);">
           <h2 class="heading-sm" style="margin-bottom: var(--space-4);">Quick actions</h2>
@@ -120,8 +140,47 @@
             <button class="btn btn-primary" data-tab-target="questions">+ New Question</button>
             <button class="btn btn-secondary" data-tab-target="weeks">+ New Week</button>
             <button class="btn btn-secondary" data-tab-target="updates">+ Publish Update</button>
+            <button type="button" class="btn btn-secondary" data-tab-target="cohorts">+ Create Cohort</button>
+            <button type="button" class="btn btn-secondary" data-tab-target="certificates">Certificate Management</button>
           </div>
         </div>
+      </section>
+
+      <!-- ========== TRAINING REQUESTS TAB ========== -->
+      <section class="admin-panel" id="panel-training">
+        <div class="admin-panel-header"><h1>Training Requests</h1><p class="body-sm">Review requests from companies, schools, NGOs, communities and other institutions. Quotes remain tailored and are not published as a fixed institutional price.</p></div>
+        <div class="admin-toolbar"><select id="training-status-filter" class="form-input" style="width:auto;"><option value="all">All status</option><option value="new">New</option><option value="reviewing">Reviewing</option><option value="quoted">Quoted</option><option value="accepted">Accepted</option><option value="declined">Declined</option><option value="completed">Completed</option></select></div>
+        <div class="admin-table-container"><table class="admin-table"><thead><tr><th scope="col">Requester</th><th scope="col">Participants</th><th scope="col">Location &amp; date</th><th scope="col">Needs</th><th scope="col">Status</th></tr></thead><tbody id="training-requests-tbody"><tr><td colspan="5">Loading requests...</td></tr></tbody></table></div>
+      </section>
+
+      <!-- ========== COHORTS TAB ========== -->
+      <section class="admin-panel" id="panel-cohorts">
+        <div class="admin-panel-header"><h1>Training Cohorts</h1><p class="body-sm">Manage physical training groups inside the same DIRI learner system.</p></div>
+        <form class="admin-inline-form" id="cohort-form">
+          <h2 class="heading-sm">Create a cohort</h2>
+          <div class="admin-form-grid"><div class="form-group"><label for="cohort-name">Training name</label><input id="cohort-name" class="form-input" type="text" required maxlength="180"></div><div class="form-group"><label for="cohort-organization">Institution / community</label><input id="cohort-organization" class="form-input" type="text" required maxlength="160"></div><div class="form-group"><label for="cohort-type">Type</label><select id="cohort-type" class="form-input"><option value="company">Company</option><option value="school">School</option><option value="university">University</option><option value="ngo">NGO</option><option value="community">Community</option><option value="rural_community">Rural community</option><option value="other">Other</option></select></div><div class="form-group"><label for="cohort-date">Training date</label><input id="cohort-date" class="form-input" type="date" required></div><div class="form-group"><label for="cohort-location">Location</label><input id="cohort-location" class="form-input" type="text" maxlength="160"></div></div>
+          <div class="auth-message" id="cohort-form-message"></div><button class="btn btn-primary" type="submit">Create Cohort</button>
+        </form>
+        <div class="admin-table-container"><table class="admin-table"><thead><tr><th scope="col">Training</th><th scope="col">Institution</th><th scope="col">Date</th><th scope="col">Participants</th><th scope="col">Status</th></tr></thead><tbody id="cohorts-tbody"><tr><td colspan="5">Loading cohorts...</td></tr></tbody></table></div>
+        <form class="admin-inline-form" id="participant-form">
+          <h2 class="heading-sm">Enrol or link a participant</h2><p class="body-sm">If the email belongs to an existing DIRI account, it will be linked. Otherwise the participant can activate an account later using the same email.</p>
+          <div class="admin-form-grid"><div class="form-group"><label for="participant-cohort">Cohort</label><select id="participant-cohort" class="form-input" required></select></div><div class="form-group"><label for="participant-name">Full name</label><input id="participant-name" class="form-input" type="text" required maxlength="120"></div><div class="form-group"><label for="participant-email">Email</label><input id="participant-email" class="form-input" type="email"></div><div class="form-group"><label for="participant-attendance">Attendance</label><select id="participant-attendance" class="form-input"><option value="pending">Pending</option><option value="present">Present</option><option value="partial">Partial</option><option value="absent">Absent</option></select></div><div class="form-group"><label for="participant-assessment">Assessment</label><select id="participant-assessment" class="form-input"><option value="not_started">Not started</option><option value="in_progress">In progress</option><option value="passed">Passed</option><option value="not_passed">Not passed</option><option value="exempt">Exempt</option></select></div></div>
+          <div class="auth-message" id="participant-form-message"></div><button class="btn btn-primary" type="submit">Enrol Participant</button>
+        </form>
+        <div class="admin-table-container"><table class="admin-table"><thead><tr><th scope="col">Participant</th><th scope="col">Cohort</th><th scope="col">Attendance</th><th scope="col">Assessment</th><th scope="col">Certification</th></tr></thead><tbody id="participants-tbody"><tr><td colspan="5">Loading participants...</td></tr></tbody></table></div>
+      </section>
+
+      <!-- ========== CERTIFICATES TAB ========== -->
+      <section class="admin-panel" id="panel-certificates">
+        <div class="admin-panel-header"><h1>Certificates</h1><p class="body-sm">Approve issuance, search, verify and revoke DIRI certificates. Do not issue a certificate until eligibility has been checked.</p></div>
+        <form class="admin-inline-form" id="certificate-form">
+          <h2 class="heading-sm">Issue an approved certificate</h2>
+          <div class="admin-form-grid"><div class="form-group"><label for="certificate-user-email">Learner account email</label><input id="certificate-user-email" class="form-input" type="email" required></div><div class="form-group"><label for="certificate-full-name">Full learner name</label><input id="certificate-full-name" class="form-input" type="text" required maxlength="120"></div><div class="form-group"><label for="certificate-type">Certificate title</label><input id="certificate-type" class="form-input" type="text" value="DIRI Digital Safety Certificate" required maxlength="160"></div></div>
+          <label class="checkbox-row"><input id="certificate-approved" type="checkbox" required><span>I confirm that DIRI has reviewed this learner's participation and assessment eligibility.</span></label>
+          <div class="auth-message" id="certificate-form-message"></div><button class="btn btn-primary" type="submit">Generate Certificate</button>
+        </form>
+        <div class="admin-toolbar"><div class="admin-search"><input id="certificate-search" class="form-input" type="search" placeholder="Search name or certificate number..."></div><label for="certificate-fee">Certificate fee (UGX)</label><input id="certificate-fee" class="form-input" type="number" min="0" step="1000" value="20000" style="width:150px;"><button type="button" id="save-certificate-fee" class="btn btn-outline">Save Fee</button></div>
+        <div class="admin-table-container"><table class="admin-table"><thead><tr><th scope="col">Certificate</th><th scope="col">Learner</th><th scope="col">Issued</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead><tbody id="certificates-tbody"><tr><td colspan="5">Loading certificates...</td></tr></tbody></table></div>
       </section>
 
       <!-- ========== QUESTIONS TAB ========== -->
