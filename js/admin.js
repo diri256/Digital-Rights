@@ -69,6 +69,10 @@
     if (role === 'admin') {
       document.getElementById('access-tab').style.display = '';
       document.getElementById('updates-tab').style.display = '';
+      ['training-tab', 'cohorts-tab', 'certificates-tab'].forEach(function (id) {
+        var tab = document.getElementById(id);
+        if (tab) tab.style.display = '';
+      });
       // Show pending requests section to admins
       var reqSection = document.getElementById('access-requests-section');
       if (reqSection) reqSection.style.display = '';
@@ -128,6 +132,9 @@
     else if (name === 'questions') loadQuestions();
     else if (name === 'weeks') loadWeeks();
     else if (name === 'updates') loadNews();
+    else if (name === 'training') loadTrainingRequests();
+    else if (name === 'cohorts') loadCohorts();
+    else if (name === 'certificates') loadCertificates();
     else if (name === 'access') {
       loadAccessList();
       if (currentUserRole === 'admin') loadAccessRequests();
@@ -176,9 +183,192 @@
       if (errNews) throw errNews;
       document.getElementById('stat-total-users').textContent = totalUsers || 0;
       document.getElementById('stat-published-news').textContent = publishedNews || 0;
+
+      const requestCount = await sb.from('training_requests').select('*', { count: 'exact', head: true }).eq('status', 'new');
+      const certificateCount = await sb.from('certificates').select('*', { count: 'exact', head: true }).eq('status', 'valid');
+      var requestStat = document.getElementById('stat-training-requests');
+      var certificateStat = document.getElementById('stat-valid-certificates');
+      if (requestStat && !requestCount.error) requestStat.textContent = requestCount.count || 0;
+      if (certificateStat && !certificateCount.error) certificateStat.textContent = certificateCount.count || 0;
     } catch (err) {
       console.error('Dashboard load error:', err);
     }
+  }
+
+  /* -----------------------------------------
+     UNIFIED TRAINING & CERTIFICATION
+     ----------------------------------------- */
+  async function loadTrainingRequests() {
+    var tbody = document.getElementById('training-requests-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5">Loading requests...</td></tr>';
+    var query = sb.from('training_requests').select('*').order('created_at', { ascending: false });
+    var filter = document.getElementById('training-status-filter').value;
+    if (filter !== 'all') query = query.eq('status', filter);
+    var result = await query;
+    if (result.error) {
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--color-error);">Unable to load requests: ' + escHtml(result.error.message) + '</td></tr>';
+      return;
+    }
+    if (!result.data.length) {
+      tbody.innerHTML = '<tr><td colspan="5">No training requests found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = result.data.map(function (request) {
+      return '<tr><td><strong>' + escHtml(request.organization_name) + '</strong><div class="body-sm">' + escHtml(request.contact_person) + '<br>' + escHtml(request.email) + '<br>' + escHtml(request.phone) + '</div></td>' +
+        '<td>' + Number(request.participant_count || 0) + '<div class="body-sm">' + escHtml(request.participant_type) + '</div></td>' +
+        '<td>' + escHtml(request.location) + '<div class="body-sm">' + (request.preferred_training_date || 'Flexible') + '</div></td>' +
+        '<td class="body-sm">' + escHtml(request.training_topics) + '<br>Certification: ' + (request.certification_required ? 'Yes' : 'No / unsure') + '</td>' +
+        '<td><select class="form-input training-request-status" data-id="' + request.id + '"><option value="new"' + selected(request.status, 'new') + '>New</option><option value="reviewing"' + selected(request.status, 'reviewing') + '>Reviewing</option><option value="quoted"' + selected(request.status, 'quoted') + '>Quoted</option><option value="accepted"' + selected(request.status, 'accepted') + '>Accepted</option><option value="declined"' + selected(request.status, 'declined') + '>Declined</option><option value="completed"' + selected(request.status, 'completed') + '>Completed</option></select></td></tr>';
+    }).join('');
+    tbody.querySelectorAll('.training-request-status').forEach(function (selectEl) {
+      selectEl.addEventListener('change', async function () {
+        var update = await sb.from('training_requests').update({ status: this.value, reviewed_by: currentUser.id, reviewed_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq('id', this.dataset.id);
+        showToast(update.error ? update.error.message : 'Training request updated.', update.error ? 'error' : 'success');
+      });
+    });
+  }
+
+  function selected(current, value) { return current === value ? ' selected' : ''; }
+
+  async function loadCohorts() {
+    var cohortBody = document.getElementById('cohorts-tbody');
+    var participantBody = document.getElementById('participants-tbody');
+    var cohortSelect = document.getElementById('participant-cohort');
+    if (!cohortBody) return;
+    var cohortsResult = await sb.from('training_cohorts').select('*, training_organizations(name)').order('training_date', { ascending: false });
+    var participantsResult = await sb.from('cohort_participants').select('*, training_cohorts(training_name)').order('enrolled_at', { ascending: false });
+    if (cohortsResult.error) {
+      cohortBody.innerHTML = '<tr><td colspan="5" style="color:var(--color-error);">' + escHtml(cohortsResult.error.message) + '</td></tr>';
+      return;
+    }
+    var cohorts = cohortsResult.data || [];
+    var participants = participantsResult.data || [];
+    cohortSelect.innerHTML = cohorts.length ? cohorts.map(function (cohort) { return '<option value="' + cohort.id + '">' + escHtml(cohort.training_name) + '</option>'; }).join('') : '<option value="">Create a cohort first</option>';
+    cohortBody.innerHTML = cohorts.length ? cohorts.map(function (cohort) {
+      var count = participants.filter(function (person) { return person.cohort_id === cohort.id; }).length;
+      return '<tr><td><strong>' + escHtml(cohort.training_name) + '</strong></td><td>' + escHtml(cohort.training_organizations ? cohort.training_organizations.name : '—') + '</td><td>' + escHtml(cohort.training_date) + '</td><td>' + count + '</td><td>' + escHtml(cohort.status) + '</td></tr>';
+    }).join('') : '<tr><td colspan="5">No cohorts created yet.</td></tr>';
+    if (!participantBody) return;
+    participantBody.innerHTML = participants.length ? participants.map(function (person) {
+      return '<tr><td><strong>' + escHtml(person.full_name) + '</strong><div class="body-sm">' + escHtml(person.email || 'Account not linked yet') + '</div></td><td>' + escHtml(person.training_cohorts ? person.training_cohorts.training_name : '—') + '</td>' +
+        '<td>' + statusSelect('attendance', person.id, person.attendance_status, ['pending','present','partial','absent']) + '</td>' +
+        '<td>' + statusSelect('assessment', person.id, person.assessment_status, ['not_started','in_progress','passed','not_passed','exempt']) + '</td>' +
+        '<td>' + statusSelect('certification', person.id, person.certification_status, ['not_eligible','eligible','approved','issued','revoked']) + '</td></tr>';
+    }).join('') : '<tr><td colspan="5">No participants enrolled yet.</td></tr>';
+    participantBody.querySelectorAll('.participant-status').forEach(function (control) {
+      control.addEventListener('change', async function () {
+        var field = this.dataset.field + '_status';
+        var payload = { updated_at: new Date().toISOString() };
+        payload[field] = this.value;
+        var update = await sb.from('cohort_participants').update(payload).eq('id', this.dataset.id);
+        showToast(update.error ? update.error.message : 'Participant record updated.', update.error ? 'error' : 'success');
+      });
+    });
+  }
+
+  function statusSelect(field, id, value, options) {
+    return '<select class="form-input participant-status" data-field="' + field + '" data-id="' + id + '">' + options.map(function (option) { return '<option value="' + option + '"' + selected(value, option) + '>' + option.replaceAll('_', ' ') + '</option>'; }).join('') + '</select>';
+  }
+
+  async function createCohort(event) {
+    event.preventDefault();
+    var message = document.getElementById('cohort-form-message');
+    var organizationResult = await sb.from('training_organizations').insert({
+      name: document.getElementById('cohort-organization').value.trim(),
+      organization_type: document.getElementById('cohort-type').value,
+      location: document.getElementById('cohort-location').value.trim() || null,
+      created_by: currentUser.id
+    }).select('id').single();
+    if (organizationResult.error) { message.textContent = organizationResult.error.message; message.className = 'auth-message error'; return; }
+    var cohortResult = await sb.from('training_cohorts').insert({
+      training_name: document.getElementById('cohort-name').value.trim(),
+      organization_id: organizationResult.data.id,
+      training_date: document.getElementById('cohort-date').value,
+      location: document.getElementById('cohort-location').value.trim() || null,
+      created_by: currentUser.id
+    });
+    message.textContent = cohortResult.error ? cohortResult.error.message : 'Cohort created.';
+    message.className = 'auth-message ' + (cohortResult.error ? 'error' : 'success');
+    if (!cohortResult.error) { event.target.reset(); loadCohorts(); }
+  }
+
+  async function enrolParticipant(event) {
+    event.preventDefault();
+    var email = document.getElementById('participant-email').value.trim();
+    var userId = null;
+    if (email) {
+      var profile = await sb.from('profiles').select('id').eq('email', email).maybeSingle();
+      if (profile.data) userId = profile.data.id;
+    }
+    var result = await sb.from('cohort_participants').insert({
+      cohort_id: document.getElementById('participant-cohort').value,
+      user_id: userId,
+      full_name: document.getElementById('participant-name').value.trim(),
+      email: email || null,
+      attendance_status: document.getElementById('participant-attendance').value,
+      assessment_status: document.getElementById('participant-assessment').value,
+      certification_status: document.getElementById('participant-assessment').value === 'passed' ? 'eligible' : 'not_eligible'
+    });
+    var message = document.getElementById('participant-form-message');
+    message.textContent = result.error ? result.error.message : (userId ? 'Participant enrolled and linked to an existing DIRI account.' : 'Participant enrolled. Their account can be linked when activated.');
+    message.className = 'auth-message ' + (result.error ? 'error' : 'success');
+    if (!result.error) { event.target.reset(); loadCohorts(); }
+  }
+
+  function certificateNumber() {
+    var bytes = new Uint8Array(6);
+    crypto.getRandomValues(bytes);
+    return 'DIRI-' + new Date().getFullYear() + '-' + Array.from(bytes).map(function (byte) { return byte.toString(16).padStart(2, '0'); }).join('').toUpperCase();
+  }
+
+  async function loadCertificates() {
+    var tbody = document.getElementById('certificates-tbody');
+    if (!tbody) return;
+    var result = await sb.from('certificates').select('*').order('issue_date', { ascending: false });
+    if (result.error) { tbody.innerHTML = '<tr><td colspan="5" style="color:var(--color-error);">' + escHtml(result.error.message) + '</td></tr>'; return; }
+    var search = (document.getElementById('certificate-search').value || '').toLowerCase().trim();
+    var certificates = (result.data || []).filter(function (certificate) { return !search || (certificate.full_learner_name + ' ' + certificate.certificate_number).toLowerCase().includes(search); });
+    tbody.innerHTML = certificates.length ? certificates.map(function (certificate) {
+      return '<tr><td><strong>' + escHtml(certificate.certificate_number) + '</strong><div class="body-sm">' + escHtml(certificate.certificate_title) + '</div></td><td>' + escHtml(certificate.full_learner_name) + '</td><td>' + escHtml(certificate.issue_date) + '</td><td>' + escHtml(certificate.status) + '</td><td><a class="btn btn-sm btn-ghost" target="_blank" href="verify.html?id=' + encodeURIComponent(certificate.certificate_number) + '">Verify</a> ' + (certificate.status === 'valid' ? '<button class="btn btn-sm btn-ghost revoke-certificate" data-id="' + certificate.id + '" style="color:var(--color-error);">Revoke</button>' : '') + '</td></tr>';
+    }).join('') : '<tr><td colspan="5">No certificates found. None are fabricated or preloaded.</td></tr>';
+    tbody.querySelectorAll('.revoke-certificate').forEach(function (button) { button.addEventListener('click', function () { revokeCertificate(this.dataset.id); }); });
+    var settings = await sb.from('platform_settings').select('setting_value').eq('setting_key', 'certificate_fee_ugx').maybeSingle();
+    if (settings.data && settings.data.setting_value) document.getElementById('certificate-fee').value = settings.data.setting_value.amount || 20000;
+  }
+
+  async function issueCertificate(event) {
+    event.preventDefault();
+    var message = document.getElementById('certificate-form-message');
+    if (!document.getElementById('certificate-approved').checked) return;
+    var email = document.getElementById('certificate-user-email').value.trim();
+    var profile = await sb.from('profiles').select('id').eq('email', email).maybeSingle();
+    if (profile.error || !profile.data) { message.textContent = 'No DIRI learner account was found for that email.'; message.className = 'auth-message error'; return; }
+    var result = await sb.from('certificates').insert({
+      user_id: profile.data.id,
+      full_learner_name: document.getElementById('certificate-full-name').value.trim(),
+      certificate_title: document.getElementById('certificate-type').value.trim(),
+      certificate_number: certificateNumber(),
+      issued_by: currentUser.id,
+      status: 'valid'
+    });
+    message.textContent = result.error ? result.error.message : 'Certificate generated and added to the learner dashboard.';
+    message.className = 'auth-message ' + (result.error ? 'error' : 'success');
+    if (!result.error) { event.target.reset(); document.getElementById('certificate-type').value = 'DIRI Digital Safety Certificate'; loadCertificates(); }
+  }
+
+  async function revokeCertificate(id) {
+    var reason = prompt('Reason for revoking this certificate:');
+    if (!reason || !reason.trim()) return;
+    var result = await sb.from('certificates').update({ status: 'revoked', revoked_at: new Date().toISOString(), revoked_by: currentUser.id, revocation_reason: reason.trim(), updated_at: new Date().toISOString() }).eq('id', id);
+    showToast(result.error ? result.error.message : 'Certificate revoked.', result.error ? 'error' : 'success');
+    if (!result.error) loadCertificates();
+  }
+
+  async function saveCertificateFee() {
+    var amount = Number(document.getElementById('certificate-fee').value);
+    var result = await sb.from('platform_settings').update({ setting_value: { amount: amount, currency: 'UGX', applies_where_required: true }, updated_by: currentUser.id, updated_at: new Date().toISOString() }).eq('setting_key', 'certificate_fee_ugx');
+    showToast(result.error ? result.error.message : 'Certificate fee updated.', result.error ? 'error' : 'success');
   }
 
   /* -----------------------------------------
@@ -981,6 +1171,14 @@
     });
     document.getElementById('news-search').addEventListener('input', debounce(loadNews, 300));
     document.getElementById('news-status-filter').addEventListener('change', loadNews);
+
+    // Unified training, cohort and certificate management
+    document.getElementById('training-status-filter').addEventListener('change', loadTrainingRequests);
+    document.getElementById('cohort-form').addEventListener('submit', createCohort);
+    document.getElementById('participant-form').addEventListener('submit', enrolParticipant);
+    document.getElementById('certificate-form').addEventListener('submit', issueCertificate);
+    document.getElementById('certificate-search').addEventListener('input', debounce(loadCertificates, 250));
+    document.getElementById('save-certificate-fee').addEventListener('click', saveCertificateFee);
 
     // Confirm modal
     document.getElementById('confirm-modal-close').addEventListener('click', function () { closeModal('confirm-modal'); });

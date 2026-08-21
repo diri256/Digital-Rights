@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Request physical digital-safety training from DIRI for a school, company, NGO, institution or community.">
+  <title>Request DIRI Training</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="header" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo"><img src="assets/logo.png" alt="DIRI Logo"><span>DIRI</span></a>
+      <nav class="header-nav" aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="learn.html">Learn</a><a href="quiz.html">Weekly Quiz</a><a href="training.html" class="active">Training</a><a href="verify.html">Verify</a><a href="chatbot.html">Mr. DIRI</a>
+      </nav>
+      <div class="header-actions"><a href="login.html" class="btn btn-ghost btn-sm">Log In</a><a href="register.html" class="btn btn-primary btn-sm">Get Started</a><div class="menu-toggle" role="button" aria-label="Toggle navigation menu" tabindex="0"><span></span><span></span><span></span></div></div>
+    </div>
+    <div class="mobile-overlay"></div>
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <a href="index.html">Home</a><a href="learn.html">Learn</a><a href="quiz.html">Weekly Quiz</a><a href="training.html" class="active">Training</a><a href="verify.html">Verify Certificate</a><a href="chatbot.html">Mr. DIRI</a>
+      <div class="mobile-actions"><a href="login.html" class="btn btn-ghost btn-full">Log In</a><a href="register.html" class="btn btn-primary btn-full">Get Started</a></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="commercial-hero training-hero">
+      <div class="container commercial-hero-grid">
+        <div>
+          <p class="section-tag">Physical training</p>
+          <h1 class="heading-xl">Bring DIRI digital-safety training to your people</h1>
+          <p class="body-lg">DIRI can conduct practical training for companies, schools, universities, NGOs, community organisations and rural communities.</p>
+          <p>Participants use the same DIRI learner accounts, assessments and certificate system as online learners. There is no separate institution portal.</p>
+        </div>
+        <div class="unified-system-card">
+          <strong>One connected system</strong>
+          <span>One Account</span><span>One Learning Record</span><span>One Assessment System</span><span>One Certificate System</span><span>One Verification System</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container split-commercial">
+        <div>
+          <p class="section-tag">What happens next</p>
+          <h2 class="heading-lg">Training that continues online</h2>
+          <ol class="numbered-path">
+            <li><strong>Request training</strong><span>Tell DIRI about the participants, location, needs and preferred date.</span></li>
+            <li><strong>Receive a tailored quote</strong><span>Pricing depends on participant numbers, location, requirements and certification needs.</span></li>
+            <li><strong>Train and enrol</strong><span>Accepted participants receive or activate their normal DIRI accounts.</span></li>
+            <li><strong>Assess and certify</strong><span>Attendance and assessment are recorded. Only qualifying, approved participants receive certificates.</span></li>
+            <li><strong>Keep learning</strong><span>Participants can log in later, continue online and access any certificate issued to them.</span></li>
+          </ol>
+        </div>
+
+        <form class="training-request-form" data-training-request-form>
+          <div>
+            <p class="section-tag">Request training / request quote</p>
+            <h2 class="heading-md">Tell us what you need</h2>
+            <p class="body-sm">Submitting this form does not confirm a booking or fixed price. DIRI will review the request and contact you.</p>
+          </div>
+          <div class="honeypot" aria-hidden="true"><label>Website<input name="website" type="text" tabindex="-1" autocomplete="off"></label></div>
+          <div class="form-grid-two">
+            <div class="form-group full"><label for="organization-name">Organization, institution or community name</label><input class="form-input" id="organization-name" name="organization_name" type="text" required maxlength="160"></div>
+            <div class="form-group"><label for="contact-person">Contact person</label><input class="form-input" id="contact-person" name="contact_person" type="text" required maxlength="100"></div>
+            <div class="form-group"><label for="training-email">Email</label><input class="form-input" id="training-email" name="email" type="email" required></div>
+            <div class="form-group"><label for="training-phone">Phone</label><input class="form-input" id="training-phone" name="phone" type="tel" required maxlength="30"></div>
+            <div class="form-group"><label for="training-location">Location</label><input class="form-input" id="training-location" name="location" type="text" required maxlength="160"></div>
+            <div class="form-group"><label for="participant-count">Number of participants</label><input class="form-input" id="participant-count" name="participant_count" type="number" min="1" max="10000" required></div>
+            <div class="form-group"><label for="participant-type">Participant type</label><select class="form-input" id="participant-type" name="participant_type" required><option value="">Choose one</option><option value="students">Students</option><option value="staff">Staff</option><option value="teachers">Teachers</option><option value="community_members">Community members</option><option value="youth">Youth</option><option value="mixed">Mixed group</option><option value="other">Other</option></select></div>
+            <div class="form-group"><label for="preferred-date">Preferred training date</label><input class="form-input" id="preferred-date" name="preferred_training_date" type="date"></div>
+            <div class="form-group"><label for="certification-required">Certification required?</label><select class="form-input" id="certification-required" name="certification_required" required><option value="no">No / not sure yet</option><option value="yes">Yes</option></select></div>
+            <div class="form-group full"><label for="training-topics">Training needs or topics</label><textarea class="form-input" id="training-topics" name="training_topics" rows="4" minlength="5" maxlength="2000" required placeholder="For example: online safety, privacy, scams, cybersecurity or digital rights"></textarea></div>
+            <div class="form-group full"><label for="additional-message">Additional message</label><textarea class="form-input" id="additional-message" name="additional_message" rows="3" maxlength="3000"></textarea></div>
+          </div>
+          <div class="auth-message" data-form-message role="status" aria-live="polite"></div>
+          <button class="btn btn-primary btn-lg" type="submit">Send Training Request</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><div class="container"><div class="footer-bottom"><p>&copy; 2026 DIRI by Team Netizens.</p><div class="footer-bottom-links"><a href="mailto:diriuganda@gmail.com">diriuganda@gmail.com</a><a href="accessibility.html">Accessibility</a><a href="privacy-policy.html">Privacy</a></div></div></div></footer>
+  <a href="chatbot.html" class="mr-diri-fab" aria-label="Chat with Mr. DIRI"><span class="mr-diri-fab-label">Mr. DIRI</span><span class="mr-diri-fab-icon"><img src="assets/icon.png" alt=""></span></a>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase.js"></script><script src="js/main.js"></script><script src="js/commercialization.js"></script><script src="js/accessibility-reader.js"></script>
+</body>
+</html>

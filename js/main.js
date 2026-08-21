@@ -27,6 +27,18 @@ document.addEventListener('DOMContentLoaded', function () {
     emailLink.textContent = 'diriuganda@gmail.com';
     column.appendChild(emailLink);
   });
+
+  document.querySelectorAll('.footer-column').forEach(function (column) {
+    const heading = column.querySelector('h4');
+    if (!heading || heading.textContent.trim() !== 'Platform') return;
+    [['training.html', 'Request Training'], ['verify.html', 'Verify Certificate']].forEach(function (item) {
+      if (column.querySelector('a[href="' + item[0] + '"]')) return;
+      const link = document.createElement('a');
+      link.href = item[0];
+      link.textContent = item[1];
+      column.appendChild(link);
+    });
+  });
   function toggleMenu(open) {
     const isOpen = open !== undefined ? open : !menuToggle.classList.contains('active');
     menuToggle.classList.toggle('active', isOpen);
@@ -1053,7 +1065,7 @@ document.addEventListener('DOMContentLoaded', function () {
     en: {
       Home: 'Home', Learn: 'Learn', Updates: 'Updates', 'Weekly Quiz': 'Weekly Quiz',
       Leaderboard: 'Leaderboard', 'Get Started': 'Get Started', 'Log In': 'Log In',
-      'Log Out': 'Log Out', Profile: 'Profile', hi: 'Hi', language: 'Language',
+      'Log Out': 'Log Out', Profile: 'Profile', Dashboard: 'Dashboard', hi: 'Hi', language: 'Language',
       'Welcome back': 'Welcome back', 'Join DIRI': 'Join DIRI', 'Continue with Google': 'Continue with Google',
       'or continue with email': 'or continue with email', 'Email address': 'Email address', Password: 'Password',
       'Forgot password?': 'Forgot password?', 'Create Account': 'Create Account', 'Full name': 'Full name',
@@ -1063,7 +1075,7 @@ document.addEventListener('DOMContentLoaded', function () {
     lg: {
       Home: 'Awaka', Learn: 'Yiga', Updates: 'Ebipya', 'Weekly Quiz': 'Ebibuuzo bya Wiiki',
       Leaderboard: 'Abakulembedde', 'Get Started': 'Tandika', 'Log In': 'Yingira',
-      'Log Out': 'Fuluma', Profile: 'Ebikwata ku Ggwe', hi: 'Gyebale', language: 'Olulimi',
+      'Log Out': 'Fuluma', Profile: 'Ebikwata ku Ggwe', Dashboard: 'Ebifo byange', hi: 'Gyebale', language: 'Olulimi',
       'Welcome back': 'Tukwanirizza nate', 'Join DIRI': 'Wegatte ku DIRI', 'Continue with Google': 'Weyongere ne Google',
       'or continue with email': 'oba weyongere ne email', 'Email address': 'Endagiriro ya email', Password: 'Ekigambo kyama',
       'Forgot password?': 'Weerabidde ekigambo kyama?', 'Create Account': 'Kola Akawunti', 'Full name': 'Amannya gonna',
@@ -1150,7 +1162,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const profileLink = document.createElement('a');
           profileLink.href = 'profile.html';
           profileLink.className = 'btn btn-ghost btn-sm';
-          profileLink.textContent = dictionary.Profile;
+          profileLink.textContent = dictionary.Dashboard;
           container.appendChild(profileLink);
         }
       });
