@@ -3944,7 +3944,7 @@ body.lesson-open {
   justify-content: center;
   align-items: center;
   gap: var(--space-10);
-  max-width: 800px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -3976,6 +3976,16 @@ body.lesson-open {
   object-fit: contain;
   filter: grayscale(15%);
   transition: filter var(--transition-base);
+}
+
+.partner-card img.partner-logo-square {
+  width: 80px;
+  height: 80px;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
 }
 
 .partner-card:hover img {
