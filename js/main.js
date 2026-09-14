@@ -893,6 +893,18 @@ document.addEventListener('DOMContentLoaded', function () {
     return new URL(page, baseUrl).href;
   }
 
+  function authDestination() {
+    const requested = new URLSearchParams(window.location.search).get('redirect');
+    if (!requested) return pageUrl('index.html');
+    try {
+      const target = new URL(requested, window.location.origin);
+      const isLocalPage = target.origin === window.location.origin && /\.html$/i.test(target.pathname);
+      return isLocalPage ? pageUrl(target.pathname.replace(/^\//, '') + target.search + target.hash) : pageUrl('index.html');
+    } catch (error) {
+      return pageUrl('index.html');
+    }
+  }
+
   function validateAuthForm(form) {
     let isValid = true;
     const requiredInputs = form.querySelectorAll('[required]');
@@ -985,7 +997,7 @@ document.addEventListener('DOMContentLoaded', function () {
           const password = document.getElementById('password').value;
           const result = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
           if (result.error) throw result.error;
-          window.location.href = 'index.html';
+          window.location.href = authDestination();
         }
       } catch (error) {
         showAuthMessage(form, error.message || 'Authentication failed. Please try again.', 'error');
@@ -1018,7 +1030,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const result = await supabaseClient.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: pageUrl('index.html'),
+            redirectTo: authDestination(),
             queryParams: {
               access_type: 'offline',
               prompt: 'select_account'
@@ -1328,7 +1340,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       }
     } else if (document.querySelector('[data-profile-form]')) {
-      window.location.href = 'login.html';
+      window.location.href = 'login.html?redirect=profile.html';
     }
   }
 

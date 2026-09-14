@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="View, download and publicly verify a DIRI Digital Safety Certificate.">
+  <title>DIRI Digital Certificate</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="digital-certificate-page">
+  <header class="header certificate-screen-only" role="banner">
+    <div class="header-inner">
+      <a href="index.html" class="header-logo"><img src="assets/logo.png" alt="DIRI Logo"><span>DIRI</span></a>
+      <nav class="header-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="learn.html">Learn</a><a href="training.html">Training</a><a href="verify.html">Verify</a><a href="profile.html">My Dashboard</a></nav>
+      <div class="header-actions"><a class="btn btn-ghost btn-sm" href="verify.html">Verify Certificate</a></div>
+    </div>
+  </header>
+
+  <main class="digital-certificate-main">
+    <div class="certificate-document-actions certificate-screen-only" data-certificate-actions hidden>
+      <p><strong>Official digital certificate</strong><span>Use your browser's print window to save a PDF or make a paper copy.</span></p>
+      <div><a class="btn btn-outline" data-public-verification-link href="verify.html">Open Public Verification</a><button class="btn btn-primary" type="button" data-download-certificate>Download PDF / Print</button></div>
+    </div>
+
+    <section class="certificate-document-shell" data-certificate-document aria-live="polite">
+      <div class="certificate-document-loading"><strong>Loading digital certificate...</strong><p>The certificate is being checked against DIRI's public verification record.</p></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/certificate-document.js"></script>
+  <script src="js/accessibility-reader.js"></script>
+</body>
+</html>

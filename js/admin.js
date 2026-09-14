@@ -29,7 +29,7 @@
     const sessionResult = await sb.auth.getSession();
     const session = sessionResult.data.session;
     if (!session || !session.user) {
-      window.location.href = 'login.html';
+      window.location.href = 'login.html?redirect=admin.html';
       return false;
     }
     currentUser = session.user;
@@ -134,7 +134,10 @@
     else if (name === 'updates') loadNews();
     else if (name === 'training') loadTrainingRequests();
     else if (name === 'cohorts') loadCohorts();
-    else if (name === 'certificates') loadCertificates();
+    else if (name === 'certificates') {
+      loadCertificateRequests();
+      loadCertificates();
+    }
     else if (name === 'access') {
       loadAccessList();
       if (currentUserRole === 'admin') loadAccessRequests();
@@ -239,7 +242,7 @@
     var cohortsResult = await sb.from('training_cohorts').select('*, training_organizations(name)').order('training_date', { ascending: false });
     var participantsResult = await sb.from('cohort_participants').select('*, training_cohorts(training_name)').order('enrolled_at', { ascending: false });
     if (cohortsResult.error) {
-      cohortBody.innerHTML = '<tr><td colspan="5" style="color:var(--color-error);">' + escHtml(cohortsResult.error.message) + '</td></tr>';
+      cohortBody.innerHTML = '<tr><td colspan="6" style="color:var(--color-error);">' + escHtml(cohortsResult.error.message) + '</td></tr>';
       return;
     }
     var cohorts = cohortsResult.data || [];
@@ -247,15 +250,22 @@
     cohortSelect.innerHTML = cohorts.length ? cohorts.map(function (cohort) { return '<option value="' + cohort.id + '">' + escHtml(cohort.training_name) + '</option>'; }).join('') : '<option value="">Create a cohort first</option>';
     cohortBody.innerHTML = cohorts.length ? cohorts.map(function (cohort) {
       var count = participants.filter(function (person) { return person.cohort_id === cohort.id; }).length;
-      return '<tr><td><strong>' + escHtml(cohort.training_name) + '</strong></td><td>' + escHtml(cohort.training_organizations ? cohort.training_organizations.name : '—') + '</td><td>' + escHtml(cohort.training_date) + '</td><td>' + count + '</td><td>' + escHtml(cohort.status) + '</td></tr>';
-    }).join('') : '<tr><td colspan="5">No cohorts created yet.</td></tr>';
+      return '<tr><td><strong>' + escHtml(cohort.training_name) + '</strong></td><td>' + escHtml(cohort.training_organizations ? cohort.training_organizations.name : '—') + '</td><td>' + escHtml(cohort.training_date) + '</td><td>' + Number(cohort.duration_hours || 4) + ' hours</td><td>' + count + '</td><td>' + escHtml(cohort.status) + '</td></tr>';
+    }).join('') : '<tr><td colspan="6">No cohorts created yet.</td></tr>';
     if (!participantBody) return;
     participantBody.innerHTML = participants.length ? participants.map(function (person) {
       return '<tr><td><strong>' + escHtml(person.full_name) + '</strong><div class="body-sm">' + escHtml(person.email || 'Account not linked yet') + '</div></td><td>' + escHtml(person.training_cohorts ? person.training_cohorts.training_name : '—') + '</td>' +
         '<td>' + statusSelect('attendance', person.id, person.attendance_status, ['pending','present','partial','absent']) + '</td>' +
         '<td>' + statusSelect('assessment', person.id, person.assessment_status, ['not_started','in_progress','passed','not_passed','exempt']) + '</td>' +
-        '<td>' + statusSelect('certification', person.id, person.certification_status, ['not_eligible','eligible','approved','issued','revoked']) + '</td></tr>';
-    }).join('') : '<tr><td colspan="5">No participants enrolled yet.</td></tr>';
+        '<td><span class="certificate-pathway-badge" data-status="' + escHtml(person.certification_status) + '">' + escHtml(person.certification_status.replaceAll('_', ' ')) + '</span></td>' +
+        '<td>' + (person.certification_status === 'revoked'
+          ? '<span class="body-sm">Revoked — review the certificate record</span>'
+          : (person.certification_status === 'issued'
+          ? '<span class="body-sm">Digital certificate issued</span>'
+          : (person.attendance_status === 'present' && ['passed', 'exempt'].includes(person.assessment_status)
+            ? '<button type="button" class="btn btn-sm btn-primary generate-physical-certificate" data-id="' + person.id + '">Generate Digital Certificate</button>'
+            : '<span class="body-sm">Record attendance and assessment first</span>'))) + '</td></tr>';
+    }).join('') : '<tr><td colspan="6">No participants enrolled yet.</td></tr>';
     participantBody.querySelectorAll('.participant-status').forEach(function (control) {
       control.addEventListener('change', async function () {
         var field = this.dataset.field + '_status';
@@ -263,7 +273,11 @@
         payload[field] = this.value;
         var update = await sb.from('cohort_participants').update(payload).eq('id', this.dataset.id);
         showToast(update.error ? update.error.message : 'Participant record updated.', update.error ? 'error' : 'success');
+        if (!update.error) loadCohorts();
       });
+    });
+    participantBody.querySelectorAll('.generate-physical-certificate').forEach(function (button) {
+      button.addEventListener('click', function () { generatePhysicalCertificate(this.dataset.id); });
     });
   }
 
@@ -285,6 +299,7 @@
       training_name: document.getElementById('cohort-name').value.trim(),
       organization_id: organizationResult.data.id,
       training_date: document.getElementById('cohort-date').value,
+      duration_hours: Number(document.getElementById('cohort-duration').value),
       location: document.getElementById('cohort-location').value.trim() || null,
       created_by: currentUser.id
     });
@@ -307,8 +322,7 @@
       full_name: document.getElementById('participant-name').value.trim(),
       email: email || null,
       attendance_status: document.getElementById('participant-attendance').value,
-      assessment_status: document.getElementById('participant-assessment').value,
-      certification_status: document.getElementById('participant-assessment').value === 'passed' ? 'eligible' : 'not_eligible'
+      assessment_status: document.getElementById('participant-assessment').value
     });
     var message = document.getElementById('participant-form-message');
     message.textContent = result.error ? result.error.message : (userId ? 'Participant enrolled and linked to an existing DIRI account.' : 'Participant enrolled. Their account can be linked when activated.');
@@ -316,10 +330,68 @@
     if (!result.error) { event.target.reset(); loadCohorts(); }
   }
 
-  function certificateNumber() {
-    var bytes = new Uint8Array(6);
-    crypto.getRandomValues(bytes);
-    return 'DIRI-' + new Date().getFullYear() + '-' + Array.from(bytes).map(function (byte) { return byte.toString(16).padStart(2, '0'); }).join('').toUpperCase();
+  async function generatePhysicalCertificate(participantId) {
+    var result = await sb.rpc('issue_diri_physical_certificate', { p_participant_id: participantId });
+    showToast(result.error ? result.error.message : 'Digital certificate generated from the verified training record.', result.error ? 'error' : 'success');
+    if (!result.error) {
+      loadCohorts();
+      loadCertificates();
+    }
+  }
+
+  async function loadCertificateRequests() {
+    var tbody = document.getElementById('certificate-requests-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5">Loading verification requests...</td></tr>';
+    var result = await sb.from('certificate_requests').select('*').eq('pathway', 'online').order('created_at', { ascending: false });
+    if (result.error) {
+      tbody.innerHTML = '<tr><td colspan="5" style="color:var(--color-error);">' + escHtml(result.error.message) + '</td></tr>';
+      return;
+    }
+    var requests = result.data || [];
+    tbody.innerHTML = requests.length ? requests.map(function (request) {
+      var evidence = request.eligibility_snapshot || {};
+      var actions = '';
+      if (request.status === 'pending') actions += '<button type="button" class="btn btn-sm btn-outline review-certificate-request" data-id="' + request.id + '">Start Review</button> ';
+      if (['pending', 'under_review', 'approved'].includes(request.status)) {
+        actions += '<button type="button" class="btn btn-sm btn-primary approve-certificate-request" data-id="' + request.id + '">Approve &amp; Issue</button> ';
+        actions += '<button type="button" class="btn btn-sm btn-ghost reject-certificate-request" data-id="' + request.id + '">Reject</button>';
+      }
+      if (request.status === 'issued' && request.certificate_id) actions = '<span class="body-sm">Certificate issued</span>';
+      if (!actions) actions = '<span class="body-sm">No action available</span>';
+      return '<tr><td><strong>' + escHtml(request.full_learner_name) + '</strong><div class="body-sm">Online learner</div></td>' +
+        '<td><strong>' + Number(evidence.completed_lessons || 0) + ' / ' + Number(evidence.required_lessons || 9) + ' lessons</strong><div class="body-sm">Assessment: ' + (evidence.assessment_passed ? 'Passed' : 'Not passed') + '</div></td>' +
+        '<td>' + escHtml(new Date(request.created_at).toLocaleString('en-UG')) + '</td>' +
+        '<td><span class="certificate-pathway-badge" data-status="' + escHtml(request.status) + '">' + escHtml(request.status.replaceAll('_', ' ')) + '</span>' +
+        (request.reviewer_notes ? '<div class="body-sm">' + escHtml(request.reviewer_notes) + '</div>' : '') + '</td><td>' + actions + '</td></tr>';
+    }).join('') : '<tr><td colspan="5">No online certificate requests yet.</td></tr>';
+    tbody.querySelectorAll('.review-certificate-request').forEach(function (button) {
+      button.addEventListener('click', function () { reviewCertificateRequest(this.dataset.id, 'review'); });
+    });
+    tbody.querySelectorAll('.approve-certificate-request').forEach(function (button) {
+      button.addEventListener('click', function () { reviewCertificateRequest(this.dataset.id, 'approve'); });
+    });
+    tbody.querySelectorAll('.reject-certificate-request').forEach(function (button) {
+      button.addEventListener('click', function () { reviewCertificateRequest(this.dataset.id, 'reject'); });
+    });
+  }
+
+  async function reviewCertificateRequest(requestId, decision) {
+    var notes = null;
+    if (decision === 'reject') {
+      notes = prompt('Explain what the learner needs to correct before trying again:');
+      if (!notes || !notes.trim()) return;
+    }
+    var result = await sb.rpc('review_diri_certificate_request', {
+      p_request_id: requestId,
+      p_decision: decision,
+      p_review_notes: notes
+    });
+    showToast(result.error ? result.error.message : (decision === 'approve' ? 'Approved. The digital certificate is now available to the learner.' : 'Verification request updated.'), result.error ? 'error' : 'success');
+    if (!result.error) {
+      loadCertificateRequests();
+      loadCertificates();
+    }
   }
 
   async function loadCertificates() {
@@ -330,39 +402,25 @@
     var search = (document.getElementById('certificate-search').value || '').toLowerCase().trim();
     var certificates = (result.data || []).filter(function (certificate) { return !search || (certificate.full_learner_name + ' ' + certificate.certificate_number).toLowerCase().includes(search); });
     tbody.innerHTML = certificates.length ? certificates.map(function (certificate) {
-      return '<tr><td><strong>' + escHtml(certificate.certificate_number) + '</strong><div class="body-sm">' + escHtml(certificate.certificate_title) + '</div></td><td>' + escHtml(certificate.full_learner_name) + '</td><td>' + escHtml(certificate.issue_date) + '</td><td>' + escHtml(certificate.status) + '</td><td><a class="btn btn-sm btn-ghost" target="_blank" href="verify.html?id=' + encodeURIComponent(certificate.certificate_number) + '">Verify</a> ' + (certificate.status === 'valid' ? '<button class="btn btn-sm btn-ghost revoke-certificate" data-id="' + certificate.id + '" style="color:var(--color-error);">Revoke</button>' : '') + '</td></tr>';
+      return '<tr><td><strong>' + escHtml(certificate.certificate_number) + '</strong><div class="body-sm">' + escHtml(certificate.certificate_title) + '</div></td><td>' + escHtml(certificate.full_learner_name) + '<div class="body-sm">' + escHtml((certificate.source_pathway || 'online').replaceAll('_', ' ')) + '</div></td><td>' + escHtml(certificate.issue_date) + '</td><td>' + escHtml(certificate.status) + '</td><td><a class="btn btn-sm btn-primary" target="_blank" href="certificate.html?id=' + encodeURIComponent(certificate.certificate_number) + '">Open Digital Certificate</a> <a class="btn btn-sm btn-ghost" target="_blank" href="verify.html?id=' + encodeURIComponent(certificate.certificate_number) + '">Verify</a> ' + (certificate.status === 'valid' ? '<button class="btn btn-sm btn-ghost revoke-certificate" data-id="' + certificate.id + '" style="color:var(--color-error);">Revoke</button>' : '') + '</td></tr>';
     }).join('') : '<tr><td colspan="5">No certificates found. None are fabricated or preloaded.</td></tr>';
     tbody.querySelectorAll('.revoke-certificate').forEach(function (button) { button.addEventListener('click', function () { revokeCertificate(this.dataset.id); }); });
     var settings = await sb.from('platform_settings').select('setting_value').eq('setting_key', 'certificate_fee_ugx').maybeSingle();
     if (settings.data && settings.data.setting_value) document.getElementById('certificate-fee').value = settings.data.setting_value.amount || 50000;
   }
 
-  async function issueCertificate(event) {
-    event.preventDefault();
-    var message = document.getElementById('certificate-form-message');
-    if (!document.getElementById('certificate-approved').checked) return;
-    var email = document.getElementById('certificate-user-email').value.trim();
-    var profile = await sb.from('profiles').select('id').eq('email', email).maybeSingle();
-    if (profile.error || !profile.data) { message.textContent = 'No DIRI learner account was found for that email.'; message.className = 'auth-message error'; return; }
-    var result = await sb.from('certificates').insert({
-      user_id: profile.data.id,
-      full_learner_name: document.getElementById('certificate-full-name').value.trim(),
-      certificate_title: document.getElementById('certificate-type').value.trim(),
-      certificate_number: certificateNumber(),
-      issued_by: currentUser.id,
-      status: 'valid'
-    });
-    message.textContent = result.error ? result.error.message : 'Certificate generated and added to the learner dashboard.';
-    message.className = 'auth-message ' + (result.error ? 'error' : 'success');
-    if (!result.error) { event.target.reset(); document.getElementById('certificate-type').value = 'DIRI Digital Safety Certificate'; loadCertificates(); }
-  }
-
   async function revokeCertificate(id) {
     var reason = prompt('Reason for revoking this certificate:');
     if (!reason || !reason.trim()) return;
-    var result = await sb.from('certificates').update({ status: 'revoked', revoked_at: new Date().toISOString(), revoked_by: currentUser.id, revocation_reason: reason.trim(), updated_at: new Date().toISOString() }).eq('id', id);
+    var result = await sb.from('certificates').update({ status: 'revoked', revoked_at: new Date().toISOString(), revoked_by: currentUser.id, revocation_reason: reason.trim(), updated_at: new Date().toISOString() }).eq('id', id).select('participant_id').single();
+    if (!result.error && result.data && result.data.participant_id) {
+      await sb.from('cohort_participants').update({ certification_status: 'revoked', updated_at: new Date().toISOString() }).eq('id', result.data.participant_id);
+    }
     showToast(result.error ? result.error.message : 'Certificate revoked.', result.error ? 'error' : 'success');
-    if (!result.error) loadCertificates();
+    if (!result.error) {
+      loadCertificates();
+      loadCohorts();
+    }
   }
 
   async function saveCertificateFee() {
@@ -1176,7 +1234,6 @@
     document.getElementById('training-status-filter').addEventListener('change', loadTrainingRequests);
     document.getElementById('cohort-form').addEventListener('submit', createCohort);
     document.getElementById('participant-form').addEventListener('submit', enrolParticipant);
-    document.getElementById('certificate-form').addEventListener('submit', issueCertificate);
     document.getElementById('certificate-search').addEventListener('input', debounce(loadCertificates, 250));
     document.getElementById('save-certificate-fee').addEventListener('click', saveCertificateFee);
 

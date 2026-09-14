@@ -2,6 +2,8 @@
 
 (function () {
   const sb = window.diriSupabase;
+  const REQUIRED_LESSONS = 9;
+  const PASS_PERCENTAGE = 70;
 
   function escapeHtml(value) {
     const div = document.createElement('div');
@@ -14,6 +16,10 @@
     return new Date(value + (String(value).length === 10 ? 'T00:00:00' : '')).toLocaleDateString('en-UG', {
       day: 'numeric', month: 'long', year: 'numeric'
     });
+  }
+
+  function formatStatus(value) {
+    return String(value || '').replaceAll('_', ' ').replace(/\b\w/g, function (letter) { return letter.toUpperCase(); });
   }
 
   async function currentSession() {
@@ -77,18 +83,54 @@
   }
 
   function renderCertificate(certificate) {
-    const url = certificateVerificationUrl(certificate);
+    const verifyUrl = certificateVerificationUrl(certificate);
+    const documentUrl = 'certificate.html?id=' + encodeURIComponent(certificate.certificate_number);
     return '<article class="certificate-card" data-certificate-card>' +
       '<div class="certificate-brand"><span>DIRI</span><small>Digital Safety Certificate</small></div>' +
-      '<p class="certificate-kicker">This certifies that</p>' +
+      '<p class="certificate-kicker">Issued digitally to</p>' +
       '<h3>' + escapeHtml(certificate.full_learner_name) + '</h3>' +
-      '<p>has qualified for the</p><h4>' + escapeHtml(certificate.certificate_title) + '</h4>' +
+      '<p>for qualifying in</p><h4>' + escapeHtml(certificate.certificate_title) + '</h4>' +
       '<div class="certificate-details"><span><strong>Certificate number</strong>' + escapeHtml(certificate.certificate_number) + '</span>' +
       '<span><strong>Date issued</strong>' + formatDate(certificate.issue_date) + '</span>' +
-      '<span><strong>Status</strong><b class="certificate-status status-' + escapeHtml(certificate.status) + '">' + escapeHtml(certificate.status) + '</b></span></div>' +
-      '<div class="certificate-verify"><div data-certificate-qr data-value="' + escapeHtml(url) + '"></div>' +
-      '<div><strong>Verify online</strong><a href="' + escapeHtml(url) + '">' + escapeHtml(url) + '</a></div></div>' +
+      '<span><strong>Pathway</strong>' + escapeHtml(formatStatus(certificate.source_pathway || 'online')) + '</span>' +
+      '<span><strong>Status</strong><b class="certificate-status status-' + escapeHtml(certificate.status) + '">' + escapeHtml(formatStatus(certificate.status)) + '</b></span></div>' +
+      '<div class="certificate-verify"><div data-certificate-qr data-value="' + escapeHtml(verifyUrl) + '"></div>' +
+      '<div><strong>Public verification</strong><a href="' + escapeHtml(verifyUrl) + '">' + escapeHtml(verifyUrl) + '</a></div></div>' +
+      '<div class="certificate-card-actions"><a class="btn btn-primary" href="' + escapeHtml(documentUrl) + '">Open / Download Certificate</a>' +
+      '<a class="btn btn-outline" href="verify.html?id=' + encodeURIComponent(certificate.certificate_number) + '">Verify</a></div>' +
       '</article>';
+  }
+
+  function bestAssessment(attempts) {
+    return attempts.reduce(function (best, attempt) {
+      if (!best) return attempt;
+      const ratio = Number(attempt.score || 0) / Math.max(1, Number(attempt.total_questions || 1));
+      const bestRatio = Number(best.score || 0) / Math.max(1, Number(best.total_questions || 1));
+      return ratio > bestRatio ? attempt : best;
+    }, null);
+  }
+
+  function setWorkflowStep(name, state, detail) {
+    const step = document.querySelector('[data-certificate-step="' + name + '"]');
+    if (!step) return;
+    step.classList.remove('is-complete', 'is-current', 'is-locked', 'is-error');
+    step.classList.add('is-' + state);
+    const detailNode = step.querySelector('[data-certificate-step-detail]');
+    if (detailNode && detail) detailNode.textContent = detail;
+  }
+
+  function requestStateCopy(request, qualified) {
+    if (!request) {
+      return qualified
+        ? { title: 'Ready for DIRI verification', message: 'Confirm the full name for your certificate, then send your results to the DIRI team.' }
+        : { title: 'Keep learning', message: 'Complete all 9 lessons and pass an assessment with at least 70%.' };
+    }
+    if (request.status === 'pending') return { title: 'Verification requested', message: 'Your request is waiting for the DIRI team to begin its review.' };
+    if (request.status === 'under_review') return { title: 'DIRI is reviewing your results', message: 'Your identity, lesson completion and assessment result are being checked.' };
+    if (request.status === 'approved') return { title: 'Approved', message: 'Your certificate is being generated.' };
+    if (request.status === 'issued') return { title: 'Digital certificate issued', message: 'Your certificate is ready below. You can download it as a PDF or print it.' };
+    if (request.status === 'rejected') return { title: 'Verification needs attention', message: request.reviewer_notes || 'Review the requirements and submit a new request when ready.' };
+    return { title: formatStatus(request.status), message: request.reviewer_notes || 'Check this page for the latest certificate status.' };
   }
 
   async function setupLearnerDashboard() {
@@ -97,54 +139,152 @@
     const session = await currentSession();
     if (!session || !session.user) return;
 
-    const [attemptsResult, participationResult, certificatesResult] = await Promise.all([
-      sb.from('quiz_attempts').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
-      sb.from('cohort_participants').select('attendance_status, assessment_status, certification_status, training_cohorts(training_name, training_date, status)').eq('user_id', session.user.id),
-      sb.from('certificates').select('*').eq('user_id', session.user.id).order('issue_date', { ascending: false })
-    ]);
+    const requestForm = document.querySelector('[data-certificate-request-form]');
+    const requestButton = requestForm && requestForm.querySelector('button[type="submit"]');
+    const fullNameInput = requestForm && requestForm.querySelector('[name="full_learner_name"]');
+    let pollTimer = null;
 
-    const attempts = attemptsResult.data || [];
-    const completedAttempts = attempts.filter(function (attempt) { return attempt.status === 'completed' || attempt.score != null; });
-    const bestAttempt = completedAttempts.reduce(function (best, attempt) {
-      if (!best) return attempt;
-      const currentRatio = Number(attempt.score || 0) / Math.max(1, Number(attempt.total_questions || 1));
-      const bestRatio = Number(best.score || 0) / Math.max(1, Number(best.total_questions || 1));
-      return currentRatio > bestRatio ? attempt : best;
-    }, null);
-    const quizCount = document.querySelector('[data-dashboard-stat="assessments"]');
-    const bestScoreEl = document.querySelector('[data-dashboard-stat="best-score"]');
-    if (quizCount) quizCount.textContent = completedAttempts.length;
-    if (bestScoreEl) bestScoreEl.textContent = bestAttempt ? (Number(bestAttempt.score || 0) + '/' + Number(bestAttempt.total_questions || 0)) : '—';
+    async function loadDashboardData() {
+      const results = await Promise.all([
+        sb.from('lesson_progress').select('lesson_id,status,completed_at').eq('user_id', session.user.id),
+        sb.from('quiz_attempts').select('score,total_questions,status,created_at').eq('user_id', session.user.id).order('created_at', { ascending: false }),
+        sb.from('cohort_participants').select('attendance_status,assessment_status,certification_status,training_cohorts(training_name,training_date,status,duration_hours)').eq('user_id', session.user.id),
+        sb.from('certificate_requests').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false }),
+        sb.from('certificates').select('*').eq('user_id', session.user.id).order('issue_date', { ascending: false }),
+        sb.from('profiles').select('username').eq('id', session.user.id).maybeSingle()
+      ]);
 
-    const trainingList = document.querySelector('[data-training-participation]');
-    const participations = participationResult.data || [];
-    if (trainingList) {
-      trainingList.innerHTML = participations.length ? participations.map(function (item) {
-        const cohort = item.training_cohorts || {};
-        return '<article class="dashboard-list-card"><div><strong>' + escapeHtml(cohort.training_name || 'DIRI training') + '</strong>' +
-          '<span>' + formatDate(cohort.training_date) + '</span></div><div class="status-stack">' +
-          '<span>Attendance: ' + escapeHtml(item.attendance_status) + '</span><span>Assessment: ' + escapeHtml(item.assessment_status) + '</span>' +
-          '<span>Certificate: ' + escapeHtml(item.certification_status) + '</span></div></article>';
-      }).join('') : '<div class="dashboard-empty"><strong>No physical training recorded yet.</strong><p>If you attend a DIRI training, it will appear here under this same account.</p></div>';
-    }
+      const progressResult = results[0];
+      const attemptsResult = results[1];
+      const participationResult = results[2];
+      const requestsResult = results[3];
+      const certificatesResult = results[4];
+      const profileResult = results[5];
+      const completedLessonIds = new Set((progressResult.data || []).filter(function (item) { return item.status === 'completed'; }).map(function (item) { return item.lesson_id; }));
+      const completedLessons = Math.min(REQUIRED_LESSONS, completedLessonIds.size);
+      const progressPercent = Math.round((completedLessons / REQUIRED_LESSONS) * 100);
+      const attempts = (attemptsResult.data || []).filter(function (attempt) { return attempt.status === 'completed'; });
+      const bestAttempt = bestAssessment(attempts);
+      const bestPercentage = bestAttempt && Number(bestAttempt.total_questions) > 0
+        ? Math.round((Number(bestAttempt.score) / Number(bestAttempt.total_questions)) * 100)
+        : 0;
+      const assessmentPassed = bestPercentage >= PASS_PERCENTAGE;
+      const requests = requestsResult.data || [];
+      const latestRequest = requests[0] || null;
+      const activeRequest = requests.find(function (request) { return ['pending', 'under_review', 'approved', 'issued'].includes(request.status); }) || null;
+      const certificates = certificatesResult.data || [];
+      const latestCertificate = certificates[0] || null;
+      const validCertificate = certificates.find(function (certificate) { return certificate.status === 'valid'; }) || null;
+      const revokedCertificate = latestCertificate && latestCertificate.status === 'revoked' ? latestCertificate : null;
+      const qualified = completedLessons === REQUIRED_LESSONS && assessmentPassed;
 
-    const certificateList = document.querySelector('[data-certificate-list]');
-    const certificates = certificatesResult.data || [];
-    if (certificateList) {
-      certificateList.innerHTML = certificates.length ? certificates.map(renderCertificate).join('') :
-        '<div class="dashboard-empty"><strong>No certificate has been issued to this account.</strong><p>Complete the required learning or training and assessment. Qualifying certificates are issued only after DIRI approval.</p></div>';
-      if (window.QRCode) {
-        certificateList.querySelectorAll('[data-certificate-qr]').forEach(function (node) {
-          new window.QRCode(node, { text: node.dataset.value, width: 86, height: 86, correctLevel: window.QRCode.CorrectLevel.M });
-        });
+      const lessonStat = document.querySelector('[data-dashboard-stat="lessons"]');
+      const quizCount = document.querySelector('[data-dashboard-stat="assessments"]');
+      const bestScoreEl = document.querySelector('[data-dashboard-stat="best-score"]');
+      const pathwayStat = document.querySelector('[data-dashboard-stat="certificate-status"]');
+      if (lessonStat) lessonStat.textContent = completedLessons + ' / ' + REQUIRED_LESSONS;
+      if (quizCount) quizCount.textContent = attempts.length;
+      if (bestScoreEl) bestScoreEl.textContent = bestAttempt ? bestPercentage + '%' : '—';
+
+      const meter = document.querySelector('[data-course-progress-meter]');
+      const percent = document.querySelector('[data-course-progress-percent]');
+      const count = document.querySelector('[data-course-progress-count]');
+      const fill = document.querySelector('[data-course-progress-fill]');
+      if (meter) {
+        meter.style.setProperty('--course-progress', progressPercent + '%');
+        meter.setAttribute('aria-valuenow', String(completedLessons));
+      }
+      if (percent) percent.textContent = progressPercent + '%';
+      if (count) count.textContent = completedLessons;
+      if (fill) fill.style.width = progressPercent + '%';
+
+      const trainingList = document.querySelector('[data-training-participation]');
+      const participations = participationResult.data || [];
+      if (trainingList) {
+        trainingList.innerHTML = participations.length ? participations.map(function (item) {
+          const cohort = item.training_cohorts || {};
+          const duration = cohort.duration_hours ? ' · ' + Number(cohort.duration_hours) + ' hours' : '';
+          return '<article class="dashboard-list-card"><div><strong>' + escapeHtml(cohort.training_name || 'DIRI training') + '</strong>' +
+            '<span>' + formatDate(cohort.training_date) + escapeHtml(duration) + '</span></div><div class="status-stack">' +
+            '<span>Attendance: ' + escapeHtml(formatStatus(item.attendance_status)) + '</span><span>Assessment: ' + escapeHtml(formatStatus(item.assessment_status)) + '</span>' +
+            '<span>Certificate: ' + escapeHtml(formatStatus(item.certification_status)) + '</span></div></article>';
+        }).join('') : '<div class="dashboard-empty"><strong>No physical training recorded yet.</strong><p>If you attend a DIRI training, it will appear here under this same account.</p></div>';
+      }
+
+      setWorkflowStep('lessons', completedLessons === REQUIRED_LESSONS ? 'complete' : 'current', completedLessons + ' of ' + REQUIRED_LESSONS + ' completed');
+      setWorkflowStep('assessment', assessmentPassed ? 'complete' : (completedLessons === REQUIRED_LESSONS ? 'current' : 'locked'), bestAttempt ? 'Best result: ' + bestPercentage + '% (pass mark ' + PASS_PERCENTAGE + '%)' : 'Pass mark: ' + PASS_PERCENTAGE + '%');
+      setWorkflowStep('request', activeRequest ? 'complete' : (latestRequest && latestRequest.status === 'rejected' ? 'error' : (qualified ? 'current' : 'locked')), activeRequest ? 'Sent ' + formatDate(activeRequest.created_at) : (latestRequest && latestRequest.status === 'rejected' ? 'A new request can be submitted' : 'Available after qualification'));
+      setWorkflowStep('review', activeRequest && activeRequest.status === 'issued' ? 'complete' : (activeRequest ? 'current' : 'locked'), activeRequest ? formatStatus(activeRequest.status) : 'Identity and results checked');
+      setWorkflowStep('issued', validCertificate ? 'complete' : (revokedCertificate ? 'error' : 'locked'), validCertificate ? validCertificate.certificate_number : (revokedCertificate ? 'Certificate revoked' : 'Download your digital certificate'));
+
+      const displayRequest = activeRequest || latestRequest;
+      const state = validCertificate
+        ? { title: 'Digital certificate issued', message: 'Your certificate is ready below. Open it to download as a PDF or print it.' }
+        : (revokedCertificate
+          ? { title: 'Certificate revoked', message: revokedCertificate.revocation_reason || 'This certificate is no longer valid. Contact DIRI for assistance.' }
+          : requestStateCopy(displayRequest, qualified));
+      const statusBox = document.querySelector('[data-certificate-request-status]');
+      if (statusBox) statusBox.innerHTML = '<strong>' + escapeHtml(state.title) + '</strong><p>' + escapeHtml(state.message) + '</p>';
+
+      const statusLabel = validCertificate ? 'Issued' : (revokedCertificate ? 'Revoked' : (activeRequest ? formatStatus(activeRequest.status) : (latestRequest && latestRequest.status === 'rejected' ? 'Action needed' : (qualified ? 'Ready to request' : 'Learning'))));
+      const badge = document.querySelector('[data-certificate-pathway-badge]');
+      if (badge) {
+        badge.textContent = statusLabel;
+        badge.dataset.status = validCertificate ? 'issued' : (revokedCertificate ? 'revoked' : (activeRequest ? activeRequest.status : (latestRequest ? latestRequest.status : 'learning')));
+      }
+      if (pathwayStat) pathwayStat.textContent = statusLabel;
+
+      if (fullNameInput && !fullNameInput.value) {
+        fullNameInput.value = (displayRequest && displayRequest.full_learner_name) || (profileResult.data && profileResult.data.username) || '';
+      }
+      if (requestButton) {
+        requestButton.disabled = !qualified || Boolean(activeRequest) || Boolean(validCertificate);
+        requestButton.textContent = activeRequest ? 'Verification Already Requested' : (validCertificate ? 'Certificate Issued' : (latestRequest && latestRequest.status === 'rejected' ? 'Submit New Verification Request' : 'Request DIRI Verification'));
+      }
+
+      const certificateList = document.querySelector('[data-certificate-list]');
+      if (certificateList) {
+        certificateList.innerHTML = certificates.length ? certificates.map(renderCertificate).join('') :
+          '<div class="dashboard-empty"><strong>No digital certificate has been issued yet.</strong><p>Complete the steps above. A certificate appears here only after DIRI verifies and approves the request.</p></div>';
+        if (window.QRCode) {
+          certificateList.querySelectorAll('[data-certificate-qr]').forEach(function (node) {
+            new window.QRCode(node, { text: node.dataset.value, width: 86, height: 86, correctLevel: window.QRCode.CorrectLevel.M });
+          });
+        }
+      }
+
+      if (progressResult.error || requestsResult.error) {
+        if (statusBox) statusBox.innerHTML = '<strong>Certificate workflow needs setup</strong><p>The new certificate database migration has not been applied yet. Contact the DIRI administrator.</p>';
+      }
+
+      const shouldPoll = activeRequest && ['pending', 'under_review', 'approved'].includes(activeRequest.status);
+      if (shouldPoll && !pollTimer) pollTimer = window.setInterval(loadDashboardData, 20000);
+      if (!shouldPoll && pollTimer) {
+        window.clearInterval(pollTimer);
+        pollTimer = null;
       }
     }
 
-    const printButton = document.querySelector('[data-print-certificates]');
-    if (printButton) {
-      printButton.hidden = !certificates.length;
-      printButton.addEventListener('click', function () { window.print(); });
+    if (requestForm) {
+      requestForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const name = fullNameInput.value.trim();
+        requestButton.disabled = true;
+        requestButton.textContent = 'Sending request...';
+        const result = await sb.rpc('request_diri_certificate', { p_full_learner_name: name });
+        if (result.error) {
+          const statusBox = document.querySelector('[data-certificate-request-status]');
+          if (statusBox) statusBox.innerHTML = '<strong>Request not sent</strong><p>' + escapeHtml(result.error.message) + '</p>';
+          requestButton.disabled = false;
+          requestButton.textContent = 'Request DIRI Verification';
+          return;
+        }
+        await loadDashboardData();
+      });
     }
+
+    await loadDashboardData();
+    window.addEventListener('beforeunload', function () { if (pollTimer) window.clearInterval(pollTimer); }, { once: true });
   }
 
   async function setupVerification() {
@@ -162,7 +302,7 @@
       resultBox.innerHTML = '<div class="verification-state">Checking certificate...</div>';
       const response = await sb.rpc('verify_diri_certificate', { p_certificate_id: certificateId });
       if (response.error) {
-        resultBox.innerHTML = '<div class="verification-state invalid"><h2>Unable to verify</h2><p>Please check the certificate ID and try again.</p></div>';
+        resultBox.innerHTML = '<div class="verification-state invalid"><h2>Unable to verify</h2><p>The verification service could not be reached. Please try again.</p></div>';
         return;
       }
       const certificate = response.data && response.data[0];
@@ -177,7 +317,9 @@
         '<div><dt>Certificate type</dt><dd>' + escapeHtml(certificate.certificate_type) + '</dd></div>' +
         '<div><dt>Certificate number</dt><dd>' + escapeHtml(certificate.certificate_number) + '</dd></div>' +
         '<div><dt>Issue date</dt><dd>' + formatDate(certificate.issue_date) + '</dd></div>' +
-        '<div><dt>Status</dt><dd>' + escapeHtml(certificate.certificate_status) + '</dd></div></dl></div>';
+        '<div><dt>Status</dt><dd>' + escapeHtml(formatStatus(certificate.certificate_status)) + '</dd></div></dl>' +
+        (certificate.is_valid ? '<a class="btn btn-primary" href="certificate.html?id=' + encodeURIComponent(certificate.certificate_number) + '">View Digital Certificate</a>' : '') +
+        '</div>';
     }
 
     form.addEventListener('submit', function (event) { event.preventDefault(); verify(); });

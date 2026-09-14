@@ -96,6 +96,15 @@
         </div>
       </div>
 
+      <div class="course-library-progress hidden" data-course-library-progress aria-live="polite">
+        <div>
+          <strong><span data-library-completed>0</span> of 9 lessons completed</strong>
+          <span>Your progress is saved to your DIRI account.</span>
+        </div>
+        <div class="course-library-progress-track" role="progressbar" aria-label="Online lesson completion" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0" data-library-progressbar><span data-library-progress-fill></span></div>
+        <a href="profile.html">View certificate pathway &rarr;</a>
+      </div>
+
       <!-- TOPICS GRID -->
       <div class="topics-grid stagger-children" id="topics-grid">
         <article class="topic-card" data-category="privacy" data-lesson-id="privacy">
@@ -336,6 +345,14 @@
         <h3 data-video-title>Lesson video</h3>
         <p class="lesson-video-note">This video is prepared when the lesson opens, so you can switch between it and the flashcards at any time.</p>
       </div>
+
+      <section class="lesson-completion" data-lesson-completion aria-live="polite">
+        <div>
+          <strong data-lesson-completion-title>Complete this lesson</strong>
+          <span data-lesson-completion-detail>Read all lesson cards, then save your completion.</span>
+        </div>
+        <button class="btn btn-primary" type="button" data-complete-lesson disabled>Read all cards to complete</button>
+      </section>
     </main>
   </div>
 
@@ -389,6 +406,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.7/dist/umd/supabase.min.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/main.js"></script>
+  <script src="js/learning-progress.js"></script>
   <script src="js/accessibility-reader.js"></script>
 </body>
 </html>

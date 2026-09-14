@@ -17,7 +17,7 @@
     const sessionRes = await sb.auth.getSession();
     const session = sessionRes.data.session;
     if (!session || !session.user) {
-      window.location.href = 'login.html';
+      window.location.href = 'login.html?redirect=quiz.html';
       return;
     }
     currentUser = session.user;
