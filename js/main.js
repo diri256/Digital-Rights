@@ -1354,44 +1354,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // =============================================
-  // 11. LEADERBOARD FILTER
-  // =============================================
-  const leaderboardTabs = document.querySelectorAll('[data-leaderboard-tab]');
-
-  leaderboardTabs.forEach(function (tab) {
-    tab.addEventListener('click', function () {
-      const parent = this.closest('.filter-tabs');
-      if (parent) {
-        parent.querySelectorAll('[data-leaderboard-tab]').forEach(function (t) {
-          t.classList.remove('active');
-        });
-      }
-      this.classList.add('active');
-
-      const period = this.getAttribute('data-leaderboard-tab');
-      // In production, this would fetch new leaderboard data
-      // For prototype, we simulate visually
-      const rows = document.querySelectorAll('.leaderboard-row');
-      rows.forEach(function (row, index) {
-        const score = row.querySelector('.score');
-        if (score) {
-          const baseScore = parseInt(score.textContent.replace(/[^0-9]/g, ''), 10);
-          if (!isNaN(baseScore)) {
-            if (period === 'weekly') {
-              score.textContent = baseScore;
-            } else if (period === 'monthly') {
-              score.textContent = Math.floor(baseScore * 3.2);
-            } else if (period === 'all-time') {
-              score.textContent = Math.floor(baseScore * 8.7);
-            }
-          }
-        }
-      });
-    });
-  });
-
-  // =============================================
-  // 12. SMOOTH SCROLL FOR ANCHOR LINKS
+  // 11. SMOOTH SCROLL FOR ANCHOR LINKS
   // =============================================
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {

@@ -21,5 +21,9 @@ npm-debug.log*
 # Dependencies (for future framework upgrade)
 node_modules/
 vendor/
+
+# Supabase CLI local state
+supabase/.temp/
+
 # Bwat per-workspace permission allowlist
 .bwat/
