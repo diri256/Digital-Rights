@@ -334,7 +334,7 @@
     }).join('') : '<tr><td colspan="5">No certificates found. None are fabricated or preloaded.</td></tr>';
     tbody.querySelectorAll('.revoke-certificate').forEach(function (button) { button.addEventListener('click', function () { revokeCertificate(this.dataset.id); }); });
     var settings = await sb.from('platform_settings').select('setting_value').eq('setting_key', 'certificate_fee_ugx').maybeSingle();
-    if (settings.data && settings.data.setting_value) document.getElementById('certificate-fee').value = settings.data.setting_value.amount || 20000;
+    if (settings.data && settings.data.setting_value) document.getElementById('certificate-fee').value = settings.data.setting_value.amount || 50000;
   }
 
   async function issueCertificate(event) {
