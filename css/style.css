@@ -4480,6 +4480,65 @@ html[data-a11y-cursor="white"] *,html[data-a11y-cursor="white"] *::before,html[d
 }
 @media (prefers-reduced-motion:reduce) { .diri-a11y-panel { transition:none; } }
 
+/* Homepage hero photograph */
+.hero {
+  background-color: #071d3b;
+  background-image:
+    linear-gradient(90deg, rgba(4, 24, 59, .96) 0%, rgba(4, 31, 72, .9) 38%, rgba(4, 31, 72, .58) 62%, rgba(4, 31, 72, .2) 100%),
+    url('../assets/diri-uigf-2026-hero.png');
+  background-position: center, 64% 42%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  isolation: isolate;
+  min-height: 760px;
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+}
+.hero::after {
+  background: linear-gradient(180deg, transparent 68%, rgba(3, 18, 43, .45));
+  content: '';
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+.hero .container,.hero-inner { position: relative; z-index: 2; }
+.hero-content { max-width: 650px; }
+.hero-content h1 { color: #fff; font-size: clamp(3rem, 5vw, 4rem); max-width: 620px; text-shadow: 0 3px 24px rgba(0, 0, 0, .34); }
+.hero-content .hero-description { color: rgba(255, 255, 255, .94); max-width: 600px; text-shadow: 0 2px 12px rgba(0, 0, 0, .38); }
+.hero-actions .btn-primary { background: #fff; border-color: #fff; color: var(--color-navy); }
+.hero-actions .btn-primary:hover { background: #dff8f8; border-color: #dff8f8; color: var(--color-navy-dark); }
+.hero-actions .btn-outline { background: rgba(4, 31, 72, .38); border-color: rgba(255, 255, 255, .9); color: #fff; backdrop-filter: blur(5px); }
+.hero-actions .btn-outline:hover { background: #fff; color: var(--color-navy); }
+.hero .hero-decor { display: none; }
+html.diri-a11y-hide-images .hero,
+html[data-a11y-color="light"] .hero,
+html[data-a11y-color="high"] .hero { background-image: none !important; }
+
+@media (max-width: 900px) {
+  .hero {
+    background-image:
+      linear-gradient(90deg, rgba(4, 24, 59, .97) 0%, rgba(4, 31, 72, .88) 58%, rgba(4, 31, 72, .5) 100%),
+      url('../assets/diri-uigf-2026-hero.png');
+    background-position: center, 61% center;
+    min-height: 700px;
+  }
+  .hero-content { max-width: 600px; }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    background-image:
+      linear-gradient(180deg, rgba(4, 24, 59, .9) 0%, rgba(4, 31, 72, .94) 64%, rgba(4, 31, 72, .98) 100%),
+      url('../assets/diri-uigf-2026-hero.png');
+    background-position: center, 64% top;
+    min-height: auto;
+    padding-bottom: var(--space-12);
+  }
+  .hero-content h1 { font-size: clamp(2.65rem, 13vw, 4rem); }
+  .hero-content .hero-description { font-size: 1.05rem; }
+  .hero-actions { gap: var(--space-3); }
+}
+
 /* =============================================
    Unified training, assessment & certification
    ============================================= */
