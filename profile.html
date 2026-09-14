@@ -48,33 +48,37 @@
 
   <main class="profile-page learner-dashboard" data-learner-dashboard>
     <section class="dashboard-welcome animate-in" aria-labelledby="dashboard-title">
-      <div><p class="section-tag">One account, one learning record</p><h1 id="dashboard-title" class="heading-lg">My DIRI Dashboard</h1><p>Continue online learning, review assessments, see physical training participation and access certificates issued to this account.</p></div>
+      <h1 id="dashboard-title" class="heading-lg">My DIRI Dashboard</h1>
       <a href="learn.html" class="btn btn-primary">Continue Learning</a>
     </section>
 
     <section class="dashboard-summary">
-      <article><strong>9</strong><span>Learning modules available</span></article>
+      <article><strong data-dashboard-stat="lessons">0 / 9</strong><span>Lessons completed</span></article>
       <article><strong data-dashboard-stat="assessments">0</strong><span>Assessments completed</span></article>
       <article><strong data-dashboard-stat="best-score">—</strong><span>Best quiz score</span></article>
-      <article><strong>Learn → Certify</strong><span>Your unified DIRI pathway</span></article>
     </section>
 
-    <div class="dashboard-grid">
-      <section class="dashboard-panel" aria-labelledby="learning-progress-title">
-        <div class="dashboard-panel-heading"><div><p class="section-tag">Learn and assess</p><h2 id="learning-progress-title" class="heading-sm">Learning progress</h2></div><a href="learn.html">View lessons →</a></div>
-        <p>Your lesson cards, videos and quiz activity all belong to this account. Learning recommendations will become more personalised as progress tracking expands.</p>
-        <div class="pathway-strip" aria-label="DIRI pathway"><span>Learn</span><span>Train</span><span>Assess</span><span>Certify</span><span>Verify</span></div>
-      </section>
-
-      <section class="dashboard-panel" aria-labelledby="training-participation-title">
-        <div class="dashboard-panel-heading"><div><p class="section-tag">Online or physical</p><h2 id="training-participation-title" class="heading-sm">Training participation</h2></div><a href="training.html">Request training →</a></div>
-        <div data-training-participation><div class="dashboard-empty">Loading training participation...</div></div>
-      </section>
-    </div>
+    <section class="dashboard-panel certification-workflow" aria-labelledby="certification-workflow-title">
+      <div class="dashboard-panel-heading"><div><p class="section-tag">Digital certificate pathway</p><h2 id="certification-workflow-title" class="heading-sm">From learning to an issued certificate</h2></div><span class="certificate-pathway-badge" data-certificate-pathway-badge>Learning</span></div>
+      <ol class="certification-steps" aria-label="Certificate progress">
+        <li data-certificate-step="lessons"><span>1</span><div><strong>Complete all lessons</strong><small data-certificate-step-detail>0 of 9 completed</small></div></li>
+        <li data-certificate-step="assessment"><span>2</span><div><strong>Pass the assessment</strong><small data-certificate-step-detail>At least 70%</small></div></li>
+        <li data-certificate-step="request"><span>3</span><div><strong>Request verification</strong><small data-certificate-step-detail>Available after qualification</small></div></li>
+        <li data-certificate-step="review"><span>4</span><div><strong>DIRI team review</strong><small data-certificate-step-detail>Identity and results checked</small></div></li>
+        <li data-certificate-step="issued"><span>5</span><div><strong>Certificate issued</strong><small data-certificate-step-detail>Download your digital certificate</small></div></li>
+      </ol>
+      <div class="certificate-request-box">
+        <div data-certificate-request-status role="status" aria-live="polite"><strong>Keep learning</strong><p>Complete the requirements above to request verification.</p></div>
+        <form data-certificate-request-form>
+          <div class="form-group"><label for="certificate-full-learner-name">Full name for the certificate</label><input id="certificate-full-learner-name" class="form-input" name="full_learner_name" type="text" minlength="2" maxlength="120" autocomplete="name" required></div>
+          <button class="btn btn-primary" type="submit" disabled>Request DIRI Verification</button>
+        </form>
+      </div>
+    </section>
 
     <section class="dashboard-panel certificate-panel" aria-labelledby="certificate-title">
-      <div class="dashboard-panel-heading"><div><p class="section-tag">DIRI Digital Safety Certificate</p><h2 id="certificate-title" class="heading-sm">My certificates</h2></div><div class="dashboard-panel-actions"><a href="verify.html">Verify a certificate</a><button class="btn btn-outline btn-sm" type="button" data-print-certificates hidden>Download / Print</button></div></div>
-      <p class="certificate-fee-note">The DIRI certificate fee is <strong data-certificate-fee>UGX 50,000</strong>. Certification is issued only after qualification and approval.</p>
+      <div class="dashboard-panel-heading"><div><h2 id="certificate-title" class="heading-sm">My digital certificates</h2></div><div class="dashboard-panel-actions"><a href="verify.html">Verify a certificate</a></div></div>
+      <p class="certificate-fee-note">DIRI certificates are issued digitally after qualification and approval. The certificate fee is <strong data-certificate-fee>UGX 50,000</strong>.</p>
       <div class="certificate-list" data-certificate-list><div class="dashboard-empty">Loading certificates...</div></div>
     </section>
 

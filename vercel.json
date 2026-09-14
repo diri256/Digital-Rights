@@ -1,6 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/verify/:certificate_id", "destination": "/verify.html?id=:certificate_id" }
+    { "source": "/verify/:certificate_id", "destination": "/verify.html?id=:certificate_id" },
+    { "source": "/certificate/:certificate_id", "destination": "/certificate.html?id=:certificate_id" }
   ]
 }
