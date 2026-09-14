@@ -4696,15 +4696,18 @@ html[data-a11y-color="high"] .hero { background-image: none !important; }
 @media (max-width: 640px) {
   .hero {
     background-image:
-      linear-gradient(180deg, rgba(4, 24, 59, .9) 0%, rgba(4, 31, 72, .94) 64%, rgba(4, 31, 72, .98) 100%),
-      url('../assets/diri-uigf-2026-hero.png');
-    background-position: center, 64% top;
+      linear-gradient(180deg, rgba(4, 24, 59, .42) 0%, rgba(4, 31, 72, .58) 56%, rgba(4, 31, 72, .78) 100%),
+      url('../assets/diri-uigf-2026-hero-mobile.webp');
+    background-position: center, 70% 38%;
+    background-size: cover, cover;
     min-height: auto;
     padding-bottom: var(--space-12);
   }
-  .hero-content h1 { font-size: clamp(2.65rem, 13vw, 4rem); }
+  .hero::after { background: linear-gradient(180deg, transparent 76%, rgba(3, 18, 43, .26)); }
+  .hero-content h1 { font-size: clamp(2.65rem, 13vw, 4rem); text-shadow: 0 3px 18px rgba(0, 0, 0, .72); }
   .hero-content .hero-description { font-size: 1.05rem; }
   .hero-actions { gap: var(--space-3); }
+  .hero-actions .btn-outline { background: rgba(4, 31, 72, .54); backdrop-filter: blur(8px); }
 }
 
 /* =============================================
