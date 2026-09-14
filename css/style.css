@@ -359,14 +359,14 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   height: var(--header-height);
-  background-color: var(--color-white);
-  border-bottom: 1px solid var(--color-border);
+  background-color: #eef9fb;
+  border-bottom: 1px solid #cce6eb;
   z-index: 1000;
   transition: box-shadow var(--transition-base);
 }
 
 .header.scrolled {
-  box-shadow: var(--shadow-nav);
+  box-shadow: 0 8px 24px rgba(7, 59, 117, 0.1);
 }
 
 .header-inner {
@@ -419,7 +419,7 @@ h1, h2, h3, h4, h5, h6 {
 .header-nav a:hover,
 .header-nav a.active {
   color: var(--color-navy);
-  background-color: var(--color-light);
+  background-color: rgba(255, 255, 255, 0.82);
 }
 
 .header-nav a.active::after {
@@ -485,7 +485,7 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   width: 300px;
   max-width: 85vw;
-  background-color: var(--color-white);
+  background-color: #eef9fb;
   flex-direction: column;
   padding: calc(var(--header-height) + var(--space-6)) var(--space-6) var(--space-6);
   gap: var(--space-1);
@@ -513,7 +513,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .mobile-nav a:hover,
 .mobile-nav a.active {
-  background-color: var(--color-light);
+  background-color: rgba(255, 255, 255, 0.88);
   color: var(--color-navy);
 }
 
