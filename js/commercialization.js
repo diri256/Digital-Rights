@@ -140,6 +140,7 @@
     if (!session || !session.user) return;
 
     const requestForm = document.querySelector('[data-certificate-request-form]');
+    const requestBox = requestForm && requestForm.closest('.certificate-request-box');
     const requestButton = requestForm && requestForm.querySelector('button[type="submit"]');
     const fullNameInput = requestForm && requestForm.querySelector('[name="full_learner_name"]');
     let pollTimer = null;
@@ -176,7 +177,14 @@
       const latestCertificate = certificates[0] || null;
       const validCertificate = certificates.find(function (certificate) { return certificate.status === 'valid'; }) || null;
       const revokedCertificate = latestCertificate && latestCertificate.status === 'revoked' ? latestCertificate : null;
-      const qualified = completedLessons === REQUIRED_LESSONS && assessmentPassed;
+      const lessonsComplete = completedLessons === REQUIRED_LESSONS;
+      const qualified = lessonsComplete && assessmentPassed;
+      const certificateExists = Boolean(latestCertificate);
+      const requestSubmitted = Boolean(activeRequest) || certificateExists;
+      const reviewComplete = certificateExists || Boolean(activeRequest && ['approved', 'issued'].includes(activeRequest.status));
+      const certificateReady = Boolean(validCertificate);
+      const requestWorkflowReady = !requestsResult.error;
+      const canSubmitRequest = qualified && !requestSubmitted && requestWorkflowReady;
 
       const lessonStat = document.querySelector('[data-dashboard-stat="lessons"]');
       const quizCount = document.querySelector('[data-dashboard-stat="assessments"]');
@@ -211,11 +219,17 @@
         }).join('') : '<div class="dashboard-empty"><strong>No physical training recorded yet.</strong><p>If you attend a DIRI training, it will appear here under this same account.</p></div>';
       }
 
-      setWorkflowStep('lessons', completedLessons === REQUIRED_LESSONS ? 'complete' : 'current', completedLessons + ' of ' + REQUIRED_LESSONS + ' completed');
-      setWorkflowStep('assessment', assessmentPassed ? 'complete' : (completedLessons === REQUIRED_LESSONS ? 'current' : 'locked'), bestAttempt ? 'Best result: ' + bestPercentage + '% (pass mark ' + PASS_PERCENTAGE + '%)' : 'Pass mark: ' + PASS_PERCENTAGE + '%');
-      setWorkflowStep('request', activeRequest ? 'complete' : (latestRequest && latestRequest.status === 'rejected' ? 'error' : (qualified ? 'current' : 'locked')), activeRequest ? 'Sent ' + formatDate(activeRequest.created_at) : (latestRequest && latestRequest.status === 'rejected' ? 'A new request can be submitted' : 'Available after qualification'));
-      setWorkflowStep('review', activeRequest && activeRequest.status === 'issued' ? 'complete' : (activeRequest ? 'current' : 'locked'), activeRequest ? formatStatus(activeRequest.status) : 'Identity and results checked');
-      setWorkflowStep('issued', validCertificate ? 'complete' : (revokedCertificate ? 'error' : 'locked'), validCertificate ? validCertificate.certificate_number : (revokedCertificate ? 'Certificate revoked' : 'Download your digital certificate'));
+      const assessmentDetail = bestAttempt
+        ? 'Best result: ' + bestPercentage + '% (pass mark ' + PASS_PERCENTAGE + '%)' + (!lessonsComplete && assessmentPassed ? ' · Complete lessons first' : '')
+        : 'Pass mark: ' + PASS_PERCENTAGE + '%';
+      const requestDetail = activeRequest
+        ? 'Sent ' + formatDate(activeRequest.created_at)
+        : (certificateExists ? 'Verification completed' : (latestRequest && latestRequest.status === 'rejected' ? 'A new request can be submitted' : 'Available after qualification'));
+      setWorkflowStep('lessons', lessonsComplete ? 'complete' : 'current', completedLessons + ' of ' + REQUIRED_LESSONS + ' completed');
+      setWorkflowStep('assessment', lessonsComplete ? (assessmentPassed ? 'complete' : 'current') : 'locked', assessmentDetail);
+      setWorkflowStep('request', requestSubmitted ? 'complete' : (latestRequest && latestRequest.status === 'rejected' ? 'error' : (qualified ? 'current' : 'locked')), requestDetail);
+      setWorkflowStep('review', reviewComplete ? 'complete' : (requestSubmitted ? 'current' : 'locked'), activeRequest ? formatStatus(activeRequest.status) : (reviewComplete ? 'Approved by DIRI' : 'Identity and results checked'));
+      setWorkflowStep('issued', certificateReady ? 'complete' : (revokedCertificate ? 'error' : (reviewComplete ? 'current' : 'locked')), validCertificate ? validCertificate.certificate_number : (revokedCertificate ? 'Certificate revoked' : (reviewComplete ? 'Preparing your digital certificate' : 'Download your digital certificate')));
 
       const displayRequest = activeRequest || latestRequest;
       const state = validCertificate
@@ -237,8 +251,11 @@
       if (fullNameInput && !fullNameInput.value) {
         fullNameInput.value = (displayRequest && displayRequest.full_learner_name) || (profileResult.data && profileResult.data.username) || '';
       }
+      if (requestForm) requestForm.hidden = !canSubmitRequest;
+      if (requestBox) requestBox.classList.toggle('is-request-ready', canSubmitRequest);
+      if (fullNameInput) fullNameInput.disabled = !canSubmitRequest;
       if (requestButton) {
-        requestButton.disabled = !qualified || Boolean(activeRequest) || Boolean(validCertificate);
+        requestButton.disabled = !canSubmitRequest;
         requestButton.textContent = activeRequest ? 'Verification Already Requested' : (validCertificate ? 'Certificate Issued' : (latestRequest && latestRequest.status === 'rejected' ? 'Submit New Verification Request' : 'Request DIRI Verification'));
       }
 
