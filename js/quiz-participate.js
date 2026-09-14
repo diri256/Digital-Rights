@@ -1,6 +1,58 @@
 (function() {
   'use strict';
   const sb = window.diriSupabase;
+  const CURATED_QUESTIONS = [
+    {
+      question_text: 'A caller claiming to be from your mobile-money provider asks for your PIN and one-time code. What should you do?',
+      options: ['Share only the one-time code', 'Share the PIN if the caller knows your name', 'End the call and contact the provider using its official number', 'Move the money to the account the caller gives you'],
+      correct_answer: 2
+    },
+    {
+      question_text: 'Which password practice gives your accounts the strongest everyday protection?',
+      options: ['Reuse one difficult password everywhere', 'Use a unique passphrase for each account and store it in a password manager', 'Use your phone number followed by your birth year', 'Change one reused password every month'],
+      correct_answer: 1
+    },
+    {
+      question_text: 'Which sign most strongly suggests that a login page may be a phishing site?',
+      options: ['It has a company logo', 'Its address slightly misspells a known name and demands urgent action', 'It uses photographs and modern colours', 'It contains a privacy-policy link'],
+      correct_answer: 1
+    },
+    {
+      question_text: 'Your phone is lost while it is signed in to email and mobile money. What should you do first?',
+      options: ['Wait a day to see whether it is returned', 'Post every password on social media so friends can help', 'Create a new social-media account', 'Lock the device remotely, contact your provider and secure important accounts'],
+      correct_answer: 3
+    },
+    {
+      question_text: 'A torch app asks for access to your contacts, location and microphone. What is the safest response?',
+      options: ['Deny unnecessary permissions and remove the app if it will not work without them', 'Allow everything because the app is free', 'Allow access and switch off the screen', 'Send the app developer your contact list instead'],
+      correct_answer: 0
+    },
+    {
+      question_text: 'Someone repeatedly threatens you online. Which response best protects you?',
+      options: ['Threaten them back', 'Delete all evidence immediately', 'Save evidence, block and report the account, and seek trusted help', 'Share their private information publicly'],
+      correct_answer: 2
+    },
+    {
+      question_text: 'Before forwarding a dramatic claim from social media, what should you do?',
+      options: ['Forward it quickly before it is deleted', 'Check the source, date and context, then compare with credible sources', 'Trust it when many people have shared it', 'Trust it if it includes a photograph'],
+      correct_answer: 1
+    },
+    {
+      question_text: 'You need to make a sensitive payment while connected to public Wi-Fi. What is safest?',
+      options: ['Use trusted mobile data or wait for a secure connection', 'Continue because public Wi-Fi is always encrypted', 'Ask a stranger to complete the payment', 'Turn off two-factor authentication first'],
+      correct_answer: 0
+    },
+    {
+      question_text: 'Why should you install security updates on your phone and computer?',
+      options: ['They guarantee that every website is truthful', 'They make passwords unnecessary', 'They prevent all loss or theft', 'They fix known weaknesses that attackers may exploit'],
+      correct_answer: 3
+    },
+    {
+      question_text: 'When an organisation asks for your personal information, what is good privacy practice?',
+      options: ['Collect every detail in case it becomes useful later', 'Publish the information so the process is transparent', 'Explain the purpose, collect only what is needed and protect it', 'Keep the purpose secret until after collection'],
+      correct_answer: 2
+    }
+  ];
   let currentUser = null;
   let currentWeek = null;
   let questions = [];
@@ -10,6 +62,7 @@
   let elapsedSeconds = 0;
   let attemptId = null;
   let hasSubmitted = false;
+  let useCuratedFallback = false;
 
   async function init() {
     if (!sb) return showUnavailable('Quiz temporarily unavailable.');
@@ -64,10 +117,19 @@
 
     // Choose highest-numbered valid week
     currentWeek = valid.sort(function(a, b) { return (b.week_number || 0) - (a.week_number || 0); })[0];
+    useCuratedFallback = isLegacyForumQuiz(currentWeek);
+    if (useCuratedFallback) {
+      currentWeek = Object.assign({}, currentWeek, {
+        title: 'Practical Digital Safety Essentials',
+        description: 'Ten short, practical questions on scams, privacy, account security and safer online choices.',
+        time_limit_minutes: 10
+      });
+    }
     updateHeroContent(currentWeek.title || ('Week ' + currentWeek.week_number), currentWeek.description || 'Test your digital rights knowledge with this week\'s quiz challenge.');
 
     // Load questions for week
     await fetchQuestionsForWeek(currentWeek);
+    if (useCuratedFallback) questions = CURATED_QUESTIONS.slice();
 
     // Check if questions loaded
     if (!questions || questions.length === 0) {
@@ -88,7 +150,7 @@
       // Table may not exist yet — that's OK, treat as no attempt
     }
 
-    if (attempts && attempts.id) {
+    if (attempts && attempts.id && !useCuratedFallback) {
       attemptId = attempts.id;
       if (attempts.status === 'completed') {
         // show previous results
@@ -139,6 +201,11 @@
     const heroDesc = document.getElementById('quiz-hero-description');
     if (heroTitle) heroTitle.textContent = title || 'Weekly Quiz';
     if (heroDesc) heroDesc.textContent = description || 'Test your digital rights knowledge with this week\'s quiz challenge.';
+  }
+
+  function isLegacyForumQuiz(week) {
+    const content = ((week && week.title) || '') + ' ' + ((week && week.description) || '');
+    return /\b(?:UIGF|UYIGF)\b|internet governance forum/i.test(content);
   }
 
   function showView(viewId) {
@@ -238,39 +305,23 @@
       return;
     }
     try {
-      // Build payload with only the columns that definitely exist
       var payload = {
         user_id: currentUser.id,
         week_id: currentWeek.id,
         answers: [],
-        total_questions: questions.length
+        total_questions: questions.length,
+        status: 'in_progress',
+        current_index: 0,
+        elapsed_seconds: 0,
+        started_at: new Date().toISOString()
       };
-      // These columns may not exist if Phase 2 migration hasn't run
-      // Include them — Supabase ignores unknown columns
-      payload.status = 'in_progress';
-      payload.current_index = 0;
-      payload.elapsed_seconds = 0;
-      payload.started_at = new Date().toISOString();
 
-      const { data, error } = await sb.from('quiz_attempts').insert(payload).select('*').single();
-      if (error) {
-        // If column-related error, try minimal payload
-        if (error.message && (error.message.indexOf('column') !== -1 || error.code === 'PGRST204')) {
-          var minimalPayload = {
-            user_id: currentUser.id,
-            week_id: currentWeek.id,
-            answers: [],
-            total_questions: questions.length
-          };
-          var fallbackResult = await sb.from('quiz_attempts').insert(minimalPayload).select('*').single();
-          if (fallbackResult.error) throw fallbackResult.error;
-          attemptId = fallbackResult.data.id;
-        } else {
-          throw error;
-        }
-      } else {
-        attemptId = data.id;
-      }
+      const attemptQuery = useCuratedFallback
+        ? sb.from('quiz_attempts').upsert(payload, { onConflict: 'user_id,week_id' })
+        : sb.from('quiz_attempts').insert(payload);
+      const { data, error } = await attemptQuery.select('*').single();
+      if (error) throw error;
+      attemptId = data.id;
       answers = [];
       currentIndex = 0;
       elapsedSeconds = 0;
@@ -286,22 +337,14 @@
   async function saveProgress() {
     if (!attemptId) return;
     try {
-      var payload = { answers: answers };
-      // These columns may not exist yet on the table
-      try {
-        payload.current_index = currentIndex;
-        payload.elapsed_seconds = elapsedSeconds;
-      } catch (_) {}
-      await sb.from('quiz_attempts').update(payload).eq('id', attemptId);
+      const result = await sb.from('quiz_attempts').update({
+        answers: answers,
+        current_index: currentIndex,
+        elapsed_seconds: elapsedSeconds
+      }).eq('id', attemptId);
+      if (result.error) throw result.error;
     } catch (err) {
-      // If column error, retry with minimal payload
-      if (err.message && (err.message.indexOf('column') !== -1 || err.code === 'PGRST204')) {
-        try {
-          await sb.from('quiz_attempts').update({ answers: answers }).eq('id', attemptId);
-        } catch (_) {}
-      } else {
-        console.error('save error', err);
-      }
+      console.error('save error', err);
     }
   }
 
@@ -340,24 +383,16 @@
         finalScore = 0; // exceeded time limit
       }
 
-      // Update attempt with result — try full payload first, fallback to minimal
       var updatePayload = {
         score: finalScore,
         answers: answers,
         time_spent_seconds: finalElapsed,
+        elapsed_seconds: finalElapsed,
+        current_index: questions.length - 1,
         status: 'completed'
       };
-      try {
-        var ur = await sb.from('quiz_attempts').update(updatePayload).eq('id', attemptId);
-        if (ur.error && (ur.error.message.indexOf('column') !== -1 || ur.error.code === 'PGRST204')) {
-          // Columns missing — retry minimal
-          await sb.from('quiz_attempts').update({ score: finalScore, answers: answers }).eq('id', attemptId);
-        } else if (ur.error) {
-          console.error('submit update error', ur.error);
-        }
-      } catch (e) {
-        console.error('submit update exception', e);
-      }
+      var updateResult = await sb.from('quiz_attempts').update(updatePayload).eq('id', attemptId).select('id').single();
+      if (updateResult.error) throw updateResult.error;
 
       renderResults({ score: finalScore, total_questions: questions.length, time_spent_seconds: finalElapsed, answers: answers });
     } catch (err) {
