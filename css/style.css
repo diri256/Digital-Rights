@@ -614,6 +614,12 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-md);
 }
 
+.btn-whatsapp-icon {
+  flex: 0 0 auto;
+  height: 20px;
+  width: 20px;
+}
+
 .mr-diri-fab {
   position: fixed;
   right: 24px;
@@ -4505,8 +4511,6 @@ html[data-a11y-cursor="white"] *,html[data-a11y-cursor="white"] *::before,html[d
 .hero-content { max-width: 650px; }
 .hero-content h1 { color: #fff; font-size: clamp(3rem, 5vw, 4rem); max-width: 620px; text-shadow: 0 3px 24px rgba(0, 0, 0, .34); }
 .hero-content .hero-description { color: rgba(255, 255, 255, .94); max-width: 600px; text-shadow: 0 2px 12px rgba(0, 0, 0, .38); }
-.hero-actions .btn-primary { background: #fff; border-color: #fff; color: var(--color-navy); }
-.hero-actions .btn-primary:hover { background: #dff8f8; border-color: #dff8f8; color: var(--color-navy-dark); }
 .hero-actions .btn-outline { background: rgba(4, 31, 72, .38); border-color: rgba(255, 255, 255, .9); color: #fff; backdrop-filter: blur(5px); }
 .hero-actions .btn-outline:hover { background: #fff; color: var(--color-navy); }
 .hero .hero-decor { display: none; }
