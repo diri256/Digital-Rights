@@ -48,7 +48,7 @@
 
   <main class="profile-page learner-dashboard" data-learner-dashboard>
     <section class="dashboard-welcome animate-in" aria-labelledby="dashboard-title">
-      <div><p class="section-tag">One account, one learning record</p><h1 id="dashboard-title" class="heading-lg">My DIRI Dashboard</h1><p>Continue online learning, review assessments, see physical training participation and access certificates issued to this account.</p></div>
+      <h1 id="dashboard-title" class="heading-lg">My DIRI Dashboard</h1>
       <a href="learn.html" class="btn btn-primary">Continue Learning</a>
     </section>
 
@@ -56,29 +56,7 @@
       <article><strong data-dashboard-stat="lessons">0 / 9</strong><span>Lessons completed</span></article>
       <article><strong data-dashboard-stat="assessments">0</strong><span>Assessments completed</span></article>
       <article><strong data-dashboard-stat="best-score">—</strong><span>Best quiz score</span></article>
-      <article><strong data-dashboard-stat="certificate-status">Learning</strong><span>Certificate pathway</span></article>
     </section>
-
-    <div class="dashboard-grid">
-      <section class="dashboard-panel" aria-labelledby="learning-progress-title">
-        <div class="dashboard-panel-heading"><div><p class="section-tag">Learn and assess</p><h2 id="learning-progress-title" class="heading-sm">Learning progress</h2></div><a href="learn.html">View lessons →</a></div>
-        <div class="course-progress-overview">
-          <div class="course-progress-meter" data-course-progress-meter role="progressbar" aria-label="DIRI lesson completion" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0">
-            <div><strong data-course-progress-percent>0%</strong><span>complete</span></div>
-          </div>
-          <div>
-            <h3><span data-course-progress-count>0</span> of 9 short lessons</h3>
-            <p>Your progress is saved after each lesson. The online learning and assessment can be completed in one focused day.</p>
-            <div class="dashboard-progress-track"><span data-course-progress-fill></span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="dashboard-panel" aria-labelledby="training-participation-title">
-        <div class="dashboard-panel-heading"><div><p class="section-tag">Online or physical</p><h2 id="training-participation-title" class="heading-sm">Training participation</h2></div><a href="training.html">Request training →</a></div>
-        <div data-training-participation><div class="dashboard-empty">Loading training participation...</div></div>
-      </section>
-    </div>
 
     <section class="dashboard-panel certification-workflow" aria-labelledby="certification-workflow-title">
       <div class="dashboard-panel-heading"><div><p class="section-tag">Digital certificate pathway</p><h2 id="certification-workflow-title" class="heading-sm">From learning to an issued certificate</h2></div><span class="certificate-pathway-badge" data-certificate-pathway-badge>Learning</span></div>
@@ -99,7 +77,7 @@
     </section>
 
     <section class="dashboard-panel certificate-panel" aria-labelledby="certificate-title">
-      <div class="dashboard-panel-heading"><div><p class="section-tag">DIRI Digital Safety Certificate</p><h2 id="certificate-title" class="heading-sm">My digital certificates</h2></div><div class="dashboard-panel-actions"><a href="verify.html">Verify a certificate</a></div></div>
+      <div class="dashboard-panel-heading"><div><h2 id="certificate-title" class="heading-sm">My digital certificates</h2></div><div class="dashboard-panel-actions"><a href="verify.html">Verify a certificate</a></div></div>
       <p class="certificate-fee-note">DIRI certificates are issued digitally after qualification and approval. The certificate fee is <strong data-certificate-fee>UGX 50,000</strong>.</p>
       <div class="certificate-list" data-certificate-list><div class="dashboard-empty">Loading certificates...</div></div>
     </section>

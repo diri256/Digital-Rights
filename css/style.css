@@ -4617,7 +4617,7 @@ html[data-a11y-color="high"] .hero { background-image: none !important; }
 .learner-dashboard { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(2rem,5vw,4rem) 0; }
 .dashboard-welcome { display: flex; justify-content: space-between; gap: 2rem; align-items: center; margin-bottom: 1.5rem; padding: clamp(1.5rem,4vw,2.5rem); border-radius: var(--radius-xl); background: linear-gradient(135deg,var(--color-navy-dark),var(--color-navy)); color: white; }
 .dashboard-welcome h1, .dashboard-welcome p { color: white; }
-.dashboard-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
+.dashboard-summary { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; margin-bottom: 1rem; }
 .dashboard-summary article { display: grid; gap: .25rem; padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: white; }
 .dashboard-summary strong { color: var(--color-navy); font-size: 1.45rem; }
 .dashboard-summary span { color: var(--color-dark-secondary); font-size: .88rem; }
