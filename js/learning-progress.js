@@ -40,9 +40,6 @@
             if (item.status === 'completed') completedLessons.add(item.lesson_id);
           });
           if (libraryProgress) libraryProgress.classList.remove('hidden');
-        } else if (libraryProgress) {
-          libraryProgress.classList.remove('hidden');
-          libraryProgress.innerHTML = '<span>Progress saving will be available after the latest DIRI database update.</span>';
         }
       }
     }
