@@ -72,3 +72,14 @@ Android release builds use `android/key.properties`, which is ignored by Git. Th
 `tool/create_signing_key.ps1` creates a new identity only if none exists. `tool/build_android.ps1` checks, tests, and builds signed release APKs; pass `-Bundle` for a Play Store AAB. Missing signing configuration fails release builds instead of silently using a debug key. CI explicitly opts into unsigned output using `DIRI_ALLOW_UNSIGNED_RELEASE=true`.
 
 Store publication still needs Apple signing/team configuration, store records, privacy declarations, device testing and end-to-end checks with a dedicated test account. No production account was created and no real learner record was mutated during development.
+## Build verification
+
+The Android debug and release APKs and iOS simulator app compiled successfully in GitHub Actions on 21 October 2026 for commit `7bc993720d2d3d30e326ea239269e1eb14db4437`. The runner also passed Flutter analysis and all 14 tests. See [build run](https://github.com/diri256/Digital-Rights/actions/runs/39560300011).
+
+On this PC, Java 17 and the Android command-line tools are installed. The remaining local SDK/NDK downloads failed because of network resets/timeouts; use the CI artifacts until those downloads can complete. The cloud build avoids depending on this incomplete local Android SDK.
+
+For an Android release built in CI, use `tool/sign_android_apk.ps1` with the downloaded unsigned APK and `apksigner.jar`; it signs with the private local key and verifies the result. See [INSTALL.md](INSTALL.md) for phone installation and first-device checks.
+
+Signed ARM64, ARMv7 and x86-64 release APKs are available locally in `build/releases/`, with `SHA256SUMS.txt`. Their APK v2/v3 signatures were verified with Android's apksigner. The signer certificate SHA-256 is `643aa858b0d0773299cb16f9bb25ac1ec6f356c94781136a9b6e8430ed2de98c`. These files are ignored by Git; keep a copy before running `flutter clean`. They have not yet been tested on a physical phone.
+
+The signing scripts require Java on PATH or `JAVA_HOME` pointing at a JDK. On this PC the installed JDK is `%USERPROFILE%\.cache\diri-android-tools\java\jdk-17.0.20.1+1`.
