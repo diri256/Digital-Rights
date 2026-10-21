@@ -1,0 +1,218 @@
+{
+  "privacy": {
+    "category": "Privacy",
+    "title": "Online Privacy & Data Protection",
+    "videoTitle": "A cyber privacy parable",
+    "video": "https://www.youtube-nocookie.com/embed/H0I7jQb37bo?rel=0",
+    "cards": [
+      [
+        "Personal data",
+        "Personal data is information that can identify you directly or indirectly, such as your name, phone number, location, photograph, device ID, or account activity."
+      ],
+      [
+        "Responsible data collection",
+        "Before collecting your data, an organisation should clearly explain what it collects, why it needs it, how it will use it, and who it may share it with."
+      ],
+      [
+        "Data minimisation",
+        "Responsible services collect only the personal information genuinely needed for a stated purpose, rather than collecting everything possible."
+      ],
+      [
+        "Protecting your privacy",
+        "Review app permissions, remove access that is unnecessary, use privacy settings, and avoid posting information that could expose you or others."
+      ]
+    ]
+  },
+  "cybersecurity": {
+    "category": "Security",
+    "title": "Cybersecurity Fundamentals",
+    "videoTitle": "Cybersecurity 101",
+    "video": "https://www.youtube-nocookie.com/embed/sdpxddDzXfE?rel=0",
+    "cards": [
+      [
+        "Strong passwords",
+        "Use a long, unique passphrase for every account. A password manager can create and store these safely."
+      ],
+      [
+        "Two-factor authentication",
+        "Two-factor authentication adds a second check, so a stolen password alone is usually not enough to enter your account."
+      ],
+      [
+        "Recognising phishing",
+        "Phishing uses a message or website that impersonates a trusted person or organisation to make you reveal information, pay money, or install malware."
+      ],
+      [
+        "Essential security habits",
+        "Update devices, lock screens, back up important files, verify unexpected requests, and never share PINs or one-time codes."
+      ]
+    ]
+  },
+  "governance": {
+    "category": "Governance",
+    "title": "Internet Governance",
+    "videoTitle": "Understanding internet governance",
+    "video": "https://www.youtube-nocookie.com/embed/eKHxgaTtMeA?rel=0",
+    "cards": [
+      [
+        "Internet governance",
+        "Internet governance covers the shared rules, standards, policies, and decisions that shape how the internet develops and is used."
+      ],
+      [
+        "The people involved",
+        "No single person governs the internet. Governments, companies, civil society, technical bodies, researchers, and users all influence it."
+      ],
+      [
+        "The multistakeholder approach",
+        "Different affected groups participate in discussion and decision-making instead of leaving every choice to one institution."
+      ],
+      [
+        "The value of participation",
+        "Internet policy affects access, affordability, privacy, expression, safety, innovation, and opportunities for education and work in Uganda."
+      ]
+    ]
+  },
+  "ai": {
+    "category": "AI Policy",
+    "title": "Artificial Intelligence & Policy",
+    "videoTitle": "AI and algorithmic bias",
+    "video": "https://www.youtube-nocookie.com/embed/VwAlOUE4K7M?rel=0",
+    "cards": [
+      [
+        "Artificial intelligence",
+        "AI refers to computer systems designed to perform tasks such as recognising patterns, generating content, making predictions, or supporting decisions."
+      ],
+      [
+        "AI and human rights",
+        "AI can influence privacy, equality, work, education, access to services, and freedom of expression—positively or negatively."
+      ],
+      [
+        "Algorithmic bias",
+        "Algorithmic bias means unfair patterns in an automated system, often caused by biased data, design choices, or unequal conditions in the real world."
+      ],
+      [
+        "Responsible AI",
+        "Responsible AI requires a clear purpose, human oversight, privacy protection, security, testing for harm, transparency, and a way to challenge decisions."
+      ]
+    ]
+  },
+  "rights": {
+    "category": "Rights",
+    "title": "Digital Rights & Freedoms",
+    "videoTitle": "Digital rights and freedom",
+    "video": "https://www.youtube-nocookie.com/embed/0E-cJinCgW8?rel=0",
+    "cards": [
+      [
+        "Digital rights",
+        "Digital rights are human rights as they apply online, including privacy, expression, information access, participation, equality, and safety."
+      ],
+      [
+        "Freedom and responsibility",
+        "Freedom of expression is not unlimited. Rights come with responsibilities, and lawful limits may protect people from threats, harassment, or serious harm."
+      ],
+      [
+        "Meaningful internet access",
+        "Meaningful access includes reliable and affordable connectivity, suitable devices, digital skills, accessible services, and the freedom to use the internet safely."
+      ],
+      [
+        "Defending digital rights",
+        "Learn your rights, document possible violations safely, support trustworthy civic groups, and take part in public policy discussions."
+      ]
+    ]
+  },
+  "scams": {
+    "category": "Security",
+    "title": "Online Scams & Fraud Prevention",
+    "videoTitle": "Common online scams",
+    "video": "https://www.youtube-nocookie.com/embed/k8UVnkh8i0c?rel=0",
+    "cards": [
+      [
+        "Warning signs of a scam",
+        "Unexpected urgency is a major warning sign: pressure to act immediately, keep a secret, send money, or provide a code before verifying the story."
+      ],
+      [
+        "Verifying payment requests",
+        "Stop and contact the person or organisation through a trusted number or official channel—not the contact details in the suspicious message."
+      ],
+      [
+        "Information you must protect",
+        "Never share your mobile-money PIN, banking password, full card details, recovery code, or one-time verification code."
+      ],
+      [
+        "Responding to a scam attempt",
+        "Stop contact, save evidence, secure affected accounts, notify the payment provider quickly, and report through appropriate official channels."
+      ]
+    ]
+  },
+  "identity": {
+    "category": "Rights",
+    "title": "Digital Identity & Citizenship",
+    "videoTitle": "Digital identity explained",
+    "video": "https://www.youtube-nocookie.com/embed/Ew-_F-OtDFI?rel=0",
+    "cards": [
+      [
+        "Digital identity",
+        "Your digital identity includes the information, accounts, identifiers, and activity that represent you when using digital services."
+      ],
+      [
+        "Protecting identity documents",
+        "Images and numbers from IDs can be abused for impersonation, fraudulent registration, account recovery, or social engineering."
+      ],
+      [
+        "Your digital footprint",
+        "A digital footprint is the record created by posts, searches, clicks, accounts, device data, and information that others publish about you."
+      ],
+      [
+        "Managing your footprint",
+        "Search your name occasionally, review old posts and permissions, secure accounts, and think about future audiences before sharing."
+      ]
+    ]
+  },
+  "mobile-money": {
+    "category": "Privacy",
+    "title": "Mobile Money & Financial Privacy",
+    "videoTitle": "Understanding mobile money fraud",
+    "video": "https://www.youtube-nocookie.com/embed/0twZ6EuLkRM?rel=0",
+    "cards": [
+      [
+        "Protecting your PIN",
+        "Only you should know your mobile-money PIN. A legitimate agent, telecom employee, bank worker, or support representative should never ask you to reveal it."
+      ],
+      [
+        "Checking every transaction",
+        "Check the recipient name, number, amount, fee, and reason for payment. Read the complete confirmation screen before entering your PIN."
+      ],
+      [
+        "SIM-swap fraud",
+        "In a SIM-swap scam, a criminal takes control of a phone number and may intercept messages or attempt to reset financial and online accounts."
+      ],
+      [
+        "Reducing financial risk",
+        "Lock your phone and SIM, hide transaction messages, use strong account recovery settings, and report a lost phone immediately."
+      ]
+    ]
+  },
+  "misinformation": {
+    "category": "Governance",
+    "title": "Misinformation & Media Literacy",
+    "videoTitle": "The facts about fact-checking",
+    "video": "https://www.youtube-nocookie.com/embed/EZsaA0w_0z0?rel=0",
+    "cards": [
+      [
+        "Misinformation",
+        "Misinformation is false or misleading information shared regardless of whether the person sharing it intended to deceive anyone."
+      ],
+      [
+        "Lateral reading",
+        "Lateral reading means leaving the original post or website to check what independent, credible sources say about the claim and its publisher."
+      ],
+      [
+        "Checks before sharing",
+        "Inspect the original source, publication date, evidence, full context, author, image origin, and confirmation from reliable independent sources."
+      ],
+      [
+        "Emotion and verification",
+        "Content that causes fear or anger can make people react quickly. Pause before sharing and verify the claim when emotions are high."
+      ]
+    ]
+  }
+}

@@ -1,0 +1,433 @@
+{
+  "about": {
+    "title": "About Team Netizens",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "The team behind DIRI."
+      },
+      {
+        "type": "paragraph",
+        "text": "Team Netizens is a group of students and innovators from Mbarara University of Science and Technology (MUST) passionate about digital rights, internet governance, and youth empowerment in Uganda."
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI was created as part of the IGF Hackathon — a challenge to build solutions that promote digital rights awareness and internet literacy among young people. The team identified a gap: while digital rights affect every young Ugandan, the information is often buried in policy documents and legal jargon that is hard to understand."
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI changes that by turning complex topics into interactive lessons, weekly quizzes, and an AI chatbot that speaks your language — literally."
+      },
+      {
+        "type": "heading",
+        "text": "Our Mission"
+      },
+      {
+        "type": "paragraph",
+        "text": "To equip every young Ugandan with the knowledge and tools to understand, exercise, and defend their digital rights."
+      },
+      {
+        "type": "heading",
+        "text": "Our Vision"
+      },
+      {
+        "type": "paragraph",
+        "text": "A Uganda where every citizen is digitally aware, safe, and empowered to participate in the digital society."
+      },
+      {
+        "type": "heading",
+        "text": "Partners"
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI is built in partnership with Wota Creators and Tech Journal , who support our mission to make digital rights education accessible to all."
+      }
+    ]
+  },
+  "safety-guide": {
+    "title": "Online Safety Guide",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Practical tips to protect yourself online."
+      },
+      {
+        "type": "heading",
+        "text": "1. Protect Your Accounts"
+      },
+      {
+        "type": "paragraph",
+        "text": "Use strong, unique passwords for every account. Enable two-factor authentication (2FA) wherever possible. Never share your passwords with anyone."
+      },
+      {
+        "type": "heading",
+        "text": "2. Beware of Phishing"
+      },
+      {
+        "type": "paragraph",
+        "text": "Do not click on suspicious links in emails, SMS, or social media messages. Scammers often impersonate trusted organisations to steal your login details or mobile money."
+      },
+      {
+        "type": "heading",
+        "text": "3. Secure Your Mobile Money"
+      },
+      {
+        "type": "paragraph",
+        "text": "Never share your PIN, OTP, or mobile money password with anyone. Be cautious of unsolicited calls claiming to be from your mobile network provider. SIM swap fraud is on the rise — if you lose network unexpectedly, contact your provider immediately."
+      },
+      {
+        "type": "heading",
+        "text": "4. Guard Your Personal Data"
+      },
+      {
+        "type": "paragraph",
+        "text": "Think before sharing personal information online — your full name, address, ID number, or bank details. Adjust your social media privacy settings to limit what strangers can see."
+      },
+      {
+        "type": "heading",
+        "text": "5. Use Secure Connections"
+      },
+      {
+        "type": "paragraph",
+        "text": "Avoid using public Wi-Fi for banking or sensitive transactions. When browsing, look for \"https://\" in the address bar and consider using a VPN for added privacy."
+      },
+      {
+        "type": "heading",
+        "text": "6. Update Your Devices"
+      },
+      {
+        "type": "paragraph",
+        "text": "Keep your phone, computer, and apps updated. Software updates often include security patches that protect against known vulnerabilities."
+      },
+      {
+        "type": "heading",
+        "text": "7. Report Abuse"
+      },
+      {
+        "type": "paragraph",
+        "text": "If you encounter online harassment, cyberbullying, or fraud, report it to the platform and the Uganda Police Cyber Crime Unit. You can also reach out to DIRI for guidance."
+      }
+    ]
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Everything you need to know about DIRI."
+      },
+      {
+        "type": "heading",
+        "text": "What is DIRI?"
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI is a youth-focused digital rights and internet governance platform. It offers learning cards, weekly quiz challenges, a leaderboard, and an AI chatbot called Mr. DIRI — all designed to help young Ugandans understand their digital rights."
+      },
+      {
+        "type": "heading",
+        "text": "Is DIRI free?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Yes. DIRI is completely free to use. Create an account and access all lessons, quizzes, and features at no cost."
+      },
+      {
+        "type": "heading",
+        "text": "Who is DIRI for?"
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI is built for young Ugandans — students, young professionals, and anyone interested in learning about digital rights, online privacy, data protection, cybersecurity, internet governance, and AI policy."
+      },
+      {
+        "type": "heading",
+        "text": "How do I get started?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Create a free account on the registration page. Once logged in, you can explore lessons, take quizzes, and track your progress on the leaderboard."
+      },
+      {
+        "type": "heading",
+        "text": "What is the weekly quiz challenge?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Every week, a new quiz goes live mixing lesson questions, current digital rights issues, and real-life scenarios. Your score and completion time are ranked on the leaderboard."
+      },
+      {
+        "type": "heading",
+        "text": "Can I use DIRI on WhatsApp?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Yes. You can chat with Mr. DIRI on WhatsApp by clicking the WhatsApp button on the homepage. Ask questions about digital rights and get answers in real time."
+      },
+      {
+        "type": "heading",
+        "text": "Are lessons available in local languages?"
+      },
+      {
+        "type": "paragraph",
+        "text": "Yes. Key lessons and explanations are available in selected Ugandan local languages to make the content more accessible."
+      },
+      {
+        "type": "heading",
+        "text": "How is my data protected?"
+      },
+      {
+        "type": "paragraph",
+        "text": "We take data protection seriously. Your information is stored securely, and we never sell your data. See our Privacy Policy for full details."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contact Us",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "We would love to hear from you."
+      },
+      {
+        "type": "paragraph",
+        "text": "Have a question, suggestion, or partnership idea? Reach out to Team Netizens through any of the channels below."
+      },
+      {
+        "type": "heading",
+        "text": "Email"
+      },
+      {
+        "type": "paragraph",
+        "text": "diriuganda@gmail.com"
+      },
+      {
+        "type": "heading",
+        "text": "WhatsApp"
+      },
+      {
+        "type": "paragraph",
+        "text": "Chat with Mr. DIRI on WhatsApp or reach the team directly."
+      },
+      {
+        "type": "heading",
+        "text": "Social Media"
+      },
+      {
+        "type": "paragraph",
+        "text": "Follow us on Twitter, Instagram, and LinkedIn for updates on digital rights in Uganda."
+      },
+      {
+        "type": "heading",
+        "text": "Location"
+      },
+      {
+        "type": "paragraph",
+        "text": "Mbarara University of Science and Technology Mbarara, Uganda"
+      }
+    ]
+  },
+  "privacy-policy": {
+    "title": "Privacy Policy",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "How DIRI collects, uses, and protects your personal data."
+      },
+      {
+        "type": "paragraph",
+        "text": "Last updated: July 2026"
+      },
+      {
+        "type": "heading",
+        "text": "1. Information We Collect"
+      },
+      {
+        "type": "paragraph",
+        "text": "When you create a DIRI account, we collect your email address and a display name. You may optionally provide a username and profile picture. We also collect data about your learning progress — which lessons you have completed, quiz scores, and leaderboard rankings."
+      },
+      {
+        "type": "heading",
+        "text": "2. How We Use Your Data"
+      },
+      {
+        "type": "paragraph",
+        "text": "We use your information to personalise your learning experience, track your progress, maintain the leaderboard, and improve our content. We do not sell your personal data to third parties."
+      },
+      {
+        "type": "heading",
+        "text": "3. Data Storage & Security"
+      },
+      {
+        "type": "paragraph",
+        "text": "Your data is stored securely using Supabase, a compliant cloud database platform. We implement industry-standard measures to protect your information from unauthorised access or disclosure."
+      },
+      {
+        "type": "heading",
+        "text": "4. Third-Party Services"
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI uses Supabase for authentication and database services. Our WhatsApp chatbot is powered by a third-party messaging API. These services operate under their own privacy policies."
+      },
+      {
+        "type": "heading",
+        "text": "5. Your Rights"
+      },
+      {
+        "type": "paragraph",
+        "text": "You have the right to access, correct, or delete your personal data at any time. Contact us to exercise these rights. You can also delete your account directly through your profile settings."
+      },
+      {
+        "type": "heading",
+        "text": "6. Contact"
+      },
+      {
+        "type": "paragraph",
+        "text": "If you have questions about this policy, please reach out to us via the contact page or through our social media channels."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms of Use",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Rules and guidelines for using the DIRI platform."
+      },
+      {
+        "type": "paragraph",
+        "text": "Last updated: July 2026"
+      },
+      {
+        "type": "heading",
+        "text": "1. Acceptance of Terms"
+      },
+      {
+        "type": "paragraph",
+        "text": "By creating an account or using DIRI, you agree to these Terms of Use. If you do not agree, please do not use the platform."
+      },
+      {
+        "type": "heading",
+        "text": "2. Account Responsibilities"
+      },
+      {
+        "type": "paragraph",
+        "text": "You are responsible for keeping your login credentials secure. You must not share your account with others or use the platform for any unlawful activity."
+      },
+      {
+        "type": "heading",
+        "text": "3. Acceptable Use"
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI is an educational platform. You agree not to misuse it — for example, by attempting to manipulate quiz scores, harass other users, or disrupt the platform's operation."
+      },
+      {
+        "type": "heading",
+        "text": "4. Content Ownership"
+      },
+      {
+        "type": "paragraph",
+        "text": "All learning materials, quizzes, and content on DIRI are owned by Team Netizens unless otherwise credited. You may not reproduce or distribute them without permission."
+      },
+      {
+        "type": "heading",
+        "text": "5. Termination"
+      },
+      {
+        "type": "paragraph",
+        "text": "We reserve the right to suspend or terminate accounts that violate these terms. You may delete your account at any time through your profile settings."
+      },
+      {
+        "type": "heading",
+        "text": "6. Changes to Terms"
+      },
+      {
+        "type": "paragraph",
+        "text": "We may update these terms from time to time. Continued use of DIRI after changes constitutes acceptance of the updated terms."
+      },
+      {
+        "type": "heading",
+        "text": "7. Contact"
+      },
+      {
+        "type": "paragraph",
+        "text": "For questions about these terms, please reach out via our contact page."
+      }
+    ]
+  },
+  "accessibility": {
+    "title": "Accessibility",
+    "blocks": [
+      {
+        "type": "paragraph",
+        "text": "Making DIRI usable for everyone."
+      },
+      {
+        "type": "paragraph",
+        "text": "DIRI is committed to ensuring that our platform is accessible to the widest possible audience, regardless of ability or technology. We believe digital rights education should be available to every young Ugandan, including those with disabilities."
+      },
+      {
+        "type": "heading",
+        "text": "What We Are Doing"
+      },
+      {
+        "type": "bullet",
+        "text": "Using clear, semantic HTML structure for screen reader compatibility."
+      },
+      {
+        "type": "bullet",
+        "text": "Providing descriptive alt text for meaningful images and accessible labels for controls."
+      },
+      {
+        "type": "bullet",
+        "text": "Ensuring sufficient colour contrast between text and backgrounds."
+      },
+      {
+        "type": "bullet",
+        "text": "Supporting keyboard navigation throughout the platform."
+      },
+      {
+        "type": "bullet",
+        "text": "Providing quick profiles for visual, seizure-sensitivity, colour-vision, attention, dyslexia and learning support needs."
+      },
+      {
+        "type": "bullet",
+        "text": "Providing adjustable text size, line height, text spacing, readable fonts, highlighted headings, links and buttons, image hiding and helpful labels."
+      },
+      {
+        "type": "bullet",
+        "text": "Providing dark, light, inverted and high-contrast modes, a colour-safe palette, and saturation controls."
+      },
+      {
+        "type": "bullet",
+        "text": "Providing motion reduction, reading-guide and reading-mask tools, plus large light and dark cursors."
+      },
+      {
+        "type": "bullet",
+        "text": "Providing reading assistance through browser text-to-speech where supported. Preferences are saved on the user's device."
+      },
+      {
+        "type": "bullet",
+        "text": "Making DIRI available through both the website and WhatsApp."
+      },
+      {
+        "type": "heading",
+        "text": "Ongoing Improvements"
+      },
+      {
+        "type": "paragraph",
+        "text": "Accessibility is an ongoing effort. These features can improve access but do not mean every page or browser combination is fully conformant. We test and improve the experience as issues are identified."
+      },
+      {
+        "type": "heading",
+        "text": "Feedback"
+      },
+      {
+        "type": "paragraph",
+        "text": "If you encounter any accessibility barriers while using DIRI, please contact us. Your feedback helps us make the platform better for everyone."
+      }
+    ]
+  }
+}

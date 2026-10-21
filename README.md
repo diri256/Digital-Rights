@@ -2,6 +2,12 @@
 
 A youth-focused digital rights and internet governance platform.
 
+## Flutter mobile app
+
+The native Android/iOS learner app is in [`mobile/`](mobile/README.md). It reuses
+the website's Supabase backend and lesson content. See its README for running,
+testing, supported features, and the remaining website parity work.
+
 ## Project Structure
 
 ```

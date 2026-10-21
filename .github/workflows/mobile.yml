@@ -1,0 +1,68 @@
+name: Flutter mobile checks
+on:
+  workflow_dispatch:
+  push:
+    paths: ['mobile/**', '.github/workflows/mobile.yml']
+  pull_request:
+    paths: ['mobile/**', '.github/workflows/mobile.yml']
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build apk --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: diri-android-debug
+          path: mobile/build/app/outputs/flutter-apk/app-debug.apk
+      - name: Build unsigned release APKs for private local signing
+        run: flutter build apk --release --split-per-abi
+        env:
+          DIRI_ALLOW_UNSIGNED_RELEASE: 'true'
+      - name: Package Android signature verification tool
+        run: |
+          mkdir -p build/signing-tools
+          signer=$(find "$ANDROID_HOME/build-tools" -name apksigner.jar | sort -V | tail -1)
+          test -n "$signer"
+          cp "$signer" build/signing-tools/apksigner.jar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: diri-android-unsigned-release
+          path: |
+            mobile/build/app/outputs/flutter-apk/*-release.apk
+            mobile/build/signing-tools/apksigner.jar
+  ios:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.7'
+          channel: stable
+          cache: true
+      - run: flutter pub get --enforce-lockfile
+      - run: flutter build ios --simulator --debug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: diri-ios-simulator
+          path: mobile/build/ios/iphonesimulator/Runner.app

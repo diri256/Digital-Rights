@@ -1,0 +1,102 @@
+[
+  {
+    "question_text": "A caller claiming to be from your mobile-money provider asks for your PIN and one-time code. What should you do?",
+    "options": [
+      "Share only the one-time code",
+      "Share the PIN if the caller knows your name",
+      "End the call and contact the provider using its official number",
+      "Move the money to the account the caller gives you"
+    ],
+    "correct_answer": 2
+  },
+  {
+    "question_text": "Which password practice gives your accounts the strongest everyday protection?",
+    "options": [
+      "Reuse one difficult password everywhere",
+      "Use a unique passphrase for each account and store it in a password manager",
+      "Use your phone number followed by your birth year",
+      "Change one reused password every month"
+    ],
+    "correct_answer": 1
+  },
+  {
+    "question_text": "Which sign most strongly suggests that a login page may be a phishing site?",
+    "options": [
+      "It has a company logo",
+      "Its address slightly misspells a known name and demands urgent action",
+      "It uses photographs and modern colours",
+      "It contains a privacy-policy link"
+    ],
+    "correct_answer": 1
+  },
+  {
+    "question_text": "Your phone is lost while it is signed in to email and mobile money. What should you do first?",
+    "options": [
+      "Wait a day to see whether it is returned",
+      "Post every password on social media so friends can help",
+      "Create a new social-media account",
+      "Lock the device remotely, contact your provider and secure important accounts"
+    ],
+    "correct_answer": 3
+  },
+  {
+    "question_text": "A torch app asks for access to your contacts, location and microphone. What is the safest response?",
+    "options": [
+      "Deny unnecessary permissions and remove the app if it will not work without them",
+      "Allow everything because the app is free",
+      "Allow access and switch off the screen",
+      "Send the app developer your contact list instead"
+    ],
+    "correct_answer": 0
+  },
+  {
+    "question_text": "Someone repeatedly threatens you online. Which response best protects you?",
+    "options": [
+      "Threaten them back",
+      "Delete all evidence immediately",
+      "Save evidence, block and report the account, and seek trusted help",
+      "Share their private information publicly"
+    ],
+    "correct_answer": 2
+  },
+  {
+    "question_text": "Before forwarding a dramatic claim from social media, what should you do?",
+    "options": [
+      "Forward it quickly before it is deleted",
+      "Check the source, date and context, then compare with credible sources",
+      "Trust it when many people have shared it",
+      "Trust it if it includes a photograph"
+    ],
+    "correct_answer": 1
+  },
+  {
+    "question_text": "You need to make a sensitive payment while connected to public Wi-Fi. What is safest?",
+    "options": [
+      "Use trusted mobile data or wait for a secure connection",
+      "Continue because public Wi-Fi is always encrypted",
+      "Ask a stranger to complete the payment",
+      "Turn off two-factor authentication first"
+    ],
+    "correct_answer": 0
+  },
+  {
+    "question_text": "Why should you install security updates on your phone and computer?",
+    "options": [
+      "They guarantee that every website is truthful",
+      "They make passwords unnecessary",
+      "They prevent all loss or theft",
+      "They fix known weaknesses that attackers may exploit"
+    ],
+    "correct_answer": 3
+  },
+  {
+    "question_text": "When an organisation asks for your personal information, what is good privacy practice?",
+    "options": [
+      "Collect every detail in case it becomes useful later",
+      "Publish the information so the process is transparent",
+      "Explain the purpose, collect only what is needed and protect it",
+      "Keep the purpose secret until after collection"
+    ],
+    "correct_answer": 2
+  }
+]
